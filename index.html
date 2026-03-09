@@ -23,12 +23,6 @@ width:180px;
 margin-bottom:10px;
 }
 
-.club{
-font-size:14px;
-margin-top:20px;
-opacity:0.9;
-}
-
 .card{
 background:#123524;
 padding:25px;
@@ -81,7 +75,13 @@ text-align:left;
 .red{color:#ff6b6b}
 
 .section{
-margin-top:12px;
+margin-top:15px;
+}
+
+.club{
+margin-top:20px;
+font-size:14px;
+opacity:0.9;
 }
 
 .map{
@@ -188,11 +188,8 @@ money:0
 }
 
 let payments=[]
-let scoresHTML=""
-
-players.forEach(p=>{
-scoresHTML+=`${p.name} — ${p.score}<br>`
-})
+let differences=[]
+let totalBank=0
 
 for(let i=0;i<players.length;i++){
 
@@ -201,14 +198,21 @@ for(let j=i+1;j<players.length;j++){
 let diff=players[i].score-players[j].score
 let money=Math.abs(diff)*stake
 
+differences.push(
+players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" шаров"
+)
+
 if(diff>0){
 
 players[i].money+=money
 players[j].money-=money
 
 payments.push(
-`${players[j].name} → ${players[i].name} ${formatMoney(money)} тенге (${Math.abs(diff)})`
+players[j].name+" → "+players[i].name+
+" "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
 )
+
+totalBank+=money
 
 }
 
@@ -218,8 +222,11 @@ players[i].money-=money
 players[j].money+=money
 
 payments.push(
-`${players[i].name} → ${players[j].name} ${formatMoney(money)} тенге (${Math.abs(diff)})`
+players[i].name+" → "+players[j].name+
+" "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
 )
+
+totalBank+=money
 
 }
 
@@ -229,7 +236,23 @@ payments.push(
 
 let html="<div class='result'>"
 
-html+="<div class='section'><b>ШАРЫ</b><br>"+scoresHTML+"</div>"
+html+="<div class='section'><b>СТАВКА</b><br>"+stake+" тенге / шар</div>"
+
+html+="<div class='section'><b>ШАРЫ</b><br>"
+
+players.forEach(p=>{
+html+=p.name+" — "+p.score+"<br>"
+})
+
+html+="</div>"
+
+html+="<div class='section'><b>РАЗНИЦА</b><br>"
+
+differences.forEach(d=>{
+html+=d+"<br>"
+})
+
+html+="</div>"
 
 html+="<div class='section'><b>ИТОГ ИГРЫ</b><br>"
 
@@ -261,7 +284,9 @@ html+=p+"<br>"
 
 html+="</div>"
 
-html+="<div class='section'><small>Разница шаров × ставка</small></div>"
+html+="<div class='section'><b>ОБЩИЙ БАНК</b><br>"+formatMoney(totalBank)+" тенге</div>"
+
+html+="<div class='section'><small>Формула: разница шаров × ставка</small></div>"
 
 html+="</div>"
 
