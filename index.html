@@ -37,10 +37,6 @@ max-width:750px;
 margin:auto;
 }
 
-h2{
-margin-top:5px;
-}
-
 .row{
 display:flex;
 gap:10px;
@@ -75,9 +71,9 @@ cursor:pointer;
 
 .result{
 background:#08140d;
-padding:12px;
+padding:15px;
 border-radius:8px;
-margin-top:10px;
+margin-top:15px;
 text-align:left;
 }
 
@@ -86,8 +82,8 @@ text-align:left;
 
 .explain{
 font-size:14px;
+margin-top:5px;
 opacity:0.9;
-margin-top:6px;
 }
 
 .map{
@@ -132,7 +128,7 @@ font-weight:bold;
 <b>SENSEI BILLIARD CLUB</b><br><br>
 
 📍 Каражанова улица, 1а<br>
-Алматинская область, Каскелен<br>
+Алматинская область, Каскелен
 
 </div>
 
@@ -162,6 +158,10 @@ container.innerHTML+=`
 
 `
 
+}
+
+function formatMoney(num){
+return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 }
 
 function calc(){
@@ -204,8 +204,8 @@ players[i].money+=money
 players[j].money-=money
 
 explain.push(
-players[j].name+" проиграл "+players[i].name+
-" "+money+"тенге ("+Math.abs(diff)+" шаров)"
+players[j].name+" забил на "+Math.abs(diff)+" шаров меньше чем "+players[i].name+
+", поэтому платит "+formatMoney(money)+" тенге"
 )
 
 }
@@ -216,8 +216,8 @@ players[i].money-=money
 players[j].money+=money
 
 explain.push(
-players[i].name+" проиграл "+players[j].name+
-" "+money+"тенге ("+Math.abs(diff)+" шаров)"
+players[i].name+" забил на "+Math.abs(diff)+" шаров меньше чем "+players[j].name+
+", поэтому платит "+formatMoney(money)+" тенге"
 )
 
 }
@@ -232,15 +232,15 @@ players.forEach(p=>{
 
 if(p.money>0){
 
-html+=`<div class="green">${p.name} +${p.money}тенге</div>`
+html+=`<div class="green">${p.name} +${formatMoney(p.money)} тенге</div>`
 
 }else if(p.money<0){
 
-html+=`<div class="red">${p.name} ${p.money}тенге</div>`
+html+=`<div class="red">${p.name} ${formatMoney(p.money)} тенге</div>`
 
 }else{
 
-html+=`${p.name} 0тенге`
+html+=`${p.name} 0 тенге`
 
 }
 
@@ -254,7 +254,17 @@ html+=`<div class="explain">${e}</div>`
 
 })
 
-html+="</div>"
+html+=`
+
+<br><b>ПОЧЕМУ ТАКОЙ РЕЗУЛЬТАТ</b><br>
+
+<div class="explain">
+Каждый игрок считается с каждым.<br>
+Разница шаров умножается на ставку.<br>
+Игрок у которого шаров меньше — платит.
+</div>
+
+</div>`
 
 document.getElementById("results").innerHTML=html
 
@@ -285,5 +295,4 @@ window.open("https://2gis.kz/almaty/firm/70000001101734090")
 </script>
 
 </body>
-
 </html>
