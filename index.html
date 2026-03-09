@@ -80,10 +80,8 @@ text-align:left;
 .green{color:#4cff7c}
 .red{color:#ff6b6b}
 
-.explain{
-font-size:14px;
-margin-top:5px;
-opacity:0.9;
+.section{
+margin-top:12px;
 }
 
 .map{
@@ -189,7 +187,12 @@ money:0
 
 }
 
-let explain=[]
+let payments=[]
+let scoresHTML=""
+
+players.forEach(p=>{
+scoresHTML+=`${p.name} — ${p.score}<br>`
+})
 
 for(let i=0;i<players.length;i++){
 
@@ -203,9 +206,8 @@ if(diff>0){
 players[i].money+=money
 players[j].money-=money
 
-explain.push(
-players[j].name+" забил на "+Math.abs(diff)+" шаров меньше чем "+players[i].name+
-", поэтому платит "+formatMoney(money)+" тенге"
+payments.push(
+`${players[j].name} → ${players[i].name} ${formatMoney(money)} тенге (${Math.abs(diff)})`
 )
 
 }
@@ -215,9 +217,8 @@ if(diff<0){
 players[i].money-=money
 players[j].money+=money
 
-explain.push(
-players[i].name+" забил на "+Math.abs(diff)+" шаров меньше чем "+players[j].name+
-", поэтому платит "+formatMoney(money)+" тенге"
+payments.push(
+`${players[i].name} → ${players[j].name} ${formatMoney(money)} тенге (${Math.abs(diff)})`
 )
 
 }
@@ -226,7 +227,11 @@ players[i].name+" забил на "+Math.abs(diff)+" шаров меньше ч�
 
 }
 
-let html="<div class='result'><b>ИТОГ ИГРЫ</b><br><br>"
+let html="<div class='result'>"
+
+html+="<div class='section'><b>ШАРЫ</b><br>"+scoresHTML+"</div>"
+
+html+="<div class='section'><b>ИТОГ ИГРЫ</b><br>"
 
 players.forEach(p=>{
 
@@ -246,25 +251,19 @@ html+=`${p.name} 0 тенге`
 
 })
 
-html+="<br><b>КТО КОМУ ДОЛЖЕН</b><br>"
+html+="</div>"
 
-explain.forEach(e=>{
+html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
-html+=`<div class="explain">${e}</div>`
-
+payments.forEach(p=>{
+html+=p+"<br>"
 })
 
-html+=`
+html+="</div>"
 
-<br><b>ПОЧЕМУ ТАКОЙ РЕЗУЛЬТАТ</b><br>
+html+="<div class='section'><small>Разница шаров × ставка</small></div>"
 
-<div class="explain">
-Каждый игрок считается с каждым.<br>
-Разница шаров умножается на ставку.<br>
-Игрок у которого шаров меньше — платит.
-</div>
-
-</div>`
+html+="</div>"
 
 document.getElementById("results").innerHTML=html
 
