@@ -79,6 +79,15 @@ font-size:14px;
 opacity:0.9;
 }
 
+.rules{
+margin-top:25px;
+background:#08140d;
+padding:15px;
+border-radius:10px;
+font-size:14px;
+text-align:left;
+}
+
 .map{
 margin-top:15px;
 background:#d4af37;
@@ -134,6 +143,21 @@ font-weight:bold;
 <button class="map" onclick="openMap()">
 ОТКРЫТЬ АДРЕС В КАРТЕ
 </button>
+
+<!-- ПРАВИЛА ШАРОВ -->
+<div class="rules">
+
+<b>Очки шаров</b><br><br>
+
+⚪ Белый шар — 2 очка (1 шар)<br>
+🔴 Красный шар — 4 очка (3 шара)<br>
+🔵 Синий шар — 6 очков<br>
+🟢 Зеленый шар — 8 очков<br>
+⚫ Черный шар — 10 очков<br><br>
+
+<small>Игрок вводит сумму очков за забитые шары</small>
+
+</div>
 
 </div>
 
@@ -207,7 +231,7 @@ for(let j=i+1;j<players.length;j++){
 let diff=players[i].score-players[j].score
 let money=Math.abs(diff)*stake
 
-differences.push(players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" шаров")
+differences.push(players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" очков")
 
 if(diff>0){
 
@@ -231,7 +255,7 @@ payments.push(players[i].name+" → "+players[j].name+" = "+formatMoney(money)+"
 
 }
 
-html+="<div class='section'><b>РАЗНИЦА ШАРОВ</b><br>"
+html+="<div class='section'><b>РАЗНИЦА ОЧКОВ</b><br>"
 
 differences.forEach(d=>{
 html+=d+"<br>"
@@ -282,7 +306,7 @@ html+="</div>"
 let diff=Math.abs(teamA-teamB)
 let money=diff*stake
 
-html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" шаров</div>"
+html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" очков</div>"
 
 html+="<div class='section'><b>ИТОГ</b><br>"
 
