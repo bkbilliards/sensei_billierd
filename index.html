@@ -18,11 +18,6 @@ padding:20px;
 text-align:center;
 }
 
-.logo{
-width:180px;
-margin-bottom:10px;
-}
-
 .card{
 background:#123524;
 padding:25px;
@@ -40,7 +35,7 @@ margin-bottom:10px;
 .name{flex:2}
 .score{flex:1}
 
-input{
+input,select{
 width:100%;
 padding:12px;
 border-radius:8px;
@@ -98,9 +93,15 @@ font-weight:bold;
 
 <div class="card">
 
-<img src="WhatsApp Image 2026-03-09 at 21.48.12.jpeg" class="logo">
-
 <h2>SENSEI KOLHOZ CALCULATOR</h2>
+
+<div class="row">
+<div style="flex:2">Режим игры</div>
+<select id="mode">
+<option value="solo">Каждый сам за себя</option>
+<option value="team">2 × 2 крест</option>
+</select>
+</div>
 
 <div class="row">
 <div style="flex:2">Ставка за шар</div>
@@ -145,13 +146,9 @@ for(let i=0;i<4;i++){
 container.innerHTML+=`
 
 <div class="row">
-
 <input class="name" id="name${i}" placeholder="Игрок">
-
 <input class="score" id="p1_${i}" type="number">
-
 <input class="score" id="p2_${i}" type="number">
-
 </div>
 
 `
@@ -164,6 +161,7 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
+let mode=document.getElementById("mode").value
 let stake=parseInt(document.getElementById("stake").value)||0
 
 let players=[]
@@ -187,6 +185,18 @@ money:0
 
 }
 
+let html="<div class='result'>"
+
+html+="<div class='section'><b>ШАРЫ</b><br>"
+
+players.forEach(p=>{
+html+=p.name+" — "+p.score+"<br>"
+})
+
+html+="</div>"
+
+if(mode==="solo"){
+
 let payments=[]
 let differences=[]
 
@@ -197,20 +207,14 @@ for(let j=i+1;j<players.length;j++){
 let diff=players[i].score-players[j].score
 let money=Math.abs(diff)*stake
 
-differences.push(
-players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" шаров"
-)
+differences.push(players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" шаров")
 
 if(diff>0){
 
 players[i].money+=money
 players[j].money-=money
 
-payments.push({
-from:players[j].name,
-to:players[i].name,
-money:money
-})
+payments.push(players[j].name+" → "+players[i].name+" = "+formatMoney(money)+" тенге")
 
 }
 
@@ -219,29 +223,13 @@ if(diff<0){
 players[i].money-=money
 players[j].money+=money
 
-payments.push({
-from:players[i].name,
-to:players[j].name,
-money:money
-})
+payments.push(players[i].name+" → "+players[j].name+" = "+formatMoney(money)+" тенге")
 
 }
 
 }
 
 }
-
-let html="<div class='result'>"
-
-html+="<div class='section'><b>ШАРЫ</b><br>"
-
-players.sort((a,b)=>b.score-a.score)
-
-players.forEach(p=>{
-html+=p.name+" — "+p.score+"<br>"
-})
-
-html+="</div>"
 
 html+="<div class='section'><b>РАЗНИЦА ШАРОВ</b><br>"
 
@@ -272,10 +260,49 @@ html+="</div>"
 html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
 payments.forEach(p=>{
-html+=p.from+" → "+p.to+" = "+formatMoney(p.money)+" тенге<br>"
+html+=p+"<br>"
 })
 
 html+="</div>"
+
+}
+
+if(mode==="team"){
+
+let teamA=players[0].score+players[2].score
+let teamB=players[1].score+players[3].score
+
+html+="<div class='section'><b>КОМАНДЫ</b><br>"
+
+html+=players[0].name+" + "+players[2].name+" = "+teamA+"<br>"
+html+=players[1].name+" + "+players[3].name+" = "+teamB+"<br>"
+
+html+="</div>"
+
+let diff=Math.abs(teamA-teamB)
+let money=diff*stake
+
+html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" шаров</div>"
+
+html+="<div class='section'><b>ИТОГ</b><br>"
+
+if(teamA>teamB){
+
+html+=players[1].name+" + "+players[3].name+
+" → "+players[0].name+" + "+players[2].name+
+" = "+formatMoney(money)+" тенге"
+
+}else{
+
+html+=players[0].name+" + "+players[2].name+
+" → "+players[1].name+" + "+players[3].name+
+" = "+formatMoney(money)+" тенге"
+
+}
+
+html+="</div>"
+
+}
 
 html+="</div>"
 
