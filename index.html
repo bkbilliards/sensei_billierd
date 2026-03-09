@@ -205,7 +205,7 @@ players[j].money-=money
 
 explain.push(
 players[j].name+" проиграл "+players[i].name+
-" "+money+"₸ ("+Math.abs(diff)+" шаров)"
+" "+money+"тенге ("+Math.abs(diff)+" шаров)"
 )
 
 }
@@ -217,7 +217,7 @@ players[j].money+=money
 
 explain.push(
 players[i].name+" проиграл "+players[j].name+
-" "+money+"₸ ("+Math.abs(diff)+" шаров)"
+" "+money+"тенге ("+Math.abs(diff)+" шаров)"
 )
 
 }
@@ -232,15 +232,15 @@ players.forEach(p=>{
 
 if(p.money>0){
 
-html+=`<div class="green">${p.name} +${p.money}₸</div>`
+html+=`<div class="green">${p.name} +${p.money}тенге</div>`
 
 }else if(p.money<0){
 
-html+=`<div class="red">${p.name} ${p.money}₸</div>`
+html+=`<div class="red">${p.name} ${p.money}тенге</div>`
 
 }else{
 
-html+=`${p.name} 0₸`
+html+=`${p.name} 0тенге`
 
 }
 
