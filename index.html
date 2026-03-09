@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI Kolhoz PRO</title>
+<title>SENSEI Kolhoz Calculator</title>
 
 <style>
 
@@ -230,7 +230,7 @@ players[j].money-=money
 
 payments.push(
 players[j].name+" → "+players[i].name+
-" "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
+" = "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
 )
 
 totalBank+=money
@@ -244,7 +244,7 @@ players[j].money+=money
 
 payments.push(
 players[i].name+" → "+players[j].name+
-" "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
+" = "+formatMoney(money)+" тенге ("+Math.abs(diff)+")"
 )
 
 totalBank+=money
@@ -264,9 +264,9 @@ html+="<div class='section'><b>ИТОГ ИГРЫ</b><br>"
 players.forEach(p=>{
 
 if(p.money>0){
-html+=`<div class="green">${p.name} +${formatMoney(p.money)}</div>`
+html+=`<div class="green">${p.name} +${formatMoney(p.money)} тенге</div>`
 }else if(p.money<0){
-html+=`<div class="red">${p.name} ${formatMoney(p.money)}</div>`
+html+=`<div class="red">${p.name} ${formatMoney(p.money)} тенге</div>`
 }else{
 html+=`${p.name} 0`
 }
@@ -304,13 +304,13 @@ if(teamA>teamB){
 
 html+=players[1].name+" + "+players[3].name+
 " → "+players[0].name+" + "+players[2].name+
-" "+formatMoney(money)+" тенге"
+" = "+formatMoney(money)+" тенге"
 
 }else{
 
 html+=players[0].name+" + "+players[2].name+
 " → "+players[1].name+" + "+players[3].name+
-" "+formatMoney(money)+" тенге"
+" = "+formatMoney(money)+" тенге"
 
 }
 
