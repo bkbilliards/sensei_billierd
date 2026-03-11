@@ -11,19 +11,55 @@
 
 body{
 font-family:Arial;
-background:#071b13;
+background:linear-gradient(180deg,#071b13,#0d2e1f);
 color:white;
 margin:0;
-padding:20px;
+padding:0;
 text-align:center;
 }
+
+/* ШАПКА */
+
+.header{
+
+background:#08140d;
+padding:30px 10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.5);
+
+}
+
+.logo{
+
+width:150px;
+margin-bottom:10px;
+
+}
+
+.clubtitle{
+
+font-size:28px;
+color:#d4af37;
+font-weight:bold;
+letter-spacing:2px;
+
+}
+
+.subtitle{
+
+opacity:0.7;
+font-size:14px;
+
+}
+
+/* КАРТОЧКА */
 
 .card{
 background:#123524;
 padding:25px;
-border-radius:12px;
+border-radius:14px;
 max-width:750px;
-margin:auto;
+margin:30px auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 .row{
@@ -41,6 +77,8 @@ padding:12px;
 border-radius:8px;
 border:none;
 font-size:16px;
+background:#0f261c;
+color:white;
 }
 
 button{
@@ -52,6 +90,11 @@ font-size:18px;
 font-weight:bold;
 margin-top:10px;
 cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.02);
 }
 
 .calc{background:#d4af37;color:black}
@@ -95,10 +138,34 @@ color:black;
 font-weight:bold;
 }
 
+.footer{
+
+margin-top:30px;
+font-size:12px;
+opacity:0.6;
+
+}
+
 </style>
 </head>
 
 <body>
+
+
+<!-- ШАПКА САЙТА -->
+
+<div class="header">
+
+<img src="WhatsApp Image 2026-03-09 at 21.48.12.jpeg" class="logo">
+
+<div class="clubtitle">SENSEI BILLIARD CLUB</div>
+
+<div class="subtitle">
+Калькулятор игры Колхоз
+</div>
+
+</div>
+
 
 <div class="card">
 
@@ -144,7 +211,9 @@ font-weight:bold;
 ОТКРЫТЬ АДРЕС В КАРТЕ
 </button>
 
+
 <!-- ПРАВИЛА ШАРОВ -->
+
 <div class="rules">
 
 <b>Очки шаров</b><br><br>
@@ -160,6 +229,11 @@ font-weight:bold;
 </div>
 
 </div>
+
+<div class="footer">
+SENSEI BILLIARD CLUB ©
+</div>
+
 
 <script>
 
