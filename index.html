@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 
@@ -16,19 +16,6 @@ color:white;
 margin:0;
 padding:0;
 text-align:center;
-}
-
-.header{
-background:#08140d;
-padding:10px;
-display:flex;
-justify-content:center;
-}
-
-.logo{
-width:100%;
-max-width:520px;
-height:auto;
 }
 
 .card{
@@ -149,47 +136,17 @@ for(let i=0;i<4;i++){
 players.push({
 name:document.getElementById("name"+i).value,
 score:parseInt(document.getElementById("score"+i).value)||0,
-money:0
+balance:0
 })
 
 }
 
-let payments=[]
+/* РАЗНИЦА ПО КРУГУ */
 
-function duel(a,b){
-
-let diff=players[a].score-players[b].score
-
-if(diff>0){
-
-let money=diff*stake
-
-players[a].money+=money
-players[b].money-=money
-
-payments.push(players[b].name+" → "+players[a].name+" = "+formatMoney(money)+" тенге")
-
-}
-
-if(diff<0){
-
-let money=Math.abs(diff)*stake
-
-players[a].money-=money
-players[b].money+=money
-
-payments.push(players[a].name+" → "+players[b].name+" = "+formatMoney(money)+" тенге")
-
-}
-
-}
-
-/* КОЛХОЗ ПО КРУГУ */
-
-duel(1,0)
-duel(2,1)
-duel(3,2)
-duel(0,3)
+players[0].balance = players[0].score - players[1].score
+players[1].balance = players[1].score - players[2].score
+players[2].balance = players[2].score - players[3].score
+players[3].balance = players[3].score - players[0].score
 
 let html="<div class='result'>"
 
@@ -201,28 +158,65 @@ html+=p.name+" — "+p.score+"<br>"
 
 html+="</div>"
 
-html+="<div class='section'><b>ИТОГ</b><br>"
+/* РАЗНИЦА */
 
-players.sort((a,b)=>b.money-a.money)
+html+="<div class='section'><b>РАЗНИЦА</b><br>"
 
 players.forEach(p=>{
 
-if(p.money>0){
-html+=`<div class="green">${p.name} +${formatMoney(p.money)} тенге</div>`
-}else if(p.money<0){
-html+=`<div class="red">${p.name} ${formatMoney(p.money)} тенге</div>`
-}else{
-html+=p.name+" 0"
-}
+if(p.balance>0)
+html+=`<div class="green">${p.name} +${p.balance} очков</div>`
+
+if(p.balance<0)
+html+=`<div class="red">${p.name} ${p.balance} очков</div>`
 
 })
 
 html+="</div>"
 
+/* ЧИСТЫЙ РАСЧЕТ */
+
+let positives=[]
+let negatives=[]
+
+players.forEach(p=>{
+
+if(p.balance>0) positives.push({...p})
+if(p.balance<0) negatives.push({...p})
+
+})
+
+let payments=[]
+
+positives.forEach(pos=>{
+
+negatives.forEach(neg=>{
+
+if(pos.balance>0 && neg.balance<0){
+
+let pay=Math.min(pos.balance, Math.abs(neg.balance))
+
+pos.balance-=pay
+neg.balance+=pay
+
+payments.push({
+from:neg.name,
+to:pos.name,
+points:pay
+})
+
+}
+
+})
+
+})
+
 html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
 payments.forEach(p=>{
-html+=p+"<br>"
+
+html+=p.from+" → "+p.to+" = "+p.points+" очков ("+formatMoney(p.points*stake)+" тенге)<br>"
+
 })
 
 html+="</div>"
