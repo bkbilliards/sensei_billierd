@@ -134,26 +134,14 @@ opacity:0.6;
 <body>
 
 
-<!-- ШАПКА САЙТА -->
-
 <div class="header">
-
 <img src="ChatGPT Image 11 мар. 2026 г., 23_15_06.png" class="logo">
-
 </div>
 
 
 <div class="card">
 
 <h2>SENSEI KOLHOZ CALCULATOR</h2>
-
-<div class="row">
-<div style="flex:2">Режим игры</div>
-<select id="mode">
-<option value="solo">Каждый сам за себя</option>
-<option value="team">2 × 2 крест</option>
-</select>
-</div>
 
 <div class="row">
 <div style="flex:2">Ставка за шар</div>
@@ -186,9 +174,6 @@ opacity:0.6;
 <button class="map" onclick="openMap()">
 ОТКРЫТЬ АДРЕС В КАРТЕ
 </button>
-
-
-<!-- ПРАВИЛА ШАРОВ -->
 
 <div class="rules">
 
@@ -235,7 +220,6 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
-let mode=document.getElementById("mode").value
 let stake=parseInt(document.getElementById("stake").value)||0
 
 let players=[]
@@ -243,72 +227,62 @@ let players=[]
 for(let i=0;i<4;i++){
 
 let name=document.getElementById("name"+i).value
-
-if(name!=""){
-
 let p1=parseInt(document.getElementById("p1_"+i).value)||0
 let p2=parseInt(document.getElementById("p2_"+i).value)||0
 
 players.push({
 name:name,
-score:p1+p2,
+p1:p1,
+p2:p2,
 money:0
 })
 
 }
 
+let payments=[]
+
+function load(from,to,scoreFrom,scoreTo){
+
+let diff=scoreFrom-scoreTo
+
+if(diff>0){
+
+let money=diff*stake
+players[from].money+=money
+players[to].money-=money
+
+payments.push(players[to].name+" → "+players[from].name+" = "+formatMoney(money)+" тенге")
+
 }
+
+if(diff<0){
+
+let money=Math.abs(diff)*stake
+players[from].money-=money
+players[to].money+=money
+
+payments.push(players[from].name+" → "+players[to].name+" = "+formatMoney(money)+" тенге")
+
+}
+
+}
+
+load(1,0,players[1].p1,players[0].p1)
+load(2,1,players[2].p1,players[1].p1)
+load(3,2,players[3].p1,players[2].p1)
+load(0,3,players[0].p1,players[3].p1)
+
+load(2,3,players[2].p2,players[3].p2)
+load(1,2,players[1].p2,players[2].p2)
+load(0,1,players[0].p2,players[1].p2)
+load(3,0,players[3].p2,players[0].p2)
 
 let html="<div class='result'>"
 
 html+="<div class='section'><b>ШАРЫ</b><br>"
 
 players.forEach(p=>{
-html+=p.name+" — "+p.score+"<br>"
-})
-
-html+="</div>"
-
-if(mode==="solo"){
-
-let payments=[]
-let differences=[]
-
-for(let i=0;i<players.length;i++){
-
-for(let j=i+1;j<players.length;j++){
-
-let diff=players[i].score-players[j].score
-let money=Math.abs(diff)*stake
-
-differences.push(players[i].name+" vs "+players[j].name+" = "+Math.abs(diff)+" очков")
-
-if(diff>0){
-
-players[i].money+=money
-players[j].money-=money
-
-payments.push(players[j].name+" → "+players[i].name+" = "+formatMoney(money)+" тенге")
-
-}
-
-if(diff<0){
-
-players[i].money-=money
-players[j].money+=money
-
-payments.push(players[i].name+" → "+players[j].name+" = "+formatMoney(money)+" тенге")
-
-}
-
-}
-
-}
-
-html+="<div class='section'><b>РАЗНИЦА ОЧКОВ</b><br>"
-
-differences.forEach(d=>{
-html+=d+"<br>"
+html+=p.name+" — "+(p.p1+p.p2)+"<br>"
 })
 
 html+="</div>"
@@ -339,45 +313,6 @@ html+=p+"<br>"
 
 html+="</div>"
 
-}
-
-if(mode==="team"){
-
-let teamA=players[0].score+players[2].score
-let teamB=players[1].score+players[3].score
-
-html+="<div class='section'><b>КОМАНДЫ</b><br>"
-
-html+=players[0].name+" + "+players[2].name+" = "+teamA+"<br>"
-html+=players[1].name+" + "+players[3].name+" = "+teamB+"<br>"
-
-html+="</div>"
-
-let diff=Math.abs(teamA-teamB)
-let money=diff*stake
-
-html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" очков</div>"
-
-html+="<div class='section'><b>ИТОГ</b><br>"
-
-if(teamA>teamB){
-
-html+=players[1].name+" + "+players[3].name+
-" → "+players[0].name+" + "+players[2].name+
-" = "+formatMoney(money)+" тенге"
-
-}else{
-
-html+=players[0].name+" + "+players[2].name+
-" → "+players[1].name+" + "+players[3].name+
-" = "+formatMoney(money)+" тенге"
-
-}
-
-html+="</div>"
-
-}
-
 html+="</div>"
 
 document.getElementById("results").innerHTML=html
@@ -387,7 +322,6 @@ document.getElementById("results").innerHTML=html
 function copyResult(){
 
 let text=document.getElementById("results").innerText
-
 navigator.clipboard.writeText(text)
 
 alert("Результат скопирован. Вставь в WhatsApp.")
