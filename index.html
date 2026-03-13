@@ -18,12 +18,9 @@ padding:0;
 text-align:center;
 }
 
-/* ШАПКА */
-
 .header{
 background:#08140d;
-padding:10px 10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.5);
+padding:10px;
 display:flex;
 justify-content:center;
 }
@@ -32,10 +29,7 @@ justify-content:center;
 width:100%;
 max-width:520px;
 height:auto;
-display:block;
 }
-
-/* КАРТОЧКА */
 
 .card{
 background:#123524;
@@ -43,7 +37,6 @@ padding:25px;
 border-radius:14px;
 max-width:750px;
 margin:30px auto;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 .row{
@@ -55,7 +48,7 @@ margin-bottom:10px;
 .name{flex:2}
 .score{flex:1}
 
-input,select{
+input{
 width:100%;
 padding:12px;
 border-radius:8px;
@@ -74,11 +67,6 @@ font-size:18px;
 font-weight:bold;
 margin-top:10px;
 cursor:pointer;
-transition:0.2s;
-}
-
-button:hover{
-transform:scale(1.02);
 }
 
 .calc{background:#d4af37;color:black}
@@ -100,44 +88,10 @@ text-align:left;
 margin-top:15px;
 }
 
-.club{
-margin-top:20px;
-font-size:14px;
-opacity:0.9;
-}
-
-.rules{
-margin-top:25px;
-background:#08140d;
-padding:15px;
-border-radius:10px;
-font-size:14px;
-text-align:left;
-}
-
-.map{
-margin-top:15px;
-background:#d4af37;
-color:black;
-font-weight:bold;
-}
-
-.footer{
-margin-top:30px;
-font-size:12px;
-opacity:0.6;
-}
-
 </style>
 </head>
 
 <body>
-
-
-<div class="header">
-<img src="ChatGPT Image 11 мар. 2026 г., 23_15_06.png" class="logo">
-</div>
-
 
 <div class="card">
 
@@ -150,8 +104,7 @@ opacity:0.6;
 
 <div class="row">
 <div class="name">Игрок</div>
-<div class="score">П1</div>
-<div class="score">П2</div>
+<div class="score">Очки</div>
 </div>
 
 <div id="players"></div>
@@ -162,39 +115,7 @@ opacity:0.6;
 
 <div id="results"></div>
 
-<div class="club">
-
-<b>SENSEI BILLIARD CLUB</b><br><br>
-
-📍 Каражанова улица, 1а<br>
-Алматинская область, Каскелен
-
 </div>
-
-<button class="map" onclick="openMap()">
-ОТКРЫТЬ АДРЕС В КАРТЕ
-</button>
-
-<div class="rules">
-
-<b>Очки шаров</b><br><br>
-
-⚪ Белый шар — 2 очка <br>
-🔴 Красный шар — 4 очка (3 шара)<br>
-🔵 Синий шар — 6 очков<br>
-🟢 Зеленый шар — 8 очков<br>
-⚫ Черный шар — 10 очков<br><br>
-
-<small>Игрок вводит сумму очков за забитые шары</small>
-
-</div>
-
-</div>
-
-<div class="footer">
-SENSEI BILLIARD CLUB ©
-</div>
-
 
 <script>
 
@@ -206,8 +127,7 @@ container.innerHTML+=`
 
 <div class="row">
 <input class="name" id="name${i}" placeholder="Игрок">
-<input class="score" id="p1_${i}" type="number">
-<input class="score" id="p2_${i}" type="number">
+<input class="score" id="score${i}" type="number">
 </div>
 
 `
@@ -226,14 +146,9 @@ let players=[]
 
 for(let i=0;i<4;i++){
 
-let name=document.getElementById("name"+i).value
-let p1=parseInt(document.getElementById("p1_"+i).value)||0
-let p2=parseInt(document.getElementById("p2_"+i).value)||0
-
 players.push({
-name:name,
-p1:p1,
-p2:p2,
+name:document.getElementById("name"+i).value,
+score:parseInt(document.getElementById("score"+i).value)||0,
 money:0
 })
 
@@ -241,48 +156,47 @@ money:0
 
 let payments=[]
 
-function load(from,to,scoreFrom,scoreTo){
+function duel(a,b){
 
-let diff=scoreFrom-scoreTo
+let diff=players[a].score-players[b].score
 
 if(diff>0){
 
 let money=diff*stake
-players[from].money+=money
-players[to].money-=money
 
-payments.push(players[to].name+" → "+players[from].name+" = "+formatMoney(money)+" тенге")
+players[a].money+=money
+players[b].money-=money
+
+payments.push(players[b].name+" → "+players[a].name+" = "+formatMoney(money)+" тенге")
 
 }
 
 if(diff<0){
 
 let money=Math.abs(diff)*stake
-players[from].money-=money
-players[to].money+=money
 
-payments.push(players[from].name+" → "+players[to].name+" = "+formatMoney(money)+" тенге")
+players[a].money-=money
+players[b].money+=money
+
+payments.push(players[a].name+" → "+players[b].name+" = "+formatMoney(money)+" тенге")
 
 }
 
 }
 
-load(1,0,players[1].p1,players[0].p1)
-load(2,1,players[2].p1,players[1].p1)
-load(3,2,players[3].p1,players[2].p1)
-load(0,3,players[0].p1,players[3].p1)
+/* КОЛХОЗ ПО КРУГУ */
 
-load(2,3,players[2].p2,players[3].p2)
-load(1,2,players[1].p2,players[2].p2)
-load(0,1,players[0].p2,players[1].p2)
-load(3,0,players[3].p2,players[0].p2)
+duel(1,0)
+duel(2,1)
+duel(3,2)
+duel(0,3)
 
 let html="<div class='result'>"
 
 html+="<div class='section'><b>ШАРЫ</b><br>"
 
 players.forEach(p=>{
-html+=p.name+" — "+(p.p1+p.p2)+"<br>"
+html+=p.name+" — "+p.score+"<br>"
 })
 
 html+="</div>"
@@ -298,7 +212,7 @@ html+=`<div class="green">${p.name} +${formatMoney(p.money)} тенге</div>`
 }else if(p.money<0){
 html+=`<div class="red">${p.name} ${formatMoney(p.money)} тенге</div>`
 }else{
-html+=`${p.name} 0`
+html+=p.name+" 0"
 }
 
 })
@@ -324,16 +238,12 @@ function copyResult(){
 let text=document.getElementById("results").innerText
 navigator.clipboard.writeText(text)
 
-alert("Результат скопирован. Вставь в WhatsApp.")
+alert("Результат скопирован")
 
 }
 
 function resetAll(){
 location.reload()
-}
-
-function openMap(){
-window.open("https://2gis.kz/almaty/firm/70000001101734090")
 }
 
 </script>
