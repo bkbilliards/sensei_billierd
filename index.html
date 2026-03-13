@@ -135,18 +135,37 @@ for(let i=0;i<4;i++){
 
 players.push({
 name:document.getElementById("name"+i).value,
-score:parseInt(document.getElementById("score"+i).value)||0,
-balance:0
+score:parseInt(document.getElementById("score"+i).value)||0
 })
 
 }
 
-/* РАЗНИЦА ПО КРУГУ */
+/* ПАРТИЯ 1 */
 
-players[0].balance = players[0].score - players[1].score
-players[1].balance = players[1].score - players[2].score
-players[2].balance = players[2].score - players[3].score
-players[3].balance = players[3].score - players[0].score
+let p1=[
+players[0].score - players[1].score,
+players[1].score - players[2].score,
+players[2].score - players[3].score,
+players[3].score - players[0].score
+]
+
+/* ПАРТИЯ 2 ОБРАТКА */
+
+let p2=[
+players[3].score - players[2].score,
+players[2].score - players[1].score,
+players[1].score - players[0].score,
+players[0].score - players[3].score
+]
+
+/* СУММА */
+
+let balance=[
+p1[0]+p2[3],
+p1[1]+p2[2],
+p1[2]+p2[1],
+p1[3]+p2[0]
+]
 
 let html="<div class='result'>"
 
@@ -158,17 +177,15 @@ html+=p.name+" — "+p.score+"<br>"
 
 html+="</div>"
 
-/* РАЗНИЦА */
-
 html+="<div class='section'><b>РАЗНИЦА</b><br>"
 
-players.forEach(p=>{
+balance.forEach((b,i)=>{
 
-if(p.balance>0)
-html+=`<div class="green">${p.name} +${p.balance} очков</div>`
+if(b>0)
+html+=`<div class="green">${players[i].name} +${b} очков</div>`
 
-if(p.balance<0)
-html+=`<div class="red">${p.name} ${p.balance} очков</div>`
+if(b<0)
+html+=`<div class="red">${players[i].name} ${b} очков</div>`
 
 })
 
@@ -179,10 +196,10 @@ html+="</div>"
 let positives=[]
 let negatives=[]
 
-players.forEach(p=>{
+balance.forEach((b,i)=>{
 
-if(p.balance>0) positives.push({...p})
-if(p.balance<0) negatives.push({...p})
+if(b>0) positives.push({name:players[i].name,val:b})
+if(b<0) negatives.push({name:players[i].name,val:b})
 
 })
 
@@ -192,12 +209,12 @@ positives.forEach(pos=>{
 
 negatives.forEach(neg=>{
 
-if(pos.balance>0 && neg.balance<0){
+if(pos.val>0 && neg.val<0){
 
-let pay=Math.min(pos.balance, Math.abs(neg.balance))
+let pay=Math.min(pos.val,Math.abs(neg.val))
 
-pos.balance-=pay
-neg.balance+=pay
+pos.val-=pay
+neg.val+=pay
 
 payments.push({
 from:neg.name,
@@ -214,9 +231,7 @@ points:pay
 html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
 payments.forEach(p=>{
-
-html+=p.from+" → "+p.to+" = "+p.points+" очков ("+formatMoney(p.points*stake)+" тенге)<br>"
-
+html+=`${p.from} → ${p.to} = ${p.points} очков (${formatMoney(p.points*stake)} тенге)<br>`
 })
 
 html+="</div>"
