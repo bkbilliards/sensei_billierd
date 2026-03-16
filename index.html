@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI — Калькулятор игры «Колхоз»</title>
+<title>SENSEI — Калькулятор игры Колхоз</title>
 
 <style>
 
@@ -20,54 +20,22 @@ text-align:center;
 /* HEADER */
 
 .header{
-display:flex;
-align-items:center;
-justify-content:space-between;
+width:100%;
 background:#08140d;
-padding:10px 20px;
-box-shadow:0 4px 20px rgba(0,0,0,0.6);
 }
 
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
+.headerimg{
+width:100%;
+height:auto;
+display:block;
 }
-
-.logo img{
-height:50px;
-}
-
-.title{
-font-size:22px;
-color:#d4af37;
-font-weight:bold;
-}
-
-.balls{
-display:flex;
-gap:6px;
-}
-
-.ball{
-width:20px;
-height:20px;
-border-radius:50%;
-}
-
-.white{background:#ffffff}
-.red{background:#ff0000}
-.blue{background:#004cff}
-.green{background:#0aff5a}
-.black{background:#000000}
-.yellow{background:#ffd000}
 
 /* CARD */
 
 .card{
 background:#123524;
-max-width:800px;
-margin:25px auto;
+max-width:850px;
+margin:30px auto;
 padding:25px;
 border-radius:14px;
 box-shadow:0 10px 30px rgba(0,0,0,0.4);
@@ -76,7 +44,7 @@ box-shadow:0 10px 30px rgba(0,0,0,0.4);
 .row{
 display:flex;
 gap:10px;
-margin-bottom:10px;
+margin-bottom:12px;
 }
 
 .name{flex:2}
@@ -84,7 +52,7 @@ margin-bottom:10px;
 
 input,select{
 width:100%;
-padding:12px;
+padding:14px;
 border-radius:8px;
 border:none;
 font-size:16px;
@@ -96,7 +64,7 @@ color:white;
 
 button{
 width:100%;
-padding:15px;
+padding:16px;
 border:none;
 border-radius:10px;
 font-size:18px;
@@ -111,12 +79,12 @@ transform:scale(1.02);
 }
 
 .calc{background:#d4af37;color:black}
-.copy{background:#35607c;color:white}
+.copy{background:#4d6781;color:white}
 .reset{background:#7a1f1f;color:white}
 
 .result{
 background:#08140d;
-padding:15px;
+padding:18px;
 border-radius:10px;
 margin-top:20px;
 text-align:left;
@@ -163,28 +131,10 @@ opacity:0.6;
 
 <body>
 
-<!-- HEADER -->
+<!-- ШАПКА -->
 
 <div class="header">
-
-<div class="logo">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
-<div class="title">КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»</div>
-</div>
-
-<div class="balls">
-
-<div class="ball white"></div>
-<div class="ball red"></div>
-<div class="ball red"></div>
-<div class="ball red"></div>
-<div class="ball blue"></div>
-<div class="ball yellow"></div>
-<div class="ball green"></div>
-<div class="ball black"></div>
-
-</div>
-
+<img src="header.png" class="headerimg">
 </div>
 
 <div class="card">
@@ -212,7 +162,7 @@ opacity:0.6;
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ РЕЗУЛЬТАТ</button>
-<button class="reset" onclick="location.reload()">СБРОС</button>
+<button class="reset" onclick="resetAll()">СБРОС</button>
 
 <div id="results"></div>
 
@@ -231,11 +181,11 @@ opacity:0.6;
 
 <b>Очки шаров</b><br><br>
 
-⚪ Белый — 2<br>
-🔴 Красный — 4 (3 шара)<br>
-🔵 Синий — 6<br>
-🟢 Зеленый — 8<br>
-⚫ Черный — 10<br>
+⚪ Белый — 2 очка<br>
+🔴 Красный — 4 очка (3 шара)<br>
+🔵 Синий — 6 очков<br>
+🟢 Зеленый — 8 очков<br>
+⚫ Черный — 10 очков<br>
 
 </div>
 
@@ -303,6 +253,8 @@ html+=p.name+" — "+p.score+"<br>"
 
 html+="</div>"
 
+/* КОЛХОЗ */
+
 if(mode==="kolhoz"){
 
 let payments=[]
@@ -315,7 +267,7 @@ let next=(i+1)%players.length
 let diff=players[i].score-players[next].score
 let money=Math.abs(diff)*stake
 
-differences.push(players[i].name+" vs "+players[next].name+" = "+diff+" очков")
+differences.push(players[i].name+" → "+players[next].name+" = "+diff+" очков")
 
 if(diff>0){
 
@@ -337,7 +289,7 @@ payments.push(players[i].name+" → "+players[next].name+" = "+formatMoney(money
 
 }
 
-html+="<div class='section'><b>РАЗНИЦА ШАРОВ</b><br>"
+html+="<div class='section'><b>РАЗНИЦА</b><br>"
 
 differences.forEach(d=>{
 html+=d+"<br>"
@@ -345,7 +297,17 @@ html+=d+"<br>"
 
 html+="</div>"
 
+html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
+
+payments.forEach(p=>{
+html+=p+"<br>"
+})
+
+html+="</div>"
+
 }
+
+/* 2x2 */
 
 if(mode==="team"){
 
@@ -393,11 +355,14 @@ document.getElementById("results").innerHTML=html
 function copyResult(){
 
 let text=document.getElementById("results").innerText
-
 navigator.clipboard.writeText(text)
 
 alert("Результат скопирован")
 
+}
+
+function resetAll(){
+location.reload()
 }
 
 function openMap(){
