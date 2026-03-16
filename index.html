@@ -3,54 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SENSEI — Калькулятор игры «Колхоз»</title>
+
+<title>SENSEI — Калькулятор игры Колхоз</title>
 
 <style>
+
 body{
-  font-family:Arial;
-  background:linear-gradient(#071b13,#0d2e1f);
-  color:white;
-  margin:0;
-  text-align:center;
+font-family:Arial;
+background:linear-gradient(#071b13,#0d2e1f);
+color:white;
+margin:0;
+text-align:center;
 }
 
-/* HEADER */
-.header{width:100%;background:#08140d}
-.headerimg{width:100%;display:block}
+.header{
+width:100%;
+}
 
-/* CARD */
+.header img{
+width:100%;
+display:block;
+}
+
 .card{
-  background:#123524;
-  max-width:900px;
-  margin:25px auto;
-  padding:25px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+background:#123524;
+max-width:900px;
+margin:25px auto;
+padding:25px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
-.row{display:flex;gap:10px;margin-bottom:12px}
+.row{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
 .name{flex:2}
 .score{flex:1}
 
 input,select{
-  width:100%;
-  padding:14px;
-  border-radius:8px;
-  border:none;
-  font-size:16px;
-  background:#0f261c;
-  color:white;
+width:100%;
+padding:14px;
+border-radius:8px;
+border:none;
+font-size:16px;
+background:#0f261c;
+color:white;
 }
 
 button{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:10px;
-  font-size:18px;
-  font-weight:bold;
-  margin-top:10px;
-  cursor:pointer;
+width:100%;
+padding:16px;
+border:none;
+border-radius:10px;
+font-size:18px;
+font-weight:bold;
+margin-top:10px;
+cursor:pointer;
 }
 
 .calc{background:#d4af37;color:black}
@@ -58,30 +69,30 @@ button{
 .reset{background:#7a1f1f;color:white}
 
 .result{
-  background:#08140d;
-  padding:18px;
-  border-radius:10px;
-  margin-top:20px;
-  text-align:left;
+background:#08140d;
+padding:18px;
+border-radius:10px;
+margin-top:20px;
+text-align:left;
 }
 
-.section{margin-top:18px}
+.section{margin-top:15px}
 
 .green{color:#4cff7c}
 .red{color:#ff6b6b}
 
 footer{
-  margin:30px;
-  font-size:12px;
-  opacity:0.6;
+margin:30px;
+opacity:0.6;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" class="headerimg">
+<img src="header.png">
 </div>
 
 <div class="card">
@@ -124,21 +135,60 @@ footer{
 let container=document.getElementById("players")
 
 for(let i=0;i<4;i++){
+
 container.innerHTML+=`
+
 <div class="row">
 <input class="name" id="name${i}" placeholder="Игрок">
 <input class="score" id="p1_${i}" type="number">
 <input class="score" id="p2_${i}" type="number">
-</div>`
-}
+</div>
 
-/* формат денег */
+`
+
+}
 
 function formatMoney(num){
 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 }
 
-/* основной расчет */
+/* расчет цепочки */
+
+function chainCalc(players){
+
+let payments=[]
+
+for(let i=0;i<players.length;i++){
+
+let next=(i+1)%players.length
+
+let diff=players[i].score-players[next].score
+
+if(diff<0){
+
+payments.push({
+from:players[i].name,
+to:players[next].name,
+points:Math.abs(diff)
+})
+
+}
+
+if(diff>0){
+
+payments.push({
+from:players[next].name,
+to:players[i].name,
+points:Math.abs(diff)
+})
+
+}
+
+}
+
+return payments
+
+}
 
 function calc(){
 
@@ -150,15 +200,19 @@ let players=[]
 for(let i=0;i<4;i++){
 
 let name=document.getElementById("name"+i).value
+
+if(name!=""){
+
 let p1=parseInt(document.getElementById("p1_"+i).value)||0
 let p2=parseInt(document.getElementById("p2_"+i).value)||0
 
-if(name!=""){
 players.push({
 name:name,
-score:p1+p2,
-balance:0
+p1:p1,
+p2:p2,
+score:p1+p2
 })
+
 }
 
 }
@@ -168,110 +222,39 @@ let html="<div class='result'>"
 /* показываем очки */
 
 html+="<div class='section'><b>ШАРЫ</b><br>"
-players.forEach(p=>html+=p.name+" — "+p.score+"<br>")
-html+="</div>"
-
-/* режим колхоз */
-
-if(mode==="kolhoz"){
-
-let diffList=[]
-
-for(let i=0;i<players.length;i++){
-
-let prev=(i-1+players.length)%players.length
-
-let diff=players[i].score-players[prev].score
-
-diffList.push(players[i].name+" → "+players[prev].name+" = "+diff+" очков")
-
-players[i].balance+=diff
-players[prev].balance-=diff
-
-}
-
-/* вывод разницы */
-
-html+="<div class='section'><b>РАЗНИЦА</b><br>"
-diffList.forEach(d=>html+=d+"<br>")
-html+="</div>"
-
-/* баланс */
-
-html+="<div class='section'><b>БАЛАНС</b><br>"
 
 players.forEach(p=>{
-if(p.balance>0){
-html+=`<span class="green">${p.name} +${p.balance}</span><br>`
-}else if(p.balance<0){
-html+=`<span class="red">${p.name} ${p.balance}</span><br>`
-}else{
-html+=`${p.name} 0<br>`
-}
+html+=p.name+" — "+p.score+"<br>"
 })
 
 html+="</div>"
 
-/* чистые выплаты */
+/* партия 1 */
 
-let payers=players.filter(p=>p.balance<0)
-let winners=players.filter(p=>p.balance>0)
+let p1Players=players.map(p=>({name:p.name,score:p.p1}))
+let payments1=chainCalc(p1Players)
+
+/* обратка */
+
+let reverse=[...players].reverse()
+let p2Players=reverse.map(p=>({name:p.name,score:p.p2}))
+let payments2=chainCalc(p2Players)
+
+/* итог */
+
+let finalPayments=[...payments1,...payments2]
 
 html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
-payers.forEach(p=>{
+finalPayments.forEach(p=>{
 
-let debt=Math.abs(p.balance)
+let money=p.points*stake
 
-winners.forEach(w=>{
-
-if(debt>0 && w.balance>0){
-
-let pay=Math.min(debt,w.balance)
-
-let money=pay*stake
-
-html+=`${p.name} → ${w.name} = ${pay} очков (${formatMoney(money)} тенге)<br>`
-
-debt-=pay
-w.balance-=pay
-
-}
-
-})
+html+=`${p.from} → ${p.to} = ${p.points} очков (${formatMoney(money)} тенге)<br>`
 
 })
 
 html+="</div>"
-
-}
-
-/* режим 2×2 */
-
-if(mode==="team" && players.length===4){
-
-let teamA=players[0].score+players[2].score
-let teamB=players[1].score+players[3].score
-
-let diff=Math.abs(teamA-teamB)
-let money=diff*stake
-
-html+="<div class='section'><b>КОМАНДЫ</b><br>"
-html+=players[0].name+" + "+players[2].name+" = "+teamA+"<br>"
-html+=players[1].name+" + "+players[3].name+" = "+teamB+"<br>"
-html+="</div>"
-
-html+="<div class='section'><b>ИТОГ</b><br>"
-
-if(teamA>teamB){
-html+=players[1].name+" и "+players[3].name+" → "+players[0].name+" и "+players[2].name+" = "+formatMoney(money)+" тенге"
-}else{
-html+=players[0].name+" и "+players[2].name+" → "+players[1].name+" и "+players[3].name+" = "+formatMoney(money)+" тенге"
-}
-
-html+="</div>"
-
-}
 
 html+="</div>"
 
@@ -279,12 +262,14 @@ document.getElementById("results").innerHTML=html
 
 }
 
-/* копирование */
-
 function copyResult(){
+
 let text=document.getElementById("results").innerText
+
 navigator.clipboard.writeText(text)
+
 alert("Результат скопирован")
+
 }
 
 </script>
