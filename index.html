@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SENSEI – Калькулятор Колхоз</title>
-
 <style>
 
 body{
@@ -13,7 +11,6 @@ font-family:Arial;
 background:#0b1f17;
 color:white;
 margin:0;
-padding:0;
 text-align:center;
 }
 
@@ -78,49 +75,34 @@ text-align:left;
 
 </style>
 </head>
-
 <body>
-
 <div class="header">
 SENSEI BILLIARD CLUB — Калькулятор игры Колхоз
 </div>
-
 <div class="container">
-
 <div class="card">
-
 <div class="row">
 <input id="stake" type="number" value="400" placeholder="Ставка за очко">
 </div>
-
 <div class="row">
 <input id="n1" placeholder="Игрок 1">
 <input id="s1" type="number" placeholder="Очки">
 </div>
-
 <div class="row">
 <input id="n2" placeholder="Игрок 2">
 <input id="s2" type="number" placeholder="Очки">
 </div>
-
 <div class="row">
 <input id="n3" placeholder="Игрок 3">
 <input id="s3" type="number" placeholder="Очки">
 </div>
-
 <div class="row">
 <input id="n4" placeholder="Игрок 4">
 <input id="s4" type="number" placeholder="Очки">
 </div>
-
-<button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="reset" onclick="location.reload()">СБРОС</button>
-
 <div id="result"></div>
-
 </div>
 </div>
-
 <script>
 
 function moneyFormat(n){
@@ -132,13 +114,13 @@ function calc(){
 let stake = Number(document.getElementById("stake").value)
 
 let players=[
-{name:document.getElementById("n1").value,score:Number(s1.value)},
-{name:document.getElementById("n2").value,score:Number(s2.value)},
-{name:document.getElementById("n3").value,score:Number(s3.value)},
-{name:document.getElementById("n4").value,score:Number(s4.value)}
+{name:n1.value,score:Number(s1.value)},
+{name:n2.value,score:Number(s2.value)},
+{name:n3.value,score:Number(s3.value)},
+{name:n4.value,score:Number(s4.value)}
 ]
 
-players=players.filter(p=>p.name!="")
+players = players.filter(p=>p.name!="")
 
 let diff=[]
 let balance={}
@@ -164,8 +146,8 @@ let neg=[]
 
 for(let p in balance){
 
-if(balance[p]>0)pos.push({name:p,val:balance[p]})
-if(balance[p]<0)neg.push({name:p,val:-balance[p]})
+if(balance[p]>0) pos.push({name:p,val:balance[p]})
+if(balance[p]<0) neg.push({name:p,val:-balance[p]})
 
 }
 
@@ -175,7 +157,7 @@ for(let n of neg){
 
 for(let p of pos){
 
-if(n.val==0)break
+if(n.val==0) break
 
 let pay=Math.min(n.val,p.val)
 
@@ -221,6 +203,6 @@ document.getElementById("result").innerHTML=html
 }
 
 </script>
-
 </body>
 </html>
+:::
