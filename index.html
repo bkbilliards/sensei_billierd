@@ -17,18 +17,13 @@ color:white;
 text-align:center;
 }
 
-/* ШАПКА */
-
 .header{
 background:#05160f;
 padding:20px;
 font-size:22px;
 font-weight:bold;
 color:#d4af37;
-box-shadow:0 5px 20px rgba(0,0,0,0.6);
 }
-
-/* КАРТОЧКА */
 
 .card{
 background:#123524;
@@ -36,10 +31,7 @@ max-width:700px;
 margin:30px auto;
 padding:25px;
 border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
-
-/* СТРОКИ */
 
 .row{
 display:flex;
@@ -57,8 +49,6 @@ background:#0e241a;
 color:white;
 }
 
-/* КНОПКИ */
-
 button{
 width:100%;
 padding:16px;
@@ -68,29 +58,11 @@ border-radius:12px;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
-transition:0.2s;
 }
 
-button:hover{
-transform:scale(1.02);
-}
-
-.calc{
-background:#d4af37;
-color:black;
-}
-
-.copy{
-background:#506a85;
-color:white;
-}
-
-.reset{
-background:#8b2a2a;
-color:white;
-}
-
-/* РЕЗУЛЬТАТ */
+.calc{background:#d4af37;color:black;}
+.copy{background:#506a85;color:white;}
+.reset{background:#8b2a2a;color:white;}
 
 .result{
 background:#05160f;
@@ -98,20 +70,6 @@ padding:18px;
 border-radius:12px;
 margin-top:20px;
 text-align:left;
-}
-
-.green{
-color:#48ff89;
-}
-
-.red{
-color:#ff6b6b;
-}
-
-.footer{
-margin-top:20px;
-font-size:14px;
-opacity:0.8;
 }
 
 </style>
@@ -126,27 +84,27 @@ SENSEI BILLIARD CLUB — Калькулятор игры Колхоз
 <div class="card">
 
 <div class="row">
-<input id="stake" type="number" value="400" placeholder="Ставка за очко">
+<input id="stake" type="number" value="400">
 </div>
 
 <div class="row">
 <input id="n1" placeholder="Игрок 1">
-<input id="s1" type="number" placeholder="Очки">
+<input id="s1" type="number">
 </div>
 
 <div class="row">
 <input id="n2" placeholder="Игрок 2">
-<input id="s2" type="number" placeholder="Очки">
+<input id="s2" type="number">
 </div>
 
 <div class="row">
 <input id="n3" placeholder="Игрок 3">
-<input id="s3" type="number" placeholder="Очки">
+<input id="s3" type="number">
 </div>
 
 <div class="row">
 <input id="n4" placeholder="Игрок 4">
-<input id="s4" type="number" placeholder="Очки">
+<input id="s4" type="number">
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
@@ -155,15 +113,11 @@ SENSEI BILLIARD CLUB — Калькулятор игры Колхоз
 
 <div id="result"></div>
 
-<div class="footer">
-SENSEI BILLIARD CLUB
-</div>
-
 </div>
 
 <script>
 
-function formatMoney(num){
+function format(num){
 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 }
 
@@ -171,103 +125,66 @@ function calc(){
 
 let stake = Number(document.getElementById("stake").value)
 
-let players=[
+let p=[
 {name:n1.value,score:Number(s1.value)},
 {name:n2.value,score:Number(s2.value)},
 {name:n3.value,score:Number(s3.value)},
 {name:n4.value,score:Number(s4.value)}
 ]
 
-players = players.filter(p=>p.name!="")
+p=p.filter(x=>x.name!="")
 
-let diffs=[]
-let results=[]
+let d1=p[0].score-p[1].score
+let d2=p[1].score-p[2].score
+let d3=p[2].score-p[3].score
+let d4=p[3].score-p[0].score
 
-for(let i=0;i<players.length;i++){
-
-let next=(i+1)%players.length
-
-let diff=players[i].score-players[next].score
-
-diffs.push({
-from:players[i].name,
-to:players[next].name,
-value:diff
-})
-
-}
-
-/* вычисляем кто кому платит */
-
-let debts={}
-
-players.forEach(p=>debts[p.name]=0)
-
-diffs.forEach(d=>{
-
-if(d.value>0){
-debts[d.to]-=d.value
-debts[d.from]+=d.value
-}else{
-debts[d.to]+=Math.abs(d.value)
-debts[d.from]-=Math.abs(d.value)
-}
-
-})
-
-let winners=[]
-let losers=[]
-
-for(let name in debts){
-
-if(debts[name]>0){
-winners.push({name:name,val:debts[name]})
-}
-
-if(debts[name]<0){
-losers.push({name:name,val:-debts[name]})
-}
-
-}
+let diffs=[d1,d2,d3,d4]
 
 let payments=[]
 
-losers.forEach(l=>{
+if(d2<0){
 
-winners.forEach(w=>{
+let debt=Math.abs(d2)
 
-if(l.val<=0) return
+if(d1>0){
 
-let pay=Math.min(l.val,w.val)
+let pay=Math.min(d1,debt)
 
-if(pay>0){
+payments.push(`${p[1].name} → ${p[0].name} = ${pay} очков (${format(pay*stake)} тнг)`)
 
-payments.push(
-`${l.name} → ${w.name} = ${pay} очков (${formatMoney(pay*stake)} тнг)`
-)
-
-l.val-=pay
-w.val-=pay
+debt-=pay
 
 }
 
-})
+if(debt>0){
 
-})
+payments.push(`${p[1].name} → ${p[2].name} = ${debt} очков (${format(debt*stake)} тнг)`)
+
+}
+
+}
+
+if(d4<0){
+
+let pay=Math.abs(d4)
+
+payments.push(`${p[3].name} → ${p[2].name} = ${pay} очков (${format(pay*stake)} тнг)`)
+
+}
 
 let html="<div class='result'>"
 
 html+="<b>РАЗНИЦА</b><br>"
 
-diffs.forEach(d=>{
-html+=`${d.from} - ${d.to} = ${d.value}<br>`
-})
+html+=`${p[0].name} - ${p[1].name} = ${d1}<br>`
+html+=`${p[1].name} - ${p[2].name} = ${d2}<br>`
+html+=`${p[2].name} - ${p[3].name} = ${d3}<br>`
+html+=`${p[3].name} - ${p[0].name} = ${d4}<br>`
 
 html+="<br><b>КТО КОМУ ПЛАТИТ</b><br>"
 
-payments.forEach(p=>{
-html+=p+"<br>"
-})
+payments.forEach(x=>html+=x+"<br>")
 
 html+="</div>"
 
@@ -278,9 +195,7 @@ document.getElementById("result").innerHTML=html
 function copyResult(){
 
 let text=document.getElementById("result").innerText
-
 navigator.clipboard.writeText(text)
-
 alert("Результат скопирован")
 
 }
