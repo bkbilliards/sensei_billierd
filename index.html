@@ -12,83 +12,73 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#03170f,#0c3a27);
+background:linear-gradient(180deg,#02160f,#0c3a27);
 color:white;
-text-align:center;
 }
 
 .header{
-background:#04140e;
-padding:22px;
-font-size:22px;
-font-weight:bold;
+text-align:center;
+padding:20px;
+font-size:24px;
 color:#d4af37;
-box-shadow:0 10px 30px rgba(0,0,0,0.6);
+font-weight:bold;
 }
 
 .card{
-max-width:750px;
-margin:30px auto;
-background:#103524;
+max-width:850px;
+margin:auto;
+background:#123524;
 padding:25px;
 border-radius:18px;
-box-shadow:0 15px 40px rgba(0,0,0,0.5);
-}
-
-.sectionTitle{
-margin:20px 0 10px 0;
-font-size:18px;
-opacity:0.9;
 }
 
 .row{
-display:flex;
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
 gap:10px;
 margin-bottom:12px;
 }
 
+.head{
+opacity:0.8;
+}
+
 input{
-flex:1;
 padding:14px;
-border-radius:10px;
 border:none;
-background:#0b251b;
+border-radius:10px;
+background:#0c241a;
 color:white;
 font-size:16px;
+}
+
+.topRow{
+display:grid;
+grid-template-columns:1fr 2fr;
+gap:10px;
+margin-bottom:20px;
 }
 
 button{
 width:100%;
 padding:16px;
-margin-top:12px;
 border:none;
 border-radius:12px;
 font-size:18px;
 font-weight:bold;
+margin-top:12px;
 cursor:pointer;
 }
 
-.calc{
-background:#d4af37;
-color:black;
-}
-
-.copy{
-background:#556e8b;
-color:white;
-}
-
-.reset{
-background:#8c2b2b;
-color:white;
-}
+.calc{background:#d4af37;color:black;}
+.copy{background:#5b6f89;color:white;}
+.reset{background:#8c2a2a;color:white;}
 
 .result{
 background:#05160f;
 padding:18px;
 border-radius:14px;
 margin-top:20px;
-text-align:left;
 }
 
 .green{color:#52ff9a;}
@@ -101,53 +91,44 @@ text-align:left;
 <body>
 
 <div class="header">
-SENSEI BILLIARD CLUB — Калькулятор Колхоз
+КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»
 </div>
 
 <div class="card">
 
-<div class="row">
-<input id="stake" type="number" value="400" placeholder="Ставка">
+<div class="topRow">
+<div>Ставка</div>
+<input id="stake" type="number" value="300">
 </div>
 
-<div class="sectionTitle">1 партия</div>
-
-<div class="row">
-<input id="n1" placeholder="Игрок 1">
-<input id="s1" type="number" placeholder="Очки">
-</div>
-
-<div class="row">
-<input id="n2" placeholder="Игрок 2">
-<input id="s2" type="number" placeholder="Очки">
+<div class="row head">
+<div>Игрок</div>
+<div>П1</div>
+<div>П2</div>
 </div>
 
 <div class="row">
-<input id="n3" placeholder="Игрок 3">
-<input id="s3" type="number" placeholder="Очки">
+<input id="n1" placeholder="Игрок">
+<input id="p1_1" type="number">
+<input id="p2_1" type="number">
 </div>
 
 <div class="row">
-<input id="n4" placeholder="Игрок 4">
-<input id="s4" type="number" placeholder="Очки">
-</div>
-
-<div class="sectionTitle">2 партия (обратка)</div>
-
-<div class="row">
-<input id="r1" type="number" placeholder="Игрок4 очки">
+<input id="n2" placeholder="Игрок">
+<input id="p1_2" type="number">
+<input id="p2_2" type="number">
 </div>
 
 <div class="row">
-<input id="r2" type="number" placeholder="Игрок3 очки">
+<input id="n3" placeholder="Игрок">
+<input id="p1_3" type="number">
+<input id="p2_3" type="number">
 </div>
 
 <div class="row">
-<input id="r3" type="number" placeholder="Игрок2 очки">
-</div>
-
-<div class="row">
-<input id="r4" type="number" placeholder="Игрок1 очки">
+<input id="n4" placeholder="Игрок">
+<input id="p1_4" type="number">
+<input id="p2_4" type="number">
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
@@ -209,27 +190,32 @@ function calc(){
 
 let stake=Number(stake.value)
 
-let names=[n1.value,n2.value,n3.value,n4.value]
-
-let scores=[
-Number(s1.value||0),
-Number(s2.value||0),
-Number(s3.value||0),
-Number(s4.value||0)
+let names=[
+n1.value,
+n2.value,
+n3.value,
+n4.value
 ]
 
-let game1=kolhoz(names,scores)
+let p1=[
+Number(p1_1.value||0),
+Number(p1_2.value||0),
+Number(p1_3.value||0),
+Number(p1_4.value||0)
+]
+
+let p2=[
+Number(p2_4.value||0),
+Number(p2_3.value||0),
+Number(p2_2.value||0),
+Number(p2_1.value||0)
+]
+
+let game1=kolhoz(names,p1)
 
 let reverseNames=[names[3],names[2],names[1],names[0]]
 
-let reverseScores=[
-Number(r1.value||0),
-Number(r2.value||0),
-Number(r3.value||0),
-Number(r4.value||0)
-]
-
-let game2=kolhoz(reverseNames,reverseScores)
+let game2=kolhoz(reverseNames,p2)
 
 let html="<div class='result'>"
 
@@ -239,7 +225,7 @@ game1.forEach(p=>{
 html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br>`
 })
 
-if(reverseScores.some(x=>x>0)){
+if(p2.some(x=>x>0)){
 
 html+="<br><b>2 партия (обратка)</b><br>"
 
@@ -248,11 +234,6 @@ html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br
 })
 
 }
-
-html+="<br><b>Почему такой результат</b><br>"
-html+="Очки сравниваются только со следующим игроком по кругу.<br>"
-html+="Минус игрока распределяется между игроками с плюсом.<br>"
-html+="Во второй партии порядок игроков меняется наоборот."
 
 html+="</div>"
 
