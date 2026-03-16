@@ -1,81 +1,56 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SENSEI — Калькулятор игры Колхоз</title>
+<title>SENSEI — Калькулятор игры «Колхоз»</title>
 
 <style>
-
 body{
-font-family:Arial;
-background:linear-gradient(#071b13,#0d2e1f);
-color:white;
-margin:0;
-text-align:center;
+  font-family:Arial;
+  background:linear-gradient(#071b13,#0d2e1f);
+  color:white;
+  margin:0;
+  text-align:center;
 }
 
 /* HEADER */
-
-.header{
-width:100%;
-background:#08140d;
-}
-
-.headerimg{
-width:100%;
-height:auto;
-display:block;
-}
+.header{width:100%;background:#08140d}
+.headerimg{width:100%;display:block}
 
 /* CARD */
-
 .card{
-background:#123524;
-max-width:850px;
-margin:30px auto;
-padding:25px;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  background:#123524;
+  max-width:900px;
+  margin:25px auto;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
-.row{
-display:flex;
-gap:10px;
-margin-bottom:12px;
-}
-
+.row{display:flex;gap:10px;margin-bottom:12px}
 .name{flex:2}
 .score{flex:1}
 
 input,select{
-width:100%;
-padding:14px;
-border-radius:8px;
-border:none;
-font-size:16px;
-background:#0f261c;
-color:white;
+  width:100%;
+  padding:14px;
+  border-radius:8px;
+  border:none;
+  font-size:16px;
+  background:#0f261c;
+  color:white;
 }
-
-/* BUTTONS */
 
 button{
-width:100%;
-padding:16px;
-border:none;
-border-radius:10px;
-font-size:18px;
-font-weight:bold;
-margin-top:10px;
-cursor:pointer;
-transition:0.2s;
-}
-
-button:hover{
-transform:scale(1.02);
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  font-weight:bold;
+  margin-top:10px;
+  cursor:pointer;
 }
 
 .calc{background:#d4af37;color:black}
@@ -83,58 +58,30 @@ transform:scale(1.02);
 .reset{background:#7a1f1f;color:white}
 
 .result{
-background:#08140d;
-padding:18px;
-border-radius:10px;
-margin-top:20px;
-text-align:left;
+  background:#08140d;
+  padding:18px;
+  border-radius:10px;
+  margin-top:20px;
+  text-align:left;
 }
 
-.section{
-margin-top:15px;
-}
+.section{margin-top:18px}
 
 .green{color:#4cff7c}
 .red{color:#ff6b6b}
 
-/* RULES */
-
-.rules{
-background:#08140d;
-padding:15px;
-margin-top:25px;
-border-radius:10px;
-text-align:left;
-font-size:14px;
-}
-
-.club{
-margin-top:20px;
-font-size:14px;
-opacity:0.9;
-}
-
-.map{
-background:#d4af37;
-color:black;
-font-weight:bold;
-}
-
 footer{
-margin:30px;
-font-size:12px;
-opacity:0.6;
+  margin:30px;
+  font-size:12px;
+  opacity:0.6;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- ШАПКА -->
-
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" class="headerimg">
+<img src="header.png" class="headerimg">
 </div>
 
 <div class="card">
@@ -162,60 +109,36 @@ opacity:0.6;
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ РЕЗУЛЬТАТ</button>
-<button class="reset" onclick="resetAll()">СБРОС</button>
+<button class="reset" onclick="location.reload()">СБРОС</button>
 
 <div id="results"></div>
 
-<div class="club">
-
-<b>SENSEI BILLIARD CLUB</b><br><br>
-
-📍 Каражанова 1А<br>
-Каскелен
-
 </div>
 
-<button class="map" onclick="openMap()">ОТКРЫТЬ В КАРТЕ</button>
-
-<div class="rules">
-
-<b>Очки шаров</b><br><br>
-
-⚪ Белый — 2 очка<br>
-🔴 Красный — 4 очка (3 шара)<br>
-🔵 Синий — 6 очков<br>
-🟢 Зеленый — 8 очков<br>
-⚫ Черный — 10 очков<br>
-
-</div>
-
-</div>
-
-<footer>
-SENSEI BILLIARD CLUB ©
-</footer>
+<footer>SENSEI BILLIARD CLUB ©</footer>
 
 <script>
+
+/* создаем строки игроков */
 
 let container=document.getElementById("players")
 
 for(let i=0;i<4;i++){
-
 container.innerHTML+=`
-
 <div class="row">
 <input class="name" id="name${i}" placeholder="Игрок">
 <input class="score" id="p1_${i}" type="number">
 <input class="score" id="p2_${i}" type="number">
-</div>
-
-`
-
+</div>`
 }
+
+/* формат денег */
 
 function formatMoney(num){
 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 }
+
+/* основной расчет */
 
 function calc(){
 
@@ -227,89 +150,105 @@ let players=[]
 for(let i=0;i<4;i++){
 
 let name=document.getElementById("name"+i).value
-
-if(name!=""){
-
 let p1=parseInt(document.getElementById("p1_"+i).value)||0
 let p2=parseInt(document.getElementById("p2_"+i).value)||0
 
+if(name!=""){
 players.push({
 name:name,
 score:p1+p2,
-money:0
+balance:0
 })
-
 }
 
 }
 
 let html="<div class='result'>"
 
+/* показываем очки */
+
 html+="<div class='section'><b>ШАРЫ</b><br>"
-
-players.forEach(p=>{
-html+=p.name+" — "+p.score+"<br>"
-})
-
+players.forEach(p=>html+=p.name+" — "+p.score+"<br>")
 html+="</div>"
 
-/* КОЛХОЗ */
+/* режим колхоз */
 
 if(mode==="kolhoz"){
 
-let payments=[]
-let differences=[]
+let diffList=[]
 
 for(let i=0;i<players.length;i++){
 
-let next=(i+1)%players.length
+let prev=(i-1+players.length)%players.length
 
-let diff=players[i].score-players[next].score
-let money=Math.abs(diff)*stake
+let diff=players[i].score-players[prev].score
 
-differences.push(players[i].name+" → "+players[next].name+" = "+diff+" очков")
+diffList.push(players[i].name+" → "+players[prev].name+" = "+diff+" очков")
 
-if(diff>0){
-
-players[i].money+=money
-players[next].money-=money
-
-payments.push(players[next].name+" → "+players[i].name+" = "+formatMoney(money)+" тенге")
+players[i].balance+=diff
+players[prev].balance-=diff
 
 }
 
-if(diff<0){
-
-players[i].money-=money
-players[next].money+=money
-
-payments.push(players[i].name+" → "+players[next].name+" = "+formatMoney(money)+" тенге")
-
-}
-
-}
+/* вывод разницы */
 
 html+="<div class='section'><b>РАЗНИЦА</b><br>"
+diffList.forEach(d=>html+=d+"<br>")
+html+="</div>"
 
-differences.forEach(d=>{
-html+=d+"<br>"
+/* баланс */
+
+html+="<div class='section'><b>БАЛАНС</b><br>"
+
+players.forEach(p=>{
+if(p.balance>0){
+html+=`<span class="green">${p.name} +${p.balance}</span><br>`
+}else if(p.balance<0){
+html+=`<span class="red">${p.name} ${p.balance}</span><br>`
+}else{
+html+=`${p.name} 0<br>`
+}
 })
 
 html+="</div>"
+
+/* чистые выплаты */
+
+let payers=players.filter(p=>p.balance<0)
+let winners=players.filter(p=>p.balance>0)
 
 html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
 
-payments.forEach(p=>{
-html+=p+"<br>"
+payers.forEach(p=>{
+
+let debt=Math.abs(p.balance)
+
+winners.forEach(w=>{
+
+if(debt>0 && w.balance>0){
+
+let pay=Math.min(debt,w.balance)
+
+let money=pay*stake
+
+html+=`${p.name} → ${w.name} = ${pay} очков (${formatMoney(money)} тенге)<br>`
+
+debt-=pay
+w.balance-=pay
+
+}
+
+})
+
 })
 
 html+="</div>"
 
 }
 
-/* 2x2 */
+/* режим 2×2 */
 
-if(mode==="team"){
+if(mode==="team" && players.length===4){
 
 let teamA=players[0].score+players[2].score
 let teamB=players[1].score+players[3].score
@@ -318,28 +257,16 @@ let diff=Math.abs(teamA-teamB)
 let money=diff*stake
 
 html+="<div class='section'><b>КОМАНДЫ</b><br>"
-
 html+=players[0].name+" + "+players[2].name+" = "+teamA+"<br>"
 html+=players[1].name+" + "+players[3].name+" = "+teamB+"<br>"
-
 html+="</div>"
 
-html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" очков</div>"
-
-html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
+html+="<div class='section'><b>ИТОГ</b><br>"
 
 if(teamA>teamB){
-
-html+=players[1].name+" и "+players[3].name+
-" → "+players[0].name+" и "+players[2].name+
-" = "+formatMoney(money)+" тенге"
-
+html+=players[1].name+" и "+players[3].name+" → "+players[0].name+" и "+players[2].name+" = "+formatMoney(money)+" тенге"
 }else{
-
-html+=players[0].name+" и "+players[2].name+
-" → "+players[1].name+" и "+players[3].name+
-" = "+formatMoney(money)+" тенге"
-
+html+=players[0].name+" и "+players[2].name+" → "+players[1].name+" и "+players[3].name+" = "+formatMoney(money)+" тенге"
 }
 
 html+="</div>"
@@ -352,21 +279,12 @@ document.getElementById("results").innerHTML=html
 
 }
 
-function copyResult(){
+/* копирование */
 
+function copyResult(){
 let text=document.getElementById("results").innerText
 navigator.clipboard.writeText(text)
-
 alert("Результат скопирован")
-
-}
-
-function resetAll(){
-location.reload()
-}
-
-function openMap(){
-window.open("https://2gis.kz/almaty/firm/70000001101734090")
 }
 
 </script>
