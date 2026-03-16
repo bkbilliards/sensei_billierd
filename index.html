@@ -180,86 +180,94 @@ let players=[
 
 players = players.filter(p=>p.name!="")
 
-let balance={}
-players.forEach(p=>balance[p.name]=0)
-
 let diffs=[]
+let results=[]
 
 for(let i=0;i<players.length;i++){
 
-let current=players[i]
-let next=players[(i+1)%players.length]
+let next=(i+1)%players.length
 
-let diff=current.score-next.score
+let diff=players[i].score-players[next].score
 
-diffs.push(`${current.name} ${current.score} - ${next.name} ${next.score} = ${diff}`)
-
-balance[current.name]+=diff
-balance[next.name]-=diff
+diffs.push({
+from:players[i].name,
+to:players[next].name,
+value:diff
+})
 
 }
 
-let positive=[]
-let negative=[]
+/* вычисляем кто кому платит */
 
-for(let name in balance){
+let debts={}
 
-if(balance[name]>0){
-positive.push({name:name,value:balance[name]})
+players.forEach(p=>debts[p.name]=0)
+
+diffs.forEach(d=>{
+
+if(d.value>0){
+debts[d.to]-=d.value
+debts[d.from]+=d.value
+}else{
+debts[d.to]+=Math.abs(d.value)
+debts[d.from]-=Math.abs(d.value)
 }
 
-if(balance[name]<0){
-negative.push({name:name,value:Math.abs(balance[name])})
+})
+
+let winners=[]
+let losers=[]
+
+for(let name in debts){
+
+if(debts[name]>0){
+winners.push({name:name,val:debts[name]})
+}
+
+if(debts[name]<0){
+losers.push({name:name,val:-debts[name]})
 }
 
 }
 
 let payments=[]
 
-for(let n of negative){
+losers.forEach(l=>{
 
-for(let p of positive){
+winners.forEach(w=>{
 
-if(n.value==0) break
+if(l.val<=0) return
 
-let pay=Math.min(n.value,p.value)
+let pay=Math.min(l.val,w.val)
 
-payments.push(`${n.name} → ${p.name} = ${pay} очков (${formatMoney(pay*stake)} тнг)`)
+if(pay>0){
 
-n.value-=pay
-p.value-=pay
+payments.push(
+`${l.name} → ${w.name} = ${pay} очков (${formatMoney(pay*stake)} тнг)`
+)
+
+l.val-=pay
+w.val-=pay
 
 }
 
-}
+})
+
+})
 
 let html="<div class='result'>"
 
 html+="<b>РАЗНИЦА</b><br>"
 
-diffs.forEach(d=>html+=d+"<br>")
-
-html+="<br><b>БАЛАНС</b><br>"
-
-for(let name in balance){
-
-let val=balance[name]
-
-if(val>0){
-html+=`<div class="green">${name} +${val}</div>`
-}
-else if(val<0){
-html+=`<div class="red">${name} ${val}</div>`
-}
-else{
-html+=`${name} 0<br>`
-}
-
-}
+diffs.forEach(d=>{
+html+=`${d.from} - ${d.to} = ${d.value}<br>`
+})
 
 html+="<br><b>КТО КОМУ ПЛАТИТ</b><br>"
 
-payments.forEach(p=>html+=p+"<br>")
+payments.forEach(p=>{
+html+=p+"<br>"
+})
 
 html+="</div>"
 
