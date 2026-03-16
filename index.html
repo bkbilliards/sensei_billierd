@@ -5,25 +5,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI Kolhoz Calculator</title>
+<title>SENSEI — Калькулятор игры «Колхоз»</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:linear-gradient(180deg,#071b13,#0d2e1f);
+background:linear-gradient(#071b13,#0d2e1f);
 color:white;
 margin:0;
-padding:0;
 text-align:center;
 }
 
+/* HEADER */
+
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#08140d;
+padding:10px 20px;
+box-shadow:0 4px 20px rgba(0,0,0,0.6);
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo img{
+height:50px;
+}
+
+.title{
+font-size:22px;
+color:#d4af37;
+font-weight:bold;
+}
+
+.balls{
+display:flex;
+gap:6px;
+}
+
+.ball{
+width:20px;
+height:20px;
+border-radius:50%;
+}
+
+.white{background:#ffffff}
+.red{background:#ff0000}
+.blue{background:#004cff}
+.green{background:#0aff5a}
+.black{background:#000000}
+.yellow{background:#ffd000}
+
+/* CARD */
+
 .card{
 background:#123524;
+max-width:800px;
+margin:25px auto;
 padding:25px;
 border-radius:14px;
-max-width:750px;
-margin:30px auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 .row{
@@ -35,7 +82,7 @@ margin-bottom:10px;
 .name{flex:2}
 .score{flex:1}
 
-input{
+input,select{
 width:100%;
 padding:12px;
 border-radius:8px;
@@ -44,6 +91,8 @@ font-size:16px;
 background:#0f261c;
 color:white;
 }
+
+/* BUTTONS */
 
 button{
 width:100%;
@@ -54,6 +103,11 @@ font-size:18px;
 font-weight:bold;
 margin-top:10px;
 cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.02);
 }
 
 .calc{background:#d4af37;color:black}
@@ -63,16 +117,45 @@ cursor:pointer;
 .result{
 background:#08140d;
 padding:15px;
-border-radius:8px;
-margin-top:15px;
+border-radius:10px;
+margin-top:20px;
 text-align:left;
+}
+
+.section{
+margin-top:15px;
 }
 
 .green{color:#4cff7c}
 .red{color:#ff6b6b}
 
-.section{
-margin-top:15px;
+/* RULES */
+
+.rules{
+background:#08140d;
+padding:15px;
+margin-top:25px;
+border-radius:10px;
+text-align:left;
+font-size:14px;
+}
+
+.club{
+margin-top:20px;
+font-size:14px;
+opacity:0.9;
+}
+
+.map{
+background:#d4af37;
+color:black;
+font-weight:bold;
+}
+
+footer{
+margin:30px;
+font-size:12px;
+opacity:0.6;
 }
 
 </style>
@@ -80,9 +163,39 @@ margin-top:15px;
 
 <body>
 
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="logo">
+<img src="logo.png">
+<div class="title">КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»</div>
+</div>
+
+<div class="balls">
+
+<div class="ball white"></div>
+<div class="ball red"></div>
+<div class="ball red"></div>
+<div class="ball red"></div>
+<div class="ball blue"></div>
+<div class="ball yellow"></div>
+<div class="ball green"></div>
+<div class="ball black"></div>
+
+</div>
+
+</div>
+
 <div class="card">
 
-<h2>SENSEI KOLHOZ CALCULATOR</h2>
+<div class="row">
+<div style="flex:2">Режим игры</div>
+<select id="mode">
+<option value="kolhoz">Колхоз</option>
+<option value="team">2 × 2</option>
+</select>
+</div>
 
 <div class="row">
 <div style="flex:2">Ставка за шар</div>
@@ -91,18 +204,46 @@ margin-top:15px;
 
 <div class="row">
 <div class="name">Игрок</div>
-<div class="score">Очки</div>
+<div class="score">П1</div>
+<div class="score">П2</div>
 </div>
 
 <div id="players"></div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ В WHATSAPP</button>
-<button class="reset" onclick="resetAll()">СБРОС</button>
+<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ РЕЗУЛЬТАТ</button>
+<button class="reset" onclick="location.reload()">СБРОС</button>
 
 <div id="results"></div>
 
+<div class="club">
+
+<b>SENSEI BILLIARD CLUB</b><br><br>
+
+📍 Каражанова 1А<br>
+Каскелен
+
 </div>
+
+<button class="map" onclick="openMap()">ОТКРЫТЬ В КАРТЕ</button>
+
+<div class="rules">
+
+<b>Очки шаров</b><br><br>
+
+⚪ Белый — 2<br>
+🔴 Красный — 4 (3 шара)<br>
+🔵 Синий — 6<br>
+🟢 Зеленый — 8<br>
+⚫ Черный — 10<br>
+
+</div>
+
+</div>
+
+<footer>
+SENSEI BILLIARD CLUB ©
+</footer>
 
 <script>
 
@@ -114,7 +255,8 @@ container.innerHTML+=`
 
 <div class="row">
 <input class="name" id="name${i}" placeholder="Игрок">
-<input class="score" id="score${i}" type="number">
+<input class="score" id="p1_${i}" type="number">
+<input class="score" id="p2_${i}" type="number">
 </div>
 
 `
@@ -127,45 +269,29 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
+let mode=document.getElementById("mode").value
 let stake=parseInt(document.getElementById("stake").value)||0
 
 let players=[]
 
 for(let i=0;i<4;i++){
 
+let name=document.getElementById("name"+i).value
+
+if(name!=""){
+
+let p1=parseInt(document.getElementById("p1_"+i).value)||0
+let p2=parseInt(document.getElementById("p2_"+i).value)||0
+
 players.push({
-name:document.getElementById("name"+i).value,
-score:parseInt(document.getElementById("score"+i).value)||0
+name:name,
+score:p1+p2,
+money:0
 })
 
 }
 
-/* ПАРТИЯ 1 */
-
-let p1=[
-players[0].score - players[1].score,
-players[1].score - players[2].score,
-players[2].score - players[3].score,
-players[3].score - players[0].score
-]
-
-/* ПАРТИЯ 2 ОБРАТКА */
-
-let p2=[
-players[3].score - players[2].score,
-players[2].score - players[1].score,
-players[1].score - players[0].score,
-players[0].score - players[3].score
-]
-
-/* СУММА */
-
-let balance=[
-p1[0]+p2[3],
-p1[1]+p2[2],
-p1[2]+p2[1],
-p1[3]+p2[0]
-]
+}
 
 let html="<div class='result'>"
 
@@ -177,64 +303,86 @@ html+=p.name+" — "+p.score+"<br>"
 
 html+="</div>"
 
-html+="<div class='section'><b>РАЗНИЦА</b><br>"
-
-balance.forEach((b,i)=>{
-
-if(b>0)
-html+=`<div class="green">${players[i].name} +${b} очков</div>`
-
-if(b<0)
-html+=`<div class="red">${players[i].name} ${b} очков</div>`
-
-})
-
-html+="</div>"
-
-/* ЧИСТЫЙ РАСЧЕТ */
-
-let positives=[]
-let negatives=[]
-
-balance.forEach((b,i)=>{
-
-if(b>0) positives.push({name:players[i].name,val:b})
-if(b<0) negatives.push({name:players[i].name,val:b})
-
-})
+if(mode==="kolhoz"){
 
 let payments=[]
+let differences=[]
 
-positives.forEach(pos=>{
+for(let i=0;i<players.length;i++){
 
-negatives.forEach(neg=>{
+let next=(i+1)%players.length
 
-if(pos.val>0 && neg.val<0){
+let diff=players[i].score-players[next].score
+let money=Math.abs(diff)*stake
 
-let pay=Math.min(pos.val,Math.abs(neg.val))
+differences.push(players[i].name+" vs "+players[next].name+" = "+diff+" очков")
 
-pos.val-=pay
-neg.val+=pay
+if(diff>0){
 
-payments.push({
-from:neg.name,
-to:pos.name,
-points:pay
-})
+players[i].money+=money
+players[next].money-=money
+
+payments.push(players[next].name+" → "+players[i].name+" = "+formatMoney(money)+" тенге")
 
 }
 
-})
+if(diff<0){
 
-})
+players[i].money-=money
+players[next].money+=money
 
-html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
+payments.push(players[i].name+" → "+players[next].name+" = "+formatMoney(money)+" тенге")
 
-payments.forEach(p=>{
-html+=`${p.from} → ${p.to} = ${p.points} очков (${formatMoney(p.points*stake)} тенге)<br>`
+}
+
+}
+
+html+="<div class='section'><b>РАЗНИЦА ШАРОВ</b><br>"
+
+differences.forEach(d=>{
+html+=d+"<br>"
 })
 
 html+="</div>"
+
+}
+
+if(mode==="team"){
+
+let teamA=players[0].score+players[2].score
+let teamB=players[1].score+players[3].score
+
+let diff=Math.abs(teamA-teamB)
+let money=diff*stake
+
+html+="<div class='section'><b>КОМАНДЫ</b><br>"
+
+html+=players[0].name+" + "+players[2].name+" = "+teamA+"<br>"
+html+=players[1].name+" + "+players[3].name+" = "+teamB+"<br>"
+
+html+="</div>"
+
+html+="<div class='section'><b>РАЗНИЦА</b><br>"+diff+" очков</div>"
+
+html+="<div class='section'><b>КТО КОМУ ПЛАТИТ</b><br>"
+
+if(teamA>teamB){
+
+html+=players[1].name+" и "+players[3].name+
+" → "+players[0].name+" и "+players[2].name+
+" = "+formatMoney(money)+" тенге"
+
+}else{
+
+html+=players[0].name+" и "+players[2].name+
+" → "+players[1].name+" и "+players[3].name+
+" = "+formatMoney(money)+" тенге"
+
+}
+
+html+="</div>"
+
+}
 
 html+="</div>"
 
@@ -245,14 +393,15 @@ document.getElementById("results").innerHTML=html
 function copyResult(){
 
 let text=document.getElementById("results").innerText
+
 navigator.clipboard.writeText(text)
 
 alert("Результат скопирован")
 
 }
 
-function resetAll(){
-location.reload()
+function openMap(){
+window.open("https://2gis.kz/almaty/firm/70000001101734090")
 }
 
 </script>
