@@ -5,32 +5,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз PRO</title>
+<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:linear-gradient(180deg,#041c13,#0a3524);
+font-family:Arial;
+background:linear-gradient(180deg,#03170f,#0c3a27);
 color:white;
 text-align:center;
 }
 
 .header{
-background:#05160f;
-padding:20px;
+background:#04140e;
+padding:22px;
 font-size:22px;
 font-weight:bold;
 color:#d4af37;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
 .card{
-background:#123524;
-max-width:800px;
+max-width:750px;
 margin:30px auto;
+background:#103524;
 padding:25px;
-border-radius:16px;
+border-radius:18px;
+box-shadow:0 15px 40px rgba(0,0,0,0.5);
+}
+
+.sectionTitle{
+margin:20px 0 10px 0;
+font-size:18px;
+opacity:0.9;
 }
 
 .row{
@@ -44,9 +52,9 @@ flex:1;
 padding:14px;
 border-radius:10px;
 border:none;
-font-size:16px;
-background:#0e241a;
+background:#0b251b;
 color:white;
+font-size:16px;
 }
 
 button{
@@ -60,75 +68,86 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.calc{background:#d4af37;color:black;}
-.copy{background:#506a85;color:white;}
-.reset{background:#8b2a2a;color:white;}
+.calc{
+background:#d4af37;
+color:black;
+}
+
+.copy{
+background:#556e8b;
+color:white;
+}
+
+.reset{
+background:#8c2b2b;
+color:white;
+}
 
 .result{
 background:#05160f;
 padding:18px;
-border-radius:12px;
+border-radius:14px;
 margin-top:20px;
 text-align:left;
 }
 
-.section{
-margin-top:20px;
-}
+.green{color:#52ff9a;}
+.red{color:#ff6b6b;}
 
 </style>
+
 </head>
 
 <body>
 
 <div class="header">
-SENSEI BILLIARD CLUB — Калькулятор Колхоз PRO
+SENSEI BILLIARD CLUB — Калькулятор Колхоз
 </div>
 
 <div class="card">
 
 <div class="row">
-<input id="stake" type="number" value="400" placeholder="Ставка за очко">
+<input id="stake" type="number" value="400" placeholder="Ставка">
 </div>
 
-<h3>1 партия</h3>
+<div class="sectionTitle">1 партия</div>
 
 <div class="row">
 <input id="n1" placeholder="Игрок 1">
-<input id="p1_1" type="number" placeholder="Очки">
+<input id="s1" type="number" placeholder="Очки">
 </div>
 
 <div class="row">
 <input id="n2" placeholder="Игрок 2">
-<input id="p1_2" type="number" placeholder="Очки">
+<input id="s2" type="number" placeholder="Очки">
 </div>
 
 <div class="row">
 <input id="n3" placeholder="Игрок 3">
-<input id="p1_3" type="number" placeholder="Очки">
+<input id="s3" type="number" placeholder="Очки">
 </div>
 
 <div class="row">
 <input id="n4" placeholder="Игрок 4">
-<input id="p1_4" type="number" placeholder="Очки">
+<input id="s4" type="number" placeholder="Очки">
 </div>
 
-<h3>2 партия (обратка)</h3>
+<div class="sectionTitle">2 партия (обратка)</div>
 
 <div class="row">
-<input type="number" id="p2_4" placeholder="Игрок4">
-</div>
-
-<div class="row">
-<input type="number" id="p2_3" placeholder="Игрок3">
+<input id="r1" type="number" placeholder="Игрок4 очки">
 </div>
 
 <div class="row">
-<input type="number" id="p2_2" placeholder="Игрок2">
+<input id="r2" type="number" placeholder="Игрок3 очки">
 </div>
 
 <div class="row">
-<input type="number" id="p2_1" placeholder="Игрок1">
+<input id="r3" type="number" placeholder="Игрок2 очки">
+</div>
+
+<div class="row">
+<input id="r4" type="number" placeholder="Игрок1 очки">
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
@@ -141,11 +160,11 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз PRO
 
 <script>
 
-function format(num){
-return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
+function money(x){
+return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 }
 
-function kolhoz(scores,names){
+function kolhoz(names,scores){
 
 let d1=scores[0]-scores[1]
 let d2=scores[1]-scores[2]
@@ -162,11 +181,7 @@ if(d1>0){
 
 let pay=Math.min(d1,debt)
 
-payments.push({
-from:names[1],
-to:names[0],
-value:pay
-})
+payments.push([names[1],names[0],pay])
 
 debt-=pay
 
@@ -174,11 +189,7 @@ debt-=pay
 
 if(debt>0){
 
-payments.push({
-from:names[1],
-to:names[2],
-value:debt
-})
+payments.push([names[1],names[2],debt])
 
 }
 
@@ -186,18 +197,11 @@ value:debt
 
 if(d4<0){
 
-payments.push({
-from:names[3],
-to:names[2],
-value:Math.abs(d4)
-})
+payments.push([names[3],names[2],Math.abs(d4)])
 
 }
 
-return {
-diffs:[d1,d2,d3,d4],
-payments:payments
-}
+return payments
 
 }
 
@@ -205,67 +209,50 @@ function calc(){
 
 let stake=Number(stake.value)
 
-let names=[
-n1.value,
-n2.value,
-n3.value,
-n4.value
+let names=[n1.value,n2.value,n3.value,n4.value]
+
+let scores=[
+Number(s1.value||0),
+Number(s2.value||0),
+Number(s3.value||0),
+Number(s4.value||0)
 ]
 
-let p1=[
-Number(p1_1.value),
-Number(p1_2.value),
-Number(p1_3.value),
-Number(p1_4.value)
-]
-
-let p2=[
-Number(p2_1.value),
-Number(p2_2.value),
-Number(p2_3.value),
-Number(p2_4.value)
-]
-
-let res1=kolhoz(p1,names)
+let game1=kolhoz(names,scores)
 
 let reverseNames=[names[3],names[2],names[1],names[0]]
-let reverseScores=[p2[3],p2[2],p2[1],p2[0]]
 
-let res2=kolhoz(reverseScores,reverseNames)
+let reverseScores=[
+Number(r1.value||0),
+Number(r2.value||0),
+Number(r3.value||0),
+Number(r4.value||0)
+]
 
-let payments=[...res1.payments,...res2.payments]
+let game2=kolhoz(reverseNames,reverseScores)
 
 let html="<div class='result'>"
 
 html+="<b>1 партия</b><br>"
 
-res1.payments.forEach(p=>{
-html+=`${p.from} → ${p.to} = ${p.value} очков (${format(p.value*stake)} тнг)<br>`
+game1.forEach(p=>{
+html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br>`
 })
 
-html+="<div class='section'><b>2 партия (обратка)</b><br>"
+if(reverseScores.some(x=>x>0)){
 
-res2.payments.forEach(p=>{
-html+=`${p.from} → ${p.to} = ${p.value} очков (${format(p.value*stake)} тнг)<br>`
+html+="<br><b>2 партия (обратка)</b><br>"
+
+game2.forEach(p=>{
+html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br>`
 })
 
-html+="</div>"
+}
 
-html+="<div class='section'><b>ИТОГ</b><br>"
-
-payments.forEach(p=>{
-html+=`${p.from} → ${p.to} = ${p.value} очков (${format(p.value*stake)} тнг)<br>`
-})
-
-html+="</div>"
-
-html+="<div class='section'><b>Почему такой результат</b><br>"
-
-html+="Очки считаются по кругу игроков.<br>"
-html+="Игрок сравнивается только со следующим игроком.<br>"
-html+="Минусовые результаты распределяются между игроками с плюсом.<br>"
-html+="Во второй партии порядок меняется (обратка).<br>"
-html+="После этого суммируются обе партии.</div>"
+html+="<br><b>Почему такой результат</b><br>"
+html+="Очки сравниваются только со следующим игроком по кругу.<br>"
+html+="Минус игрока распределяется между игроками с плюсом.<br>"
+html+="Во второй партии порядок игроков меняется наоборот."
 
 html+="</div>"
 
