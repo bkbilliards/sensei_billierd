@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
+
 <style>
 
 body{
@@ -18,7 +21,7 @@ text-align:center;
 
 .header{
 background:#05160f;
-padding:18px;
+padding:20px;
 font-size:22px;
 font-weight:bold;
 color:#d4af37;
@@ -50,6 +53,8 @@ padding:14px;
 border-radius:10px;
 border:none;
 font-size:16px;
+background:#0e241a;
+color:white;
 }
 
 /* КНОПКИ */
@@ -63,6 +68,11 @@ border-radius:12px;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.02);
 }
 
 .calc{
@@ -106,39 +116,51 @@ opacity:0.8;
 
 </style>
 </head>
+
 <body>
+
 <div class="header">
 SENSEI BILLIARD CLUB — Калькулятор игры Колхоз
 </div>
+
 <div class="card">
+
 <div class="row">
 <input id="stake" type="number" value="400" placeholder="Ставка за очко">
 </div>
+
 <div class="row">
 <input id="n1" placeholder="Игрок 1">
 <input id="s1" type="number" placeholder="Очки">
 </div>
+
 <div class="row">
 <input id="n2" placeholder="Игрок 2">
 <input id="s2" type="number" placeholder="Очки">
 </div>
+
 <div class="row">
 <input id="n3" placeholder="Игрок 3">
 <input id="s3" type="number" placeholder="Очки">
 </div>
+
 <div class="row">
 <input id="n4" placeholder="Игрок 4">
 <input id="s4" type="number" placeholder="Очки">
 </div>
-ПОДСЧИТАТЬ
-СКОПИРОВАТЬ РЕЗУЛЬТАТ
-СБРОС
-  <div id="result"></div>
+
+<button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
+<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ РЕЗУЛЬТАТ</button>
+<button class="reset" onclick="location.reload()">СБРОС</button>
+
+<div id="result"></div>
+
 <div class="footer">
 SENSEI BILLIARD CLUB
 </div>
+
 </div>
-</div>
+
 <script>
 
 function formatMoney(num){
@@ -256,6 +278,6 @@ alert("Результат скопирован")
 }
 
 </script>
+
 </body>
 </html>
-:::
