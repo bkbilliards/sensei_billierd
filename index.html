@@ -5,26 +5,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
+<title>Калькулятор игры Колхоз</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#02160f,#0c3a27);
+background:linear-gradient(180deg,#02140e,#0a3a27);
 color:white;
 }
 
 .header{
 text-align:center;
-padding:20px;
-font-size:24px;
+padding:25px;
+font-size:26px;
 color:#d4af37;
 font-weight:bold;
 }
 
-.card{
+.container{
 max-width:850px;
 margin:auto;
 background:#123524;
@@ -32,31 +32,35 @@ padding:25px;
 border-radius:18px;
 }
 
-.row{
+.grid{
 display:grid;
 grid-template-columns:2fr 1fr 1fr;
 gap:10px;
 margin-bottom:12px;
 }
 
-.head{
+.label{
 opacity:0.8;
+font-size:15px;
 }
 
 input{
+width:100%;
 padding:14px;
 border:none;
 border-radius:10px;
-background:#0c241a;
+background:#0b2419;
 color:white;
 font-size:16px;
+box-sizing:border-box;
 }
 
-.topRow{
+.top{
 display:grid;
 grid-template-columns:1fr 2fr;
 gap:10px;
 margin-bottom:20px;
+align-items:center;
 }
 
 button{
@@ -71,18 +75,16 @@ cursor:pointer;
 }
 
 .calc{background:#d4af37;color:black;}
-.copy{background:#5b6f89;color:white;}
-.reset{background:#8c2a2a;color:white;}
+.copy{background:#5c6f8c;color:white;}
+.reset{background:#8c2b2b;color:white;}
 
 .result{
 background:#05160f;
-padding:18px;
+padding:20px;
 border-radius:14px;
 margin-top:20px;
+line-height:1.6;
 }
-
-.green{color:#52ff9a;}
-.red{color:#ff6b6b;}
 
 </style>
 
@@ -94,38 +96,38 @@ margin-top:20px;
 КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»
 </div>
 
-<div class="card">
+<div class="container">
 
-<div class="topRow">
-<div>Ставка</div>
-<input id="stake" type="number" value="300">
+<div class="top">
+<div>Ставка за шар</div>
+<input id="stake" value="300" type="number">
 </div>
 
-<div class="row head">
+<div class="grid label">
 <div>Игрок</div>
 <div>П1</div>
 <div>П2</div>
 </div>
 
-<div class="row">
+<div class="grid">
 <input id="n1" placeholder="Игрок">
 <input id="p1_1" type="number">
 <input id="p2_1" type="number">
 </div>
 
-<div class="row">
+<div class="grid">
 <input id="n2" placeholder="Игрок">
 <input id="p1_2" type="number">
 <input id="p2_2" type="number">
 </div>
 
-<div class="row">
+<div class="grid">
 <input id="n3" placeholder="Игрок">
 <input id="p1_3" type="number">
 <input id="p2_3" type="number">
 </div>
 
-<div class="row">
+<div class="grid">
 <input id="n4" placeholder="Игрок">
 <input id="p1_4" type="number">
 <input id="p2_4" type="number">
@@ -188,34 +190,34 @@ return payments
 
 function calc(){
 
-let stake=Number(stake.value)
+let stake = Number(document.getElementById("stake").value)
 
 let names=[
-n1.value,
-n2.value,
-n3.value,
-n4.value
+document.getElementById("n1").value,
+document.getElementById("n2").value,
+document.getElementById("n3").value,
+document.getElementById("n4").value
 ]
 
 let p1=[
-Number(p1_1.value||0),
-Number(p1_2.value||0),
-Number(p1_3.value||0),
-Number(p1_4.value||0)
+Number(document.getElementById("p1_1").value||0),
+Number(document.getElementById("p1_2").value||0),
+Number(document.getElementById("p1_3").value||0),
+Number(document.getElementById("p1_4").value||0)
 ]
 
 let p2=[
-Number(p2_4.value||0),
-Number(p2_3.value||0),
-Number(p2_2.value||0),
-Number(p2_1.value||0)
+Number(document.getElementById("p2_4").value||0),
+Number(document.getElementById("p2_3").value||0),
+Number(document.getElementById("p2_2").value||0),
+Number(document.getElementById("p2_1").value||0)
 ]
 
-let game1=kolhoz(names,p1)
+let game1 = kolhoz(names,p1)
 
 let reverseNames=[names[3],names[2],names[1],names[0]]
 
-let game2=kolhoz(reverseNames,p2)
+let game2 = kolhoz(reverseNames,p2)
 
 let html="<div class='result'>"
 
@@ -237,13 +239,15 @@ html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br
 
 html+="</div>"
 
-result.innerHTML=html
+document.getElementById("result").innerHTML=html
 
 }
 
 function copyResult(){
 
-navigator.clipboard.writeText(result.innerText)
+let text=document.getElementById("result").innerText
+
+navigator.clipboard.writeText(text)
 
 alert("Результат скопирован")
 
