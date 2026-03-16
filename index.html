@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Калькулятор игры Колхоз</title>
+<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
 
 <style>
 
@@ -16,10 +16,15 @@ background:linear-gradient(180deg,#02140e,#0a3a27);
 color:white;
 }
 
+.banner{
+width:100%;
+display:block;
+}
+
 .header{
 text-align:center;
-padding:25px;
-font-size:26px;
+padding:20px;
+font-size:24px;
 color:#d4af37;
 font-weight:bold;
 }
@@ -41,7 +46,6 @@ margin-bottom:12px;
 
 .label{
 opacity:0.8;
-font-size:15px;
 }
 
 input{
@@ -77,6 +81,7 @@ cursor:pointer;
 .calc{background:#d4af37;color:black;}
 .copy{background:#5c6f8c;color:white;}
 .reset{background:#8c2b2b;color:white;}
+.map{background:#1f7a5c;color:white;}
 
 .result{
 background:#05160f;
@@ -86,11 +91,16 @@ margin-top:20px;
 line-height:1.6;
 }
 
+.green{color:#4cff9a;}
+.red{color:#ff6b6b;}
+
 </style>
 
 </head>
 
 <body>
+
+<img class="banner" src="banner.jpg">
 
 <div class="header">
 КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»
@@ -100,7 +110,7 @@ line-height:1.6;
 
 <div class="top">
 <div>Ставка за шар</div>
-<input id="stake" value="300" type="number">
+<input id="stake" value="400" type="number">
 </div>
 
 <div class="grid label">
@@ -138,6 +148,11 @@ line-height:1.6;
 <button class="reset" onclick="location.reload()">СБРОС</button>
 
 <div id="result"></div>
+
+<button class="map"
+onclick="window.open('https://2gis.kz/almaty/geo/70000001101734090')">
+ОТКРЫТЬ КАРТУ SENSEI
+</button>
 
 </div>
 
@@ -184,7 +199,9 @@ payments.push([names[3],names[2],Math.abs(d4)])
 
 }
 
-return payments
+return {
+d1,d2,d3,d4,payments
+}
 
 }
 
@@ -193,49 +210,65 @@ function calc(){
 let stake = Number(document.getElementById("stake").value)
 
 let names=[
-document.getElementById("n1").value,
-document.getElementById("n2").value,
-document.getElementById("n3").value,
-document.getElementById("n4").value
+n1.value,
+n2.value,
+n3.value,
+n4.value
 ]
 
 let p1=[
-Number(document.getElementById("p1_1").value||0),
-Number(document.getElementById("p1_2").value||0),
-Number(document.getElementById("p1_3").value||0),
-Number(document.getElementById("p1_4").value||0)
+Number(p1_1.value||0),
+Number(p1_2.value||0),
+Number(p1_3.value||0),
+Number(p1_4.value||0)
 ]
 
-let p2=[
-Number(document.getElementById("p2_4").value||0),
-Number(document.getElementById("p2_3").value||0),
-Number(document.getElementById("p2_2").value||0),
-Number(document.getElementById("p2_1").value||0)
-]
-
-let game1 = kolhoz(names,p1)
-
-let reverseNames=[names[3],names[2],names[1],names[0]]
-
-let game2 = kolhoz(reverseNames,p2)
+let result1 = kolhoz(names,p1)
 
 let html="<div class='result'>"
 
-html+="<b>1 партия</b><br>"
+html+="<b>РАЗНИЦА ОЧКОВ</b><br>"
+html+=`${names[0]} - ${names[1]} = ${result1.d1}<br>`
+html+=`${names[1]} - ${names[2]} = ${result1.d2}<br>`
+html+=`${names[2]} - ${names[3]} = ${result1.d3}<br>`
+html+=`${names[3]} - ${names[0]} = ${result1.d4}<br><br>`
 
-game1.forEach(p=>{
-html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br>`
+html+="<b>КТО КОМУ ПЛАТИТ</b><br>"
+
+let balance={}
+
+names.forEach(n=>balance[n]=0)
+
+result1.payments.forEach(p=>{
+
+let sum=p[2]*stake
+
+html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(sum)} тнг)<br>`
+
+balance[p[0]]-=sum
+balance[p[1]]+=sum
+
 })
 
-if(p2.some(x=>x>0)){
+html+="<br><b>ИТОГ ПО ДЕНЬГАМ</b><br>"
 
-html+="<br><b>2 партия (обратка)</b><br>"
+for(let name in balance){
 
-game2.forEach(p=>{
-html+=`${p[0]} → ${p[1]} = ${p[2]} очков (${money(p[2]*stake)} тнг)<br>`
-})
+let val=balance[name]
+
+if(val>0){
+html+=`<div class="green">${name} +${money(val)} тнг</div>`
+}else if(val<0){
+html+=`<div class="red">${name} ${money(val)} тнг</div>`
+}
 
 }
+
+html+="<br><b>ПОЧЕМУ ТАК ПОЛУЧИЛОСЬ</b><br>"
+html+="Очки сравниваются по кругу игроков.<br>"
+html+="Игрок платит только следующему игроку.<br>"
+html+="Минус игрока распределяется между игроками с плюсом.<br>"
+html+="Поэтому сумма выигрыша и проигрыша всегда сходится."
 
 html+="</div>"
 
