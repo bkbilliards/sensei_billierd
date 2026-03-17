@@ -3,13 +3,11 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI Billiard Club</title>
+<title>SENSEI V13 PRO CLUB SYSTEM</title>
 
 <style>
-
-*{box-sizing:border-box;}
 
 body{
 margin:0;
@@ -18,31 +16,18 @@ background:linear-gradient(#05261a,#0e3b2a);
 color:white;
 }
 
-.header img{
-width:100%;
-display:block;
-}
-
 .container{
-max-width:700px;
+max-width:720px;
 margin:auto;
 padding:15px;
 }
 
-.menu{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:15px;
-}
-
-.menu button{
-padding:12px;
-border-radius:10px;
-border:none;
-background:#103c2a;
-color:white;
-font-size:14px;
+.header{
+font-size:22px;
+font-weight:bold;
+text-align:center;
+padding:10px;
+color:#d4af37;
 }
 
 .card{
@@ -51,31 +36,26 @@ padding:18px;
 border-radius:14px;
 }
 
-.label{
-margin-top:10px;
-margin-bottom:5px;
-}
-
-input,select{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:none;
-background:#08271c;
-color:white;
-font-size:16px;
-}
-
 .row{
 display:flex;
-gap:8px;
+gap:10px;
 margin-bottom:10px;
 }
 
 .player{flex:2;}
 .score{flex:1;}
 
-button.action{
+input,select{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#08271c;
+color:white;
+font-size:16px;
+}
+
+button{
 width:100%;
 padding:14px;
 border:none;
@@ -87,96 +67,90 @@ margin-top:10px;
 .calc{background:#d4af37;color:black;}
 .copy{background:#75829c;}
 .reset{background:#8a3434;}
-.save{background:#e4e4e4;color:#2b5da0;}
 
 .result{
 background:#041c14;
 margin-top:20px;
 padding:15px;
 border-radius:12px;
+white-space:pre-line;
 }
 
-.green{color:#66ffa0;}
-.red{color:#ff7777;}
+.menu{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
 
-.mapBtn{
-margin-top:20px;
-background:#4c9b74;
+.menu button{
+font-size:14px;
+padding:10px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
-</div>
-
 <div class="container">
+
+<div class="header">
+SENSEI BILLIARD CLUB — Калькулятор Колхоз
+</div>
 
 <div class="menu">
 <button onclick="showHistory()">История</button>
 <button onclick="showRating()">Рейтинг</button>
 <button onclick="showStats()">Статистика</button>
-<button onclick="scrollCalc()">Калькулятор</button>
-<button onclick="openMap()">Карта</button>
-<button onclick="location.reload()">Обновить</button>
 </div>
 
-<div class="card" id="calc">
-
-<div class="label">Режим игры</div>
-
-<select id="mode">
-<option value="kolhoz">Колхоз</option>
-<option value="reverse">Обратка</option>
-<option value="teams">2 на 2</option>
-</select>
-
-<div class="label">Ставка за шар</div>
-<input id="stake" value="400">
+<div class="card">
 
 <div class="row">
 <div class="player">Игрок</div>
-<div class="score">П1</div>
-<div class="score">П2</div>
+<div class="score">Очки</div>
 </div>
 
 <div class="row">
-<input id="n1" class="player">
-<input id="p1" class="score">
-<input class="score">
+<input id="n1" class="player" placeholder="Игрок 1">
+<input id="p1" class="score" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n2" class="player">
-<input id="p2" class="score">
-<input class="score">
+<input id="n2" class="player" placeholder="Игрок 2">
+<input id="p2" class="score" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n3" class="player">
-<input id="p3" class="score">
-<input class="score">
+<input id="n3" class="player" placeholder="Игрок 3">
+<input id="p3" class="score" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n4" class="player">
-<input id="p4" class="score">
-<input class="score">
+<input id="n4" class="player" placeholder="Игрок 4">
+<input id="p4" class="score" placeholder="Очки">
 </div>
 
-<button class="action calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="action copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-<button class="action reset" onclick="location.reload()">СБРОС</button>
-<button class="action save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
-
-<div id="result"></div>
-
+<div class="row">
+<select id="mode">
+<option value="solo">Колхоз</option>
+<option value="reverse">Обратка</option>
+<option value="team">2×2 (1+3 vs 2+4)</option>
+</select>
 </div>
 
-<button class="action mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
+<div class="row">
+<input id="stake" value="400">
+</div>
+
+<button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
+<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
+<button class="reset" onclick="location.reload()">СБРОС</button>
+
+<div id="result" class="result"></div>
+
+</div>
 
 </div>
 
@@ -187,18 +161,73 @@ function calc(){
 let stake = Number(document.getElementById("stake").value)
 
 let names=[
-n1.value,n2.value,n3.value,n4.value
+n1.value,
+n2.value,
+n3.value,
+n4.value
 ]
 
 let scores=[
-Number(p1.value),Number(p2.value),Number(p3.value),Number(p4.value)
+Number(p1.value),
+Number(p2.value),
+Number(p3.value),
+Number(p4.value)
 ]
+
+let mode=document.getElementById("mode").value
+
+let text=""
+
+if(mode==="team"){
+
+let teamA=scores[0]+scores[2]
+let teamB=scores[1]+scores[3]
+
+let diff=teamA-teamB
+
+text+="Команда 1: "+names[0]+" + "+names[2]+" = "+teamA+"\n"
+text+="Команда 2: "+names[1]+" + "+names[3]+" = "+teamB+"\n\n"
+
+if(diff>0){
+
+let money=diff*stake
+
+text+=names[1]+" и "+names[3]+" платят "+names[0]+" и "+names[2]+" "+money+" тг"
+
+}else{
+
+let money=Math.abs(diff)*stake
+
+text+=names[0]+" и "+names[2]+" платят "+names[1]+" и "+names[3]+" "+money+" тг"
+
+}
+
+document.getElementById("result").innerText=text
+
+saveGame(text)
+
+return
+
+}
 
 let diff=[]
 
 for(let i=0;i<4;i++){
+
 let next=(i+1)%4
+
 diff[i]=scores[i]-scores[next]
+
+}
+
+text+="РАЗНИЦА ОЧКОВ\n\n"
+
+for(let i=0;i<4;i++){
+
+let next=(i+1)%4
+
+text+=names[i]+" "+scores[i]+" - "+names[next]+" "+scores[next]+" = "+diff[i]+"\n"
+
 }
 
 let plus=[]
@@ -207,11 +236,11 @@ let minus=[]
 for(let i=0;i<4;i++){
 
 if(diff[i]>0){
-plus.push({name:names[i],value:diff[i],index:i})
+plus.push({name:names[i],value:diff[i],used:0})
 }
 
 if(diff[i]<0){
-minus.push({name:names[i],value:Math.abs(diff[i]),index:i})
+minus.push({name:names[i],value:Math.abs(diff[i])})
 }
 
 }
@@ -220,16 +249,17 @@ let payments=[]
 
 minus.forEach(m=>{
 
-let debt=m.value
-let j=(m.index+1)%4
+let remain=m.value
 
-while(debt>0){
+for(let p of plus){
 
-let p=plus.find(x=>x.index===j)
+if(remain<=0) break
 
-if(p && p.value>0){
+let available=p.value-p.used
 
-let pay=Math.min(debt,p.value)
+if(available<=0) continue
+
+let pay=Math.min(remain,available)
 
 payments.push({
 from:m.name,
@@ -237,106 +267,105 @@ to:p.name,
 points:pay
 })
 
-p.value-=pay
-debt-=pay
-
-}
-
-j=(j+1)%4
+p.used+=pay
+remain-=pay
 
 }
 
 })
 
-let money={}
-let html="<div class='result'>"
+text+="\nКТО КОМУ ПЛАТИТ\n\n"
 
-html+="<b>Кто кому платит</b><br><br>"
+let money={}
 
 payments.forEach(p=>{
 
 let cash=p.points*stake
 
-html+=p.from+" → "+p.to+" = "+p.points+" ("+cash+" тг)<br>"
+text+=p.from+" → "+p.to+" = "+p.points+" ("+cash+" тг)\n"
 
 money[p.from]=(money[p.from]||0)-cash
 money[p.to]=(money[p.to]||0)+cash
 
 })
 
-html+="<br><b>Итог</b><br><br>"
+text+="\nИТОГ\n\n"
 
 names.forEach(n=>{
 
 let v=money[n]||0
 
-if(v>0){
-html+="<div class='green'>"+n+" +"+v+" тг</div>"
-}
-
-if(v<0){
-html+="<div class='red'>"+n+" "+v+" тг</div>"
-}
+text+=n+" "+v+" тг\n"
 
 })
 
-html+="</div>"
+text+="\nРАЗБОР ПАРТИИ\n\n"
 
-result.innerHTML=html
+payments.forEach(p=>{
+text+=p.from+" закрывает "+p.points+" очков игроку "+p.to+"\n"
+})
+
+document.getElementById("result").innerText=text
+
+saveGame(text)
 
 }
 
-function saveGame(){
+function copyResult(){
 
-let text=result.innerText
+navigator.clipboard.writeText(
+document.getElementById("result").innerText
+)
 
-let history=JSON.parse(localStorage.getItem("games")||"[]")
+alert("Скопировано")
+
+}
+
+function saveGame(text){
+
+let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
 history.unshift({
 date:new Date().toLocaleString(),
 text:text
 })
 
-localStorage.setItem("games",JSON.stringify(history))
-
-alert("Игра сохранена")
+localStorage.setItem("sensei_history",JSON.stringify(history))
 
 }
 
 function showHistory(){
 
-let history=JSON.parse(localStorage.getItem("games")||"[]")
+let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-let html="<div class='result'><b>История игр</b><br><br>"
+let text="ИСТОРИЯ ИГР\n\n"
 
-history.forEach(g=>{
-html+=g.date+"<br>"+g.text+"<br><br>"
+history.forEach(h=>{
+text+=h.date+"\n"+h.text+"\n\n"
 })
 
-html+="</div>"
-
-result.innerHTML=html
+document.getElementById("result").innerText=text
 
 }
 
 function showRating(){
 
-let history=JSON.parse(localStorage.getItem("games")||"[]")
+let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
 let rating={}
 
-history.forEach(g=>{
+history.forEach(h=>{
 
-let lines=g.text.split("\n")
+let lines=h.text.split("\n")
 
 lines.forEach(l=>{
 
-if(l.includes("+")){
+if(l.includes("тг")){
 
-let p=l.split(" ")
+let parts=l.split(" ")
 
-let name=p[0]
-let val=parseInt(p[1])
+let name=parts[0]
+let val=parseInt(parts[1])
 
 rating[name]=(rating[name]||0)+val
 
@@ -346,33 +375,22 @@ rating[name]=(rating[name]||0)+val
 
 })
 
-let html="<div class='result'><b>Рейтинг игроков</b><br><br>"
+let text="РЕЙТИНГ ИГРОКОВ\n\n"
 
 Object.keys(rating).sort((a,b)=>rating[b]-rating[a]).forEach(n=>{
-html+=n+" : "+rating[n]+" тг<br>"
+text+=n+" "+rating[n]+" тг\n"
 })
 
-html+="</div>"
-
-result.innerHTML=html
+document.getElementById("result").innerText=text
 
 }
 
 function showStats(){
-result.innerHTML="<div class='result'>Статистика формируется по истории игр</div>"
-}
 
-function copyResult(){
-navigator.clipboard.writeText(result.innerText)
-alert("Скопировано")
-}
+let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-function openMap(){
-window.open("https://2gis.kz/almaty/geo/70000001101734090")
-}
+document.getElementById("result").innerText="Всего сыграно партий: "+history.length
 
-function scrollCalc(){
-document.getElementById("calc").scrollIntoView({behavior:"smooth"})
 }
 
 </script>
