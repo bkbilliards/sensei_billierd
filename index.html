@@ -31,7 +31,6 @@
 
         .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
 
-        /* Вкладки режимов */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab {
             flex: 1; text-align: center; padding: 14px 5px; border: 1px solid var(--gold);
@@ -79,7 +78,6 @@
         }
         .btn-calc:active { transform: scale(0.98); }
 
-        /* Блок результатов */
         #results { display: none; margin-top: 25px; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -100,21 +98,24 @@
         .amt-cash { color: var(--gold-bright); font-weight: 800; font-size: 15px; display: block; }
         .amt-balls { color: #888; font-size: 11px; margin-top: 3px; display: block; }
 
-        .total-row {
-            display: flex; justify-content: space-between; padding: 12px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px;
-        }
-        .total-row:last-child { border-bottom: none; }
-        .win-text { color: var(--win); font-weight: 800; }
-        .loss-text { color: var(--loss); font-weight: 800; }
-
         .comment-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
-            padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 12px;
-            line-height: 1.6; color: #ccc;
+            padding: 20px 15px; border-radius: 10px; margin-top: 25px; font-size: 13px;
+            line-height: 1.6; color: #ddd;
         }
-        .comment-box b { color: var(--gold-bright); }
-        .step { margin-bottom: 8px; padding-left: 10px; border-left: 2px solid var(--gold-dark); }
+        .comment-box b { color: var(--gold-bright); font-weight: 700; }
+        
+        .step-block { margin-bottom: 15px; }
+        .debt-calc { margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--gold-dark); color: #aaa; font-size: 12px; }
+        .debt-closed { color: var(--win); font-weight: 600; margin-top: 8px; display: block; }
+        .divider { border: none; border-top: 1px dashed rgba(255,255,255,0.1); margin: 20px 0; }
+
+        .summary-box {
+            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;
+            border: 1px solid var(--border-color); line-height: 1.8; margin-top: 10px;
+        }
+        .win-line { color: var(--win); font-weight: bold; }
+        .loss-line { color: var(--loss); font-weight: bold; }
 
         .btn-group { display: flex; gap: 10px; margin-top: 25px; }
         .btn-side {
@@ -158,10 +159,7 @@
         <div class="section-title">Расчет выплат</div>
         <div id="payments-list"></div>
         
-        <div class="section-title">Общий итог</div>
-        <div class="card" id="totals-list" style="padding: 5px 10px;"></div>
-
-        <div class="comment-box" id="explanation"></div>
+        <div id="explanation-container"></div>
 
         <div class="btn-group">
             <button class="btn-side" onclick="copyResults()">Скопировать</button>
@@ -184,7 +182,7 @@ function initInputs() {
     for(let i=0; i<4; i++) {
         html += `
             <div class="player-row">
-                <input type="text" id="name${i}" placeholder="Имя ${i+1}">
+                <input type="text" id="name${i}" placeholder="Игрок ${i+1}">
                 <input type="number" id="p${i}_1" placeholder="0">
                 <input type="number" id="p${i}_2" placeholder="0">
             </div>
@@ -193,7 +191,6 @@ function initInputs() {
     document.getElementById('inputs-area').innerHTML = html;
 }
 
-// Форматирование денег с пробелами (25600 -> 25 600)
 function formatMoney(amount) {
     return new Intl.NumberFormat('ru-RU').format(amount);
 }
@@ -206,7 +203,8 @@ function calculate() {
         players.push({
             name: document.getElementById(`name${i}`).value || `Игрок ${i+1}`,
             score: (parseInt(document.getElementById(`p${i}_1`).value) || 0) + (parseInt(document.getElementById(`p${i}_2`).value) || 0),
-            diff: 0
+            diff: 0,
+            origDiff: 0
         });
     }
 
@@ -214,68 +212,117 @@ function calculate() {
     let explanationHtml = "";
 
     if (currentMode === 'solo') {
-        // --- ЛОГИКА "КОЛХОЗ" СТРОГО ПО ЦЕПОЧКЕ ---
-        
-        // 1. Считаем разницу по кругу (Игрок 1 vs Игрок 2 и т.д.)
-        explanationHtml += `<b>ЦЕПОЧКА РАЗНИЦЫ:</b><br><br>`;
+        // Шаг 1: Считаем разницу по кругу
         for(let i=0; i<4; i++) {
             let next = (i + 1) % 4;
-            let diff = players[i].score - players[next].score;
-            players[i].diff = diff; // Сохраняем чистый баланс игрока
-            let sign = diff > 0 ? "+" : "";
-            explanationHtml += `${players[i].name} (${players[i].score}) - ${players[next].name} (${players[next].score}) = ${players[i].name} ${sign}${diff}<br>`;
+            players[i].diff = players[i].score - players[next].score;
+            players[i].origDiff = players[i].diff; // Сохраняем оригинал для текста
         }
-        explanationHtml += `<br>`;
 
-        // 2. Распределение долгов: "самый большой минус закрывает первым"
         let winners = [...players].filter(p => p.diff > 0).sort((a,b) => b.diff - a.diff);
-        let losers = [...players].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff); // по возрастанию: -96 будет первым
+        let losers = [...players].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff);
 
         let hasPayments = false;
+        
+        explanationHtml += `<div class="comment-box"><div class="section-title" style="margin-top:0;">Разбор партии</div>`;
 
-        losers.forEach(loser => {
+        if (losers.length > 0) {
+            explanationHtml += `У <b>${losers[0].name}</b> самый большой минус: −${Math.abs(losers[0].diff)} очков.<br>По правилам колхоза он первым покрывает плюсы игроков.<br><br>`;
+        }
+
+        let stepNum = 1;
+        const emojis = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
+
+        // Генерация текста и карточек оплат
+        losers.forEach((loser) => {
             let debt = Math.abs(loser.diff);
-            explanationHtml += `У <b>${loser.name}</b> минус: -${debt} ш. Он закрывает плюсы:<br>`;
             
-            winners.forEach(winner => {
+            winners.forEach((winner) => {
                 if (debt > 0 && winner.diff > 0) {
                     let transfer = Math.min(debt, winner.diff);
-                    let money = transfer * stake;
+                    let e = emojis[stepNum] || `${stepNum}️⃣`;
                     
+                    // Рисуем карточку оплаты
                     paymentsHtml += `
                         <div class="pay-card">
                             <div class="pay-names">${loser.name} &rarr; ${winner.name}</div>
                             <div class="pay-amount">
-                                <span class="amt-cash">${formatMoney(money)} тнг</span>
+                                <span class="amt-cash">${formatMoney(transfer * stake)} тнг</span>
                                 <span class="amt-balls">(${transfer} ш.)</span>
                             </div>
                         </div>
                     `;
+                    hasPayments = true;
+
+                    // Формируем текст-разбор
+                    explanationHtml += `<div class="step-block">`;
                     
-                    explanationHtml += `<div class="step">${loser.name} платит ${winner.name} <b>${transfer} ш.</b></div>`;
+                    if (winner.origDiff !== winner.diff) {
+                        // Если победителю уже частично заплатили
+                        let paidAlready = winner.origDiff - winner.diff;
+                        explanationHtml += `${e} <b>${loser.name}</b> имеет −${debt}, а у <b>${winner.name}</b> ещё остался плюс:<br>`;
+                        explanationHtml += `${winner.origDiff} − ${paidAlready} = ${winner.diff} очков.<br><br>`;
+                        explanationHtml += `Поэтому <b>${loser.name}</b> платит <b>${winner.name}</b> ${transfer} очков.`;
+                    } else {
+                        // Если победителю платят первый раз
+                        explanationHtml += `${e} <b>${winner.name}</b> имеет +${winner.diff}, поэтому <b>${loser.name}</b> `;
+                        if (transfer === winner.diff) {
+                            explanationHtml += `сначала покрывает его плюс полностью.<br><br>`;
+                        } else {
+                            explanationHtml += `отдаёт ему оставшиеся ${transfer} очков.<br><br>`;
+                        }
+                        explanationHtml += `<b>${loser.name} платит ${winner.name} ${transfer} очков.</b>`;
+                    }
                     
+                    let prevDebt = debt;
                     debt -= transfer;
                     winner.diff -= transfer;
-                    hasPayments = true;
+                    stepNum++;
+
+                    if (debt > 0) {
+                        explanationHtml += `<div class="debt-calc">После этого у <b>${loser.name}</b> остаётся долг:<br>${prevDebt} − ${transfer} = ${debt} очка(ов).</div>`;
+                    } else {
+                        explanationHtml += `<span class="debt-closed">Теперь долг <b>${loser.name}</b> закрыт.</span>`;
+                        explanationHtml += `<hr class="divider">`;
+                    }
+                    explanationHtml += `</div>`;
                 }
             });
-            explanationHtml += `<br>`;
         });
 
         if (!hasPayments) paymentsHtml = `<div style="text-align:center; padding: 20px; color: #888;">Никто никому не должен</div>`;
+
+        // Блок ИТОГ ПАРТИИ
+        explanationHtml += `<div class="section-title">Итог партии</div><div class="summary-box">`;
+        
+        // Плюсовые
+        players.forEach(p => {
+            if (p.origDiff > 0) {
+                explanationHtml += `<span class="win-line">${p.name} получает:</span> ${p.origDiff} очков<br>`;
+            }
+        });
+        explanationHtml += `<br>`;
+        // Минусовые
+        players.forEach(p => {
+            if (p.origDiff < 0) {
+                explanationHtml += `<span class="loss-line">${p.name} платит:</span> ${Math.abs(p.origDiff)} очков<br>`;
+            }
+        });
+        
+        explanationHtml += `</div></div>`; // закрываем summary-box и comment-box
 
     } else {
         // --- ЛОГИКА 2 НА 2 ---
         let team1Score = players[0].score + players[1].score;
         let team2Score = players[2].score + players[3].score;
         let diff = Math.abs(team1Score - team2Score);
-        let money = diff * stake;
         
         let winnerText = team1Score > team2Score ? `${players[0].name} и ${players[1].name}` : `${players[2].name} и ${players[3].name}`;
         let loserText = team1Score < team2Score ? `${players[0].name} и ${players[1].name}` : `${players[2].name} и ${players[3].name}`;
 
         if (diff === 0) {
             paymentsHtml = `<div style="text-align:center; padding: 20px; color: #888;">Ничья</div>`;
+            explanationHtml = `<div class="comment-box" style="text-align:center;">Очки равны.</div>`;
         } else {
             paymentsHtml = `
                 <div class="pay-card" style="flex-direction: column; align-items: flex-start;">
@@ -285,49 +332,32 @@ function calculate() {
                     <div style="font-size: 11px; color:#888; margin-bottom:5px;">ВЫИГРАВШЕЙ КОМАНДЕ:</div>
                     <div class="pay-names" style="color:var(--win);">${winnerText}</div>
                     <div style="margin-top: 10px; width: 100%; text-align: right;">
-                        <span class="amt-cash">${formatMoney(money)} тнг</span>
+                        <span class="amt-cash">${formatMoney(diff * stake)} тнг</span>
                         <span class="amt-balls">Разница: ${diff} ш.</span>
                     </div>
                 </div>
             `;
-            // Для отображения балансов в 2х2
-            if(team1Score > team2Score) {
-                players[0].diff = players[1].diff = diff;
-                players[2].diff = players[3].diff = -diff;
-            } else {
-                players[0].diff = players[1].diff = -diff;
-                players[2].diff = players[3].diff = diff;
-            }
+            explanationHtml = `<div class="comment-box"><b>РЕЖИМ 2 НА 2:</b><br><br>Очки первой команды: ${team1Score}<br>Очки второй команды: ${team2Score}<br>Разница: ${diff} шаров.</div>`;
         }
-        
-        explanationHtml = `<b>РЕЖИМ 2 НА 2:</b><br><br>Очки первой команды: ${team1Score}<br>Очки второй команды: ${team2Score}<br>Разница: ${diff} шаров.`;
     }
 
-    // Вывод Итогов на руки
-    let totalsHtml = "";
-    players.forEach(p => {
-        let money = p.diff * stake;
-        let cls = p.diff >= 0 ? "win-text" : "loss-text";
-        let sign = p.diff > 0 ? "+" : "";
-        totalsHtml += `
-            <div class="total-row">
-                <span>${p.name}</span>
-                <span class="${cls}">${sign}${formatMoney(money)}</span>
-            </div>
-        `;
-    });
-
     document.getElementById('payments-list').innerHTML = paymentsHtml;
-    document.getElementById('totals-list').innerHTML = totalsHtml;
-    document.getElementById('explanation').innerHTML = explanationHtml;
+    document.getElementById('explanation-container').innerHTML = explanationHtml;
     
     document.getElementById('results').style.display = 'block';
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function copyResults() {
-    let text = "SENSEI BILLIARD CLUB\n\n" + document.getElementById('payments-list').innerText;
-    navigator.clipboard.writeText(text);
+    let textToCopy = "SENSEI BILLIARD CLUB\n\n";
+    // Собираем текст из карточек выплат
+    const payCards = document.querySelectorAll('.pay-card');
+    payCards.forEach(card => {
+        let names = card.querySelector('.pay-names').innerText;
+        let cash = card.querySelector('.amt-cash').innerText;
+        textToCopy += `${names} -> ${cash}\n`;
+    });
+    navigator.clipboard.writeText(textToCopy);
     alert("Результаты скопированы!");
 }
 
