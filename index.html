@@ -83,12 +83,12 @@
         .btn-calc { 
             width: 100%; background: linear-gradient(135deg, var(--gold), #b8962e); 
             color: black; font-weight: bold; padding: 16px; border-radius: 12px; border: none; 
-            font-size: 16px; margin-bottom: 12px; text-transform: uppercase;
+            font-size: 16px; margin-bottom: 12px; text-transform: uppercase; cursor: pointer;
         }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-sub { background: #4a6fa5; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; }
-        .btn-reset { background: #8a3434; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold;}
+        .btn-sub { background: #4a6fa5; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-reset { background: #8a3434; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
 
         .result-box { 
             margin-top: 20px; background: var(--input-bg); padding: 15px; border-radius: 10px; 
@@ -142,7 +142,7 @@
             <input type="number" id="stake" value="400" style="width: 80px;">
         </div>
 
-        <button class="btn-calc" onclick="calculate()">Подсчитать по цепочке</button>
+        <button class="btn-calc" onclick="calculate()">ПОДСЧИТАТЬ ПО ЦЕПОЧКЕ</button>
         
         <div class="btn-group">
             <button class="btn-sub" onclick="copyResult()">📋 Копировать</button>
@@ -159,55 +159,51 @@
         const p = [];
         for (let i = 1; i <= 4; i++) {
             p.push({
-                name: document.getElementById('n'+i).value,
-                score: (Number(document.getElementById('p'+i+'_1').value) || 0) + 
-                       (Number(document.getElementById('p'+i+'_2').value) || 0),
-                debt: 0
+                name: document.getElementById('n' + i).value,
+                score: (Number(document.getElementById('p' + i + '_1').value) || 0) + 
+                       (Number(document.getElementById('p' + i + '_2').value) || 0)
             });
         }
 
-        let diffs = [];
+        let resHtml = '<div class="res-section"><div class="res-title">ЦЕПОЧКА РАЗНИЦЫ:</div>';
+        let payHtml = '<div class="res-section"><div class="res-title">КТО КОМУ ПЛАТИТ:</div>';
+        let finalHtml = '<div class="res-section" style="border:none;"><div class="res-title">ОБЩИЙ ИТОГ:</div>';
+
+        let balances = [0, 0, 0, 0];
+
         for (let i = 0; i < 4; i++) {
             let next = (i + 1) % 4;
-            let d = p[i].score - p[next].score;
-            diffs.push({ from: i, to: next, val: d });
+            let diff = p[i].score - p[next].score;
+            
+            // Отображение разницы
+            resHtml += `<div class="money-line">${p[i].name} ${p[i].score} - ${p[next].name} ${p[next].score} = <b>${p[i].name} ${diff > 0 ? '+' : ''}${diff}</b></div>`;
+
+            // Логика разплат
+            if (diff !== 0) {
+                let absoluteDiff = Math.abs(diff);
+                let money = absoluteDiff * stake;
+                let winner = diff > 0 ? p[i].name : p[next].name;
+                let loser = diff > 0 ? p[next].name : p[i].name;
+
+                payHtml += `<div class="money-line">${loser} платит ${winner}: <b>${money} тнг</b> (${absoluteDiff} ш.)</div>`;
+                
+                if (diff > 0) {
+                    balances[i] += money;
+                    balances[next] -= money;
+                } else {
+                    balances[i] -= money;
+                    balances[next] += money;
+                }
+            }
         }
 
-        let resHtml = '<div class="res-section"><div class="res-title">Цепочка разницы:</div>';
-        diffs.forEach(d => {
-            resHtml += `<div class="money-line">${p[d.from].name} - ${p[d.to].name} = <b>${d.val > 0 ? '+' : ''}${d.val}</b></div>`;
-        });
-
-        resHtml += '</div><div class="res-section"><div class="res-title">Кто кому платит:</div>';
-        
-        // Массив для итогового баланса
-        let balance = [0, 0, 0, 0];
-        
-        // Логика перекрытия долгов (как в твоих примерах)
-        diffs.forEach(d => {
-            let money = d.val * stake;
-            balance[d.from] += money;
-            balance[d.to] -= money;
-        });
-
-        // Формируем список оплат (упрощенный расчет)
-        // Если Сека должен Джони и должен Даурену - он платит обоим
-        diffs.forEach(d => {
-            if (d.val < 0) {
-                resHtml += `<div class="money-line">${p[d.from].name} платит ${p[d.to].name}: <b>${Math.abs(d.val * stake)} тнг</b> (${Math.abs(d.val)} ш.)</div>`;
-            } else if (d.val > 0) {
-                resHtml += `<div class="money-line">${p[d.to].name} платит ${p[d.from].name}: <b>${d.val * stake} тнг</b> (${d.val} ш.)</div>`;
-            }
-        });
-
-        resHtml += '</div><div class="res-section" style="border:none;"><div class="res-title">Общий итог:</div>';
         p.forEach((player, i) => {
-            let val = balance[i];
-            resHtml += `<div class="money-line">${player.name}: <b class="${val >= 0 ? 'plus' : 'minus'}">${val >= 0 ? '+' : ''}${val} тнг</b></div>`;
+            let val = balances[i];
+            finalHtml += `<div class="money-line">${player.name}: <b class="${val >= 0 ? 'plus' : 'minus'}">${val >= 0 ? '+' : ''}${val} тнг</b></div>`;
         });
 
         const r = document.getElementById('result');
-        r.innerHTML = resHtml;
+        r.innerHTML = resHtml + '</div>' + payHtml + '</div>' + finalHtml + '</div>';
         r.style.display = 'block';
     }
 
