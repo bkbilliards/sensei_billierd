@@ -5,52 +5,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI V13 PRO CLUB SYSTEM</title>
+<title>SENSEI BILLIARD CLUB</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(#05261a,#0e3b2a);
+background:linear-gradient(#04291c,#0c3a29);
 color:white;
 }
 
 .container{
-max-width:720px;
+max-width:700px;
 margin:auto;
 padding:15px;
 }
 
 .header{
+text-align:center;
 font-size:22px;
 font-weight:bold;
-text-align:center;
-padding:10px;
 color:#d4af37;
+margin-bottom:15px;
+}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+margin-bottom:15px;
+}
+
+.menu button{
+padding:10px;
+border-radius:10px;
+border:none;
+font-size:15px;
+background:#1c4d3a;
+color:white;
 }
 
 .card{
-background:#123c2b;
+background:#143c2c;
 padding:18px;
 border-radius:14px;
 }
 
 .row{
-display:flex;
+display:grid;
+grid-template-columns:2fr 1fr;
 gap:10px;
 margin-bottom:10px;
 }
 
-.player{flex:2;}
-.score{flex:1;}
-
 input,select{
 width:100%;
 padding:12px;
-border:none;
 border-radius:10px;
-background:#08271c;
+border:none;
+background:#08261b;
 color:white;
 font-size:16px;
 }
@@ -58,33 +72,32 @@ font-size:16px;
 button{
 width:100%;
 padding:14px;
-border:none;
 border-radius:10px;
+border:none;
 font-size:18px;
 margin-top:10px;
 }
 
-.calc{background:#d4af37;color:black;}
-.copy{background:#75829c;}
-.reset{background:#8a3434;}
+.calc{
+background:#d4af37;
+color:black;
+}
+
+.copy{
+background:#7a859f;
+}
+
+.reset{
+background:#8a3535;
+}
 
 .result{
-background:#041c14;
-margin-top:20px;
+margin-top:15px;
+background:#021a12;
 padding:15px;
 border-radius:12px;
 white-space:pre-line;
-}
-
-.menu{
-display:flex;
-gap:10px;
-margin-bottom:10px;
-}
-
-.menu button{
-font-size:14px;
-padding:10px;
+font-size:15px;
 }
 
 </style>
@@ -108,45 +121,36 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз
 <div class="card">
 
 <div class="row">
-<div class="player">Игрок</div>
-<div class="score">Очки</div>
+<input id="n1" placeholder="Игрок 1">
+<input id="p1" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n1" class="player" placeholder="Игрок 1">
-<input id="p1" class="score" placeholder="Очки">
+<input id="n2" placeholder="Игрок 2">
+<input id="p2" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n2" class="player" placeholder="Игрок 2">
-<input id="p2" class="score" placeholder="Очки">
+<input id="n3" placeholder="Игрок 3">
+<input id="p3" placeholder="Очки">
 </div>
 
 <div class="row">
-<input id="n3" class="player" placeholder="Игрок 3">
-<input id="p3" class="score" placeholder="Очки">
+<input id="n4" placeholder="Игрок 4">
+<input id="p4" placeholder="Очки">
 </div>
 
-<div class="row">
-<input id="n4" class="player" placeholder="Игрок 4">
-<input id="p4" class="score" placeholder="Очки">
-</div>
-
-<div class="row">
 <select id="mode">
-<option value="solo">Колхоз</option>
+<option value="kolhoz">Колхоз</option>
 <option value="reverse">Обратка</option>
-<option value="team">2×2 (1+3 vs 2+4)</option>
+<option value="teams">2 на 2 (1+3 vs 2+4)</option>
 </select>
-</div>
 
-<div class="row">
 <input id="stake" value="400">
-</div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-<button class="reset" onclick="location.reload()">СБРОС</button>
+<button class="reset" onclick="reset()">СБРОС</button>
 
 <div id="result" class="result"></div>
 
@@ -158,7 +162,7 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз
 
 function calc(){
 
-let stake = Number(document.getElementById("stake").value)
+let stake=Number(stakeInput())
 
 let names=[
 n1.value,
@@ -176,35 +180,27 @@ Number(p4.value)
 
 let mode=document.getElementById("mode").value
 
-let text=""
+if(mode==="teams"){
 
-if(mode==="team"){
+let t1=scores[0]+scores[2]
+let t2=scores[1]+scores[3]
 
-let teamA=scores[0]+scores[2]
-let teamB=scores[1]+scores[3]
+let diff=t1-t2
 
-let diff=teamA-teamB
-
-text+="Команда 1: "+names[0]+" + "+names[2]+" = "+teamA+"\n"
-text+="Команда 2: "+names[1]+" + "+names[3]+" = "+teamB+"\n\n"
+let txt="Команда 1: "+names[0]+" + "+names[2]+" = "+t1+"\n"
+txt+="Команда 2: "+names[1]+" + "+names[3]+" = "+t2+"\n\n"
 
 if(diff>0){
 
-let money=diff*stake
-
-text+=names[1]+" и "+names[3]+" платят "+names[0]+" и "+names[2]+" "+money+" тг"
+txt+=names[1]+" и "+names[3]+" платят "+(diff*stake)+" тг"
 
 }else{
 
-let money=Math.abs(diff)*stake
-
-text+=names[0]+" и "+names[2]+" платят "+names[1]+" и "+names[3]+" "+money+" тг"
+txt+=names[0]+" и "+names[2]+" платят "+(Math.abs(diff)*stake)+" тг"
 
 }
 
-document.getElementById("result").innerText=text
-
-saveGame(text)
+show(txt)
 
 return
 
@@ -215,12 +211,11 @@ let diff=[]
 for(let i=0;i<4;i++){
 
 let next=(i+1)%4
-
 diff[i]=scores[i]-scores[next]
 
 }
 
-text+="РАЗНИЦА ОЧКОВ\n\n"
+let text="РАЗНИЦА ОЧКОВ\n\n"
 
 for(let i=0;i<4;i++){
 
@@ -236,18 +231,28 @@ let minus=[]
 for(let i=0;i<4;i++){
 
 if(diff[i]>0){
-plus.push({name:names[i],value:diff[i],used:0})
+
+plus.push({
+name:names[i],
+value:diff[i]
+})
+
 }
 
 if(diff[i]<0){
-minus.push({name:names[i],value:Math.abs(diff[i])})
+
+minus.push({
+name:names[i],
+value:Math.abs(diff[i])
+})
+
 }
 
 }
 
 let payments=[]
 
-minus.forEach(m=>{
+for(let m of minus){
 
 let remain=m.value
 
@@ -255,11 +260,9 @@ for(let p of plus){
 
 if(remain<=0) break
 
-let available=p.value-p.used
+if(p.value<=0) continue
 
-if(available<=0) continue
-
-let pay=Math.min(remain,available)
+let pay=Math.min(remain,p.value)
 
 payments.push({
 from:m.name,
@@ -267,12 +270,12 @@ to:p.name,
 points:pay
 })
 
-p.used+=pay
+p.value-=pay
 remain-=pay
 
 }
 
-})
+}
 
 text+="\nКТО КОМУ ПЛАТИТ\n\n"
 
@@ -302,72 +305,89 @@ text+=n+" "+v+" тг\n"
 text+="\nРАЗБОР ПАРТИИ\n\n"
 
 payments.forEach(p=>{
+
 text+=p.from+" закрывает "+p.points+" очков игроку "+p.to+"\n"
+
 })
 
-document.getElementById("result").innerText=text
+show(text)
 
-saveGame(text)
+save(text)
+
+}
+
+function stakeInput(){
+
+return document.getElementById("stake").value
+
+}
+
+function show(txt){
+
+document.getElementById("result").innerText=txt
 
 }
 
 function copyResult(){
 
-navigator.clipboard.writeText(
-document.getElementById("result").innerText
-)
-
-alert("Скопировано")
+navigator.clipboard.writeText(result.innerText)
 
 }
 
-function saveGame(text){
+function reset(){
 
-let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+location.reload()
 
-history.unshift({
+}
+
+function save(text){
+
+let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+
+h.unshift({
 date:new Date().toLocaleString(),
 text:text
 })
 
-localStorage.setItem("sensei_history",JSON.stringify(history))
+localStorage.setItem("sensei_history",JSON.stringify(h))
 
 }
 
 function showHistory(){
 
-let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-let text="ИСТОРИЯ ИГР\n\n"
+let t="ИСТОРИЯ\n\n"
 
-history.forEach(h=>{
-text+=h.date+"\n"+h.text+"\n\n"
+h.forEach(x=>{
+
+t+=x.date+"\n"+x.text+"\n\n"
+
 })
 
-document.getElementById("result").innerText=text
+show(t)
 
 }
 
 function showRating(){
 
-let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-let rating={}
+let r={}
 
-history.forEach(h=>{
+h.forEach(g=>{
 
-let lines=h.text.split("\n")
-
-lines.forEach(l=>{
+g.text.split("\n").forEach(l=>{
 
 if(l.includes("тг")){
 
-let parts=l.split(" ")
+let p=l.split(" ")
 
-let name=parts[0]
-let val=parseInt(parts[1])
+let name=p[0]
 
-rating[name]=(rating[name]||0)+val
+let val=parseInt(p[1])
+
+r[name]=(r[name]||0)+val
 
 }
 
@@ -375,21 +395,23 @@ rating[name]=(rating[name]||0)+val
 
 })
 
-let text="РЕЙТИНГ ИГРОКОВ\n\n"
+let t="РЕЙТИНГ\n\n"
 
-Object.keys(rating).sort((a,b)=>rating[b]-rating[a]).forEach(n=>{
-text+=n+" "+rating[n]+" тг\n"
+Object.keys(r).sort((a,b)=>r[b]-r[a]).forEach(n=>{
+
+t+=n+" "+r[n]+" тг\n"
+
 })
 
-document.getElementById("result").innerText=text
+show(t)
 
 }
 
 function showStats(){
 
-let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-document.getElementById("result").innerText="Всего сыграно партий: "+history.length
+show("Всего игр: "+h.length)
 
 }
 
