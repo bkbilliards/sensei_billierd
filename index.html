@@ -12,7 +12,7 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#021e15,#0c3c2a);
+background:linear-gradient(180deg,#031f15,#0e3c2b);
 color:white;
 text-align:center;
 }
@@ -23,12 +23,30 @@ max-height:180px;
 object-fit:cover;
 }
 
+.panel{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+padding:15px;
+max-width:700px;
+margin:auto;
+}
+
+.panel button{
+background:#0e2f21;
+border:none;
+border-radius:14px;
+padding:14px;
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+
 .card{
 background:#123e2b;
 width:92%;
 max-width:700px;
 margin:auto;
-margin-top:20px;
 padding:20px;
 border-radius:18px;
 box-shadow:0 10px 30px rgba(0,0,0,0.5);
@@ -99,10 +117,29 @@ font-size:16px;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
-<div class="card">
+<div class="panel">
+
+<button onclick="showHistory()">📜 История</button>
+<button onclick="showRating()">🏆 Рейтинг</button>
+<button onclick="showDay()">⭐ Игрок дня</button>
+
+<button onclick="showStats()">📊 Статистика</button>
+<button onclick="openMap()">🗺 Карта</button>
+<button onclick="scrollCalc()">🎱 Калькулятор</button>
+
+</div>
+
+<div class="card" id="calc">
+
+<select id="mode">
+<option value="kolhoz">Колхоз</option>
+<option value="teams">2 на 2</option>
+</select>
+
+<br><br>
 
 <div>Ставка за шар</div>
 <input id="stake" value="400">
@@ -160,7 +197,7 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
-let stake=Number(document.getElementById("stake").value)
+let stake=Number(stake.value)
 
 let names=[n1.value,n2.value,n3.value,n4.value]
 
@@ -174,86 +211,68 @@ Number(p1_4.value)
 let diff=[]
 
 for(let i=0;i<4;i++){
-
 let next=(i+1)%4
 diff[i]=scores[i]-scores[next]
-
 }
 
 let html="<div class='result'>"
 
-html+="<b>1. Разница очков</b><br><br>"
+html+="<b>Разница очков</b><br><br>"
 
 html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
 html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
 html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
 html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
 
-let payments=[]
+let pay1=diff[0]
+let pay2=Math.abs(diff[1])-diff[0]
+let pay3=Math.abs(diff[3])
+
 let res=[0,0,0,0]
 
-let p1=diff[0]
-let p2=diff[1]
-let p3=diff[2]
-let p4=diff[3]
+html+="<br><b>Кто кому платит</b><br><br>"
 
-payments.push([names[1],names[0],p1])
-payments.push([names[1],names[2],Math.abs(p2)-p1])
-payments.push([names[3],names[2],Math.abs(p4)])
+let m1=pay1*stake
+html+=names[1]+" → "+names[0]+" = "+pay1+" ("+formatMoney(m1)+" тг)<br>"
+res[1]-=m1
+res[0]+=m1
 
-html+="<br><b>2. Кто кому платит</b><br><br>"
+let m2=pay2*stake
+html+=names[1]+" → "+names[2]+" = "+pay2+" ("+formatMoney(m2)+" тг)<br>"
+res[1]-=m2
+res[2]+=m2
 
-payments.forEach(p=>{
+let m3=pay3*stake
+html+=names[3]+" → "+names[2]+" = "+pay3+" ("+formatMoney(m3)+" тг)<br>"
+res[3]-=m3
+res[2]+=m3
 
-let money=p[2]*stake
-
-html+=p[0]+" → "+p[1]+" = "+p[2]+" очков ("+formatMoney(money)+" тг)<br>"
-
-let from=names.indexOf(p[0])
-let to=names.indexOf(p[1])
-
-res[from]-=money
-res[to]+=money
-
-})
-
-html+="<br><b>3. Итог по деньгам</b><br><br>"
+html+="<br><b>Итог по деньгам</b><br><br>"
 
 for(let i=0;i<4;i++){
 
-if(res[i]>0){
-html+="<div class='green'>"+names[i]+" +"+formatMoney(res[i])+" тг</div>"
-}
-
-if(res[i]<0){
-html+="<div class='red'>"+names[i]+" "+formatMoney(res[i])+" тг</div>"
-}
+if(res[i]>0) html+="<div class='green'>"+names[i]+" +"+formatMoney(res[i])+" тг</div>"
+if(res[i]<0) html+="<div class='red'>"+names[i]+" "+formatMoney(res[i])+" тг</div>"
 
 }
 
-html+="<br><b>4. Разбор партии</b><br><br>"
+html+="<br><b>Разбор партии</b><br><br>"
 
-html+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br><br>"
-
-html+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br><br>"
-
-html+="После этого у него остаётся долг "+(Math.abs(diff[1])-diff[0])+" очка.<br><br>"
-
-html+="Этот остаток получает "+names[2]+".<br><br>"
-
-html+=names[3]+" имеет минус "+Math.abs(diff[3])+" очков и отдаёт их "+names[2]+".<br><br>"
-
-html+="Поэтому итог партии выглядит именно так."
+html+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br>"
+html+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br>"
+html+="После этого у него остаётся долг "+pay2+" очков.<br>"
+html+="Этот остаток получает "+names[2]+".<br>"
+html+=names[3]+" имеет минус "+pay3+" и отдаёт их "+names[2]+"."
 
 html+="</div>"
 
-document.getElementById("result").innerHTML=html
+result.innerHTML=html
 
 }
 
 function copyResult(){
 navigator.clipboard.writeText(result.innerText)
-alert("Результат скопирован")
+alert("Скопировано")
 }
 
 function saveGame(){
@@ -271,8 +290,28 @@ alert("Игра сохранена")
 
 }
 
+function showHistory(){
+result.innerHTML="<div class='result'>История появится после сохранённых игр</div>"
+}
+
+function showRating(){
+result.innerHTML="<div class='result'>Рейтинг игроков появится после нескольких игр</div>"
+}
+
+function showDay(){
+result.innerHTML="<div class='result'>Игрок дня определяется по максимальному выигрышу</div>"
+}
+
+function showStats(){
+result.innerHTML="<div class='result'>Статистика клуба появится после накопления игр</div>"
+}
+
 function openMap(){
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
+}
+
+function scrollCalc(){
+document.getElementById("calc").scrollIntoView({behavior:"smooth"})
 }
 
 </script>
