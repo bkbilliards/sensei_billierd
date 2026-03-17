@@ -5,30 +5,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз PRO+</title>
+<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз V3</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#031c13,#0d3a27);
+background:linear-gradient(180deg,#031c13,#0e3b28);
 color:white;
 text-align:center;
 }
 
 .header img{
 width:100%;
-max-height:180px;
+max-height:170px;
 object-fit:cover;
 }
-
-/* панель */
 
 .panel{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:12px;
+gap:10px;
 padding:15px;
 max-width:720px;
 margin:auto;
@@ -45,37 +43,43 @@ cursor:pointer;
 box-shadow:0 8px 20px rgba(0,0,0,0.4);
 }
 
-/* карточка */
-
 .card{
 background:#133d2a;
 max-width:720px;
+width:92%;
 margin:20px auto;
-padding:25px;
+padding:20px;
 border-radius:16px;
 box-shadow:0 12px 30px rgba(0,0,0,0.5);
 }
 
-/* ставка */
+.mode{
+margin-bottom:15px;
+}
+
+.mode select{
+padding:12px;
+border-radius:10px;
+border:none;
+font-size:16px;
+}
 
 .stakeRow{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
-align-items:center;
 margin-bottom:15px;
+align-items:center;
 }
 
 .stakeRow input{
-padding:14px;
+padding:12px;
 border-radius:10px;
 border:none;
-background:#0b251b;
+background:#0c251c;
 color:white;
 font-size:16px;
 }
-
-/* таблица игроков */
 
 .table{
 display:flex;
@@ -85,20 +89,20 @@ gap:10px;
 
 .row{
 display:grid;
-grid-template-columns:1.4fr 1fr 1fr;
-gap:10px;
+grid-template-columns:1.5fr 1fr 1fr;
+gap:8px;
 }
 
 .row input{
-padding:14px;
+padding:12px;
 border-radius:10px;
 border:none;
-background:#0b251b;
+background:#0c251c;
 color:white;
-font-size:16px;
+font-size:15px;
+width:100%;
+box-sizing:border-box;
 }
-
-/* кнопки */
 
 button.calc{
 width:100%;
@@ -119,7 +123,7 @@ padding:16px;
 margin-top:10px;
 border:none;
 border-radius:12px;
-background:#667a94;
+background:#6a7d97;
 color:white;
 font-size:18px;
 }
@@ -142,11 +146,9 @@ margin-top:10px;
 border:none;
 border-radius:12px;
 background:#e0e0e0;
-color:#2a4fa1;
+color:#2d5fa3;
 font-size:18px;
 }
-
-/* результат */
 
 .result{
 background:#041c14;
@@ -156,12 +158,12 @@ border-radius:12px;
 text-align:left;
 }
 
-.green{color:#4cff9a}
+.green{color:#55ff9b}
 .red{color:#ff7a7a}
 
 .mapBtn{
 margin:20px;
-background:#3d8e67;
+background:#3c8e67;
 border:none;
 padding:14px 22px;
 border-radius:12px;
@@ -176,7 +178,7 @@ cursor:pointer;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
 <div class="panel">
@@ -192,6 +194,16 @@ cursor:pointer;
 </div>
 
 <div class="card" id="calc">
+
+<div class="mode">
+
+<select id="mode">
+<option value="kolhoz">Колхоз</option>
+<option value="reverse">Колхоз (обратка)</option>
+<option value="teams">2 на 2</option>
+</select>
+
+</div>
 
 <div class="stakeRow">
 <div>Ставка за шар</div>
@@ -233,8 +245,11 @@ cursor:pointer;
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
+
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
+
 <button class="reset" onclick="location.reload()">СБРОС</button>
+
 <button class="save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
 
 <div id="result"></div>
@@ -272,7 +287,7 @@ let next=(i+1)%4
 
 let diff=scores[i]-scores[next]
 
-diffs.push(names[i]+" - "+names[next]+" = "+diff)
+diffs.push(names[i]+" "+scores[i]+" - "+names[next]+" "+scores[next]+" = "+diff)
 
 if(diff>0){
 
@@ -336,7 +351,7 @@ html+=p+" очков ("+formatMoney(money)+" тг)<br>"
 
 })
 
-html+="<br><b>Итог</b><br>"
+html+="<br><b>Итог по деньгам</b><br>"
 
 for(let i=0;i<4;i++){
 
@@ -406,33 +421,23 @@ result.innerHTML=html
 }
 
 function showRating(){
-
 result.innerHTML="<div class='result'>Рейтинг появится после нескольких игр</div>"
-
 }
 
 function showDay(){
-
 result.innerHTML="<div class='result'>Игрок дня определяется по максимальному выигрышу</div>"
-
 }
 
 function showStats(){
-
 result.innerHTML="<div class='result'>Статистика появится после накопления игр</div>"
-
 }
 
 function openMap(){
-
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
-
 }
 
 function scrollCalc(){
-
 document.getElementById("calc").scrollIntoView()
-
 }
 
 </script>
