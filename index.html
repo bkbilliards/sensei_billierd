@@ -32,7 +32,6 @@
 
         .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
 
-        /* КНОПКИ СВЯЗИ */
         .action-buttons { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .btn-action {
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -43,7 +42,6 @@
         }
         .btn-wa { border-color: var(--win); color: var(--win); }
 
-        /* ВКЛАДКИ */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab {
             flex: 1; text-align: center; padding: 14px 5px; border: 1px solid var(--gold);
@@ -52,7 +50,6 @@
         }
         .tab.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
 
-        /* КАРТОЧКА */
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 15px; }
         .grid-header { display: grid; grid-template-columns: 2.5fr 1fr 1fr; gap: 8px; margin-bottom: 10px; padding: 0 5px; }
         .grid-header span { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; text-align: center; }
@@ -82,7 +79,6 @@
             color: #000; font-weight: 900; font-size: 14px; text-transform: uppercase; cursor: pointer;
         }
 
-        /* РЕЗУЛЬТАТЫ */
         #results { display: none; margin-top: 25px; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -101,8 +97,9 @@
             background: rgba(0,0,0,0.4); border: 1px solid var(--border-color);
             padding: 20px 15px; border-radius: 12px; margin-top: 25px; font-size: 13px; line-height: 1.7;
         }
-        .win-line { color: var(--win); font-weight: 700; }
-        .loss-line { color: var(--loss); font-weight: 700; }
+        .summary-box { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .win-line { color: var(--win); font-weight: 700; margin-bottom: 5px;}
+        .loss-line { color: var(--loss); font-weight: 700; margin-bottom: 5px;}
 
         .btn-group { display: flex; gap: 10px; margin: 25px 0 50px; }
         .btn-side {
@@ -204,7 +201,7 @@ function calculate() {
         });
     }
 
-    let pList = "", exp = `<div class="comment-box">`;
+    let pList = "", exp = `<div class="comment-box"><h3 style="color:var(--gold); font-size:14px; text-align:center; margin-top:0;">Разбор партии</h3>`;
 
     if (currentMode === 'solo') {
         for(let i=0; i<4; i++) {
@@ -212,24 +209,49 @@ function calculate() {
             players[i].diff = players[i].score - players[next].score;
             players[i].origDiff = players[i].diff;
         }
-        let winrs = [...players].filter(p => p.diff > 0).sort((a,b) => b.diff - a.diff);
-        let losrs = [...players].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff);
 
-        losrs.forEach(l => {
+        let winners = [...players].filter(p => p.diff > 0).sort((a,b) => b.diff - a.diff);
+        let losers = [...players].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff);
+
+        if (losers.length > 0) {
+            exp += `У <b>${losers[0].name}</b> самый большой минус: −${Math.abs(losers[0].diff)} очков.<br>`;
+            exp += `По правилам колхоза он первым покрывает плюсы игроков.<br><br>`;
+        }
+
+        let step = 1;
+        losers.forEach(l => {
             let debt = Math.abs(l.diff);
-            winrs.forEach(w => {
+            winners.forEach(w => {
                 if (debt > 0 && w.diff > 0) {
                     let move = Math.min(debt, w.diff);
                     pList += `<div class="pay-card"><div>${l.name} &rarr; ${w.name}</div><div class="amt-cash">${formatMoney(move*stake)}</div></div>`;
-                    debt -= move; w.diff -= move;
+                    
+                    exp += `${step}️⃣ <b>${w.name}</b> имеет +${w.origDiff}, поэтому <b>${l.name}</b> сначала покрывает его плюс.<br>`;
+                    exp += `<b>${l.name}</b> платит <b>${w.name}</b> ${move} очков.<br>`;
+                    
+                    debt -= move;
+                    w.diff -= move;
+                    
+                    if (debt > 0) {
+                        exp += `Оставшийся долг <b>${l.name}</b>: ${debt} очков.<br><br>`;
+                    } else {
+                        exp += `Долг <b>${l.name}</b> полностью закрыт.<br><br>`;
+                    }
+                    step++;
                 }
             });
         });
-        exp += players.map(p => {
+
+        exp += `<div style="text-align:center; margin:10px 0;">⸻</div>`;
+        exp += `<h3 style="color:var(--gold); font-size:14px; text-align:center;">Итог партии</h3><div class="summary-box">`;
+        players.forEach(p => {
             let style = p.origDiff >= 0 ? 'win-line' : 'loss-line';
-            return `<div class="${style}">${p.name}: ${p.origDiff >=0 ? '+':''}${p.origDiff} (${formatMoney(Math.abs(p.origDiff)*stake)} тнг)</div>`;
-        }).join('');
+            let verb = p.origDiff >= 0 ? 'получает' : 'платит';
+            exp += `<div class="${style}">${p.name} ${verb}: ${Math.abs(p.origDiff)} очков</div>`;
+        });
+        exp += `</div>`;
     } else {
+        // Логика 2 на 2
         let tA = players[0].score + players[2].score;
         let tB = players[1].score + players[3].score;
         let diff = Math.abs(tA - tB);
@@ -248,7 +270,8 @@ function calculate() {
 }
 
 function copyResults() {
-    navigator.clipboard.writeText("SENSEI CLUB\n" + document.getElementById('explanation-container').innerText.replace(/<[^>]*>/g, ''));
+    let text = "SENSEI CLUB\n" + document.getElementById('explanation-container').innerText.replace(/<[^>]*>/g, '');
+    navigator.clipboard.writeText(text);
     alert("Итог скопирован!");
 }
 
