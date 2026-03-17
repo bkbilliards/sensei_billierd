@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI — Калькулятор Колхоз</title>
+<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
 
 <style>
 
@@ -16,13 +16,29 @@ background:linear-gradient(180deg,#02140e,#0a3a27);
 color:white;
 }
 
+/* ШАПКА */
+
 .header{
-text-align:center;
+background:#031b13;
 padding:20px;
-font-size:28px;
-font-weight:bold;
-color:#d4af37;
+text-align:center;
+border-bottom:2px solid #0f3a28;
 }
+
+.headerTitle{
+font-size:26px;
+color:#d4af37;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+.headerSub{
+font-size:13px;
+opacity:0.7;
+margin-top:4px;
+}
+
+/* ПАНЕЛЬ */
 
 .clubPanel{
 display:grid;
@@ -53,6 +69,8 @@ font-size:28px;
 margin-bottom:6px;
 }
 
+/* КАЛЬКУЛЯТОР */
+
 .container{
 max-width:900px;
 margin:auto;
@@ -61,14 +79,32 @@ padding:25px;
 border-radius:18px;
 }
 
-.grid{
+/* ТАБЛИЦА */
+
+.gridHeader{
 display:grid;
-grid-template-columns:2fr 1fr 1fr;
+grid-template-columns:1.4fr 1fr 1fr;
 gap:10px;
-margin-bottom:12px;
+margin-bottom:8px;
+opacity:0.8;
 }
 
-input{
+.gridHeader div{
+text-align:center;
+}
+
+.gridHeader div:first-child{
+text-align:left;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1.4fr 1fr 1fr;
+gap:10px;
+margin-bottom:10px;
+}
+
+.grid input{
 width:100%;
 padding:14px;
 border:none;
@@ -76,7 +112,10 @@ border-radius:10px;
 background:#0b2419;
 color:white;
 font-size:16px;
+box-sizing:border-box;
 }
+
+/* КНОПКИ */
 
 button{
 width:100%;
@@ -92,6 +131,9 @@ cursor:pointer;
 .calc{background:#d4af37;color:black;}
 .copy{background:#5c6f8c;color:white;}
 .reset{background:#8c2b2b;color:white;}
+.save{background:#e4e4e4;color:#2d5cff;}
+
+/* РЕЗУЛЬТАТ */
 
 .result{
 background:#05160f;
@@ -110,11 +152,21 @@ line-height:1.6;
 
 <body>
 
+<!-- ШАПКА -->
+
 <div class="header">
-КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»
+
+<div class="headerTitle">
+SENSEI BILLIARD CLUB
 </div>
 
-<!-- Панель клуба -->
+<div class="headerSub">
+Калькулятор игры «Колхоз»
+</div>
+
+</div>
+
+<!-- ПАНЕЛЬ -->
 
 <div class="clubPanel">
 
@@ -150,47 +202,49 @@ line-height:1.6;
 
 </div>
 
-<!-- Калькулятор -->
+<!-- КАЛЬКУЛЯТОР -->
 
 <div class="container" id="calculator">
 
-<div class="grid">
+<div class="gridHeader">
 <div>Игрок</div>
 <div>П1</div>
 <div>П2</div>
 </div>
 
 <div class="grid">
-<input id="n1" placeholder="Игрок">
-<input id="p1_1" type="number">
-<input id="p2_1" type="number">
+<input id="n1" placeholder="Игрок 1">
+<input id="p1_1" type="number" placeholder="Очки">
+<input id="p2_1" type="number" placeholder="Очки">
 </div>
 
 <div class="grid">
-<input id="n2" placeholder="Игрок">
-<input id="p1_2" type="number">
-<input id="p2_2" type="number">
+<input id="n2" placeholder="Игрок 2">
+<input id="p1_2" type="number" placeholder="Очки">
+<input id="p2_2" type="number" placeholder="Очки">
 </div>
 
 <div class="grid">
-<input id="n3" placeholder="Игрок">
-<input id="p1_3" type="number">
-<input id="p2_3" type="number">
+<input id="n3" placeholder="Игрок 3">
+<input id="p1_3" type="number" placeholder="Очки">
+<input id="p2_3" type="number" placeholder="Очки">
 </div>
 
 <div class="grid">
-<input id="n4" placeholder="Игрок">
-<input id="p1_4" type="number">
-<input id="p2_4" type="number">
+<input id="n4" placeholder="Игрок 4">
+<input id="p1_4" type="number" placeholder="Очки">
+<input id="p2_4" type="number" placeholder="Очки">
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
+
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
+
 <button class="reset" onclick="location.reload()">СБРОС</button>
 
-<div id="result"></div>
+<button class="save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
 
-<button onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
+<div id="result"></div>
 
 </div>
 
@@ -223,12 +277,6 @@ names.forEach(n=>balance[n]=0)
 
 let html="<div class='result'>"
 
-html+="<b>Разница очков</b><br>"
-html+=`${names[0]} - ${names[1]} = ${d1}<br>`
-html+=`${names[1]} - ${names[2]} = ${d2}<br>`
-html+=`${names[2]} - ${names[3]} = ${d3}<br>`
-html+=`${names[3]} - ${names[0]} = ${d4}<br><br>`
-
 function pay(a,b,val){
 
 let sum=val*400
@@ -245,11 +293,9 @@ if(d2<0){
 let debt=Math.abs(d2)
 
 if(d1>0){
-
 let p=Math.min(d1,debt)
 pay(names[1],names[0],p)
 debt-=p
-
 }
 
 if(debt>0){
@@ -282,6 +328,11 @@ result.innerHTML=html
 
 }
 
+function copyResult(){
+navigator.clipboard.writeText(result.innerText)
+alert("Скопировано")
+}
+
 function saveGame(){
 
 let history = JSON.parse(localStorage.getItem("sensei_history")||"[]")
@@ -299,144 +350,11 @@ alert("Игра сохранена")
 
 }
 
-function openHistory(){
-
-let history = JSON.parse(localStorage.getItem("sensei_history")||"[]")
-
-let html="<h2>История игр</h2>"
-
-history.forEach(g=>{
-
-html+=`<b>${g.date}</b><br>`
-
-for(let p in g.players){
-
-let val=g.players[p]
-let sign=val>0?"+":""
-
-html+=`${p} ${sign}${money(val)}<br>`
-
-}
-
-html+="<hr>"
-
-})
-
-result.innerHTML=html
-
-}
-
-function openRating(){
-
-let history = JSON.parse(localStorage.getItem("sensei_history")||"[]")
-
-let rating={}
-
-history.forEach(g=>{
-for(let p in g.players){
-rating[p]=(rating[p]||0)+g.players[p]
-}
-})
-
-let arr=[]
-
-for(let p in rating){
-arr.push({name:p,val:rating[p]})
-}
-
-arr.sort((a,b)=>b.val-a.val)
-
-let html="<h2>Рейтинг игроков</h2>"
-
-arr.forEach((p,i)=>{
-let sign=p.val>0?"+":""
-html+=`${i+1}. ${p.name} ${sign}${money(p.val)}<br>`
-})
-
-result.innerHTML=html
-
-}
-
-function openPlayerDay(){
-
-let history = JSON.parse(localStorage.getItem("sensei_history")||"[]")
-
-if(history.length==0)return
-
-let last=history[0]
-
-let best=""
-let val=-999999
-
-for(let p in last.players){
-if(last.players[p]>val){
-val=last.players[p]
-best=p
-}
-}
-
-result.innerHTML=`<h2>Игрок дня</h2>
-🏆 ${best} +${money(val)}
-`
-
-}
-
-function openStats(){
-
-let history = JSON.parse(localStorage.getItem("sensei_history")||"[]")
-
-let games=history.length
-let total=0
-
-history.forEach(g=>{
-for(let p in g.players){
-total+=Math.abs(g.players[p])
-}
-})
-
-result.innerHTML=`<h2>Статистика клуба</h2>
-Всего игр: ${games}<br>
-Оборот денег: ${money(total)}
-`
-
-}
-
 function scrollToCalculator(){
 
 document.getElementById("calculator")
 .scrollIntoView({behavior:"smooth"})
 
-}
-
-function clearHistory(){
-
-let pass=prompt("Пароль владельца")
-
-if(pass!=="sensei2026"){
-alert("Неверный пароль")
-return
-}
-
-localStorage.removeItem("sensei_history")
-
-alert("История очищена")
-
-}
-
-function copyResult(){
-navigator.clipboard.writeText(result.innerText)
-alert("Скопировано")
-}
-
-let month=localStorage.getItem("sensei_month")
-let now=new Date().getMonth()
-
-if(month==null){
-localStorage.setItem("sensei_month",now)
-}
-else if(Number(month)!==now){
-localStorage.removeItem("sensei_history")
-localStorage.setItem("sensei_month",now)
 }
 
 </script>
