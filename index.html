@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SENSEI COLLOQUIAL</title>
+    <title>SENSEI BILLIARD CLUB</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600;800&display=swap');
 
@@ -21,20 +21,17 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .header { width: 100%; border-bottom: 2px solid var(--gold); background: #000; overflow: hidden; }
-        .header img { width: 100%; display: block; }
+        .header { width: 100%; border-bottom: 2px solid var(--gold); background: #000; }
+        .header img { width: 100%; display: block; height: auto; }
 
         .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
 
-        /* Режимы */
-        .mode-selector {
-            display: flex; gap: 8px; margin-bottom: 20px;
-        }
+        .mode-selector { display: flex; gap: 8px; margin-bottom: 20px; }
         .mode-btn {
             flex: 1; padding: 14px 5px; border: 1px solid var(--gold);
             background: transparent; color: var(--gold); border-radius: 8px;
             font-weight: 800; font-size: 10px; text-transform: uppercase;
-            letter-spacing: 0.5px; transition: 0.3s; cursor: pointer;
+            cursor: pointer; transition: 0.3s;
         }
         .mode-btn.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
 
@@ -49,16 +46,14 @@
         }
         .table-header span { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; text-align: center; }
 
-        .player-row {
-            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;
-            margin-bottom: 10px;
-        }
+        .player-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 
         input {
             background: var(--input-bg); border: 1px solid #1a523a;
             color: #fff; padding: 12px 8px; border-radius: 8px;
             font-size: 15px; outline: none; text-align: center; width: 100%; box-sizing: border-box;
         }
+        input::placeholder { color: rgba(255,255,255,0.2); font-size: 13px; }
         input[type="text"] { text-align: left; padding-left: 12px; }
         input:focus { border-color: var(--gold); background: rgba(197, 160, 89, 0.05); }
 
@@ -72,10 +67,9 @@
             width: 100%; padding: 20px; border: none; border-radius: 10px;
             background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
             color: #000; font-weight: 900; font-size: 15px; text-transform: uppercase;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); cursor: pointer; margin-top: 10px;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        /* Результаты */
         .res-container { display: none; margin-top: 25px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -92,21 +86,16 @@
             border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--gold);
         }
         .pay-names { font-size: 13px; font-weight: 600; }
-        .pay-amount { text-align: right; }
-        .amt-cash { color: var(--gold-bright); font-weight: 800; display: block; }
-        .amt-balls { font-size: 11px; color: #888; }
+        .amt-cash { color: var(--gold-bright); font-weight: 800; display: block; text-align: right; }
+        .amt-balls { font-size: 11px; color: #888; display: block; text-align: right; }
 
-        .total-row {
-            display: flex; justify-content: space-between; padding: 12px 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        .total-row { display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .win { color: #4ade80; font-weight: 800; }
         .loss { color: #ff5c5c; font-weight: 800; }
 
         .commentary {
             background: #04120c; border: 1px solid rgba(197, 160, 89, 0.2);
-            padding: 15px; border-radius: 10px; margin-top: 20px;
-            font-size: 12px; line-height: 1.6; color: #bbb;
+            padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 12px; line-height: 1.6; color: #bbb;
         }
         .commentary b { color: var(--gold-bright); }
 
@@ -114,14 +103,14 @@
         .btn-side {
             background: transparent; border: 1px solid rgba(197, 160, 89, 0.5);
             color: var(--gold); padding: 12px; border-radius: 8px; font-size: 11px;
-            text-transform: uppercase; font-weight: 700;
+            text-transform: uppercase; font-weight: 700; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <img src="https://i.ibb.co/VYvBvG1/sensei-header.jpg" alt="SENSEI HEADER">
+    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" alt="SENSEI BILLIARD CLUB">
 </div>
 
 <div class="container">
@@ -148,10 +137,10 @@
         <button class="btn-main" onclick="calculate()">Подсчитать результат</button>
 
         <div id="results" class="res-container">
-            <div class="section-title">Расчет по очкам</div>
+            <div class="section-title">Расчет выплат</div>
             <div id="pay-list"></div>
             
-            <div class="section-title">Итог на руки</div>
+            <div class="section-title">Общий итог</div>
             <div id="total-list"></div>
 
             <div class="commentary" id="comment-box"></div>
@@ -166,7 +155,6 @@
 
 <script>
 let mode = 'solo';
-const defaultNames = ['Дако', 'Даурен', 'Сека', 'Джони'];
 
 function setMode(m) {
     mode = m;
@@ -176,9 +164,9 @@ function setMode(m) {
 
 function init() {
     const box = document.getElementById('players-box');
-    box.innerHTML = defaultNames.map((n, i) => `
+    box.innerHTML = Array(4).fill(0).map((_, i) => `
         <div class="player-row">
-            <input type="text" id="n${i}" value="${n}">
+            <input type="text" id="n${i}" placeholder="Имя игрока ${i+1}">
             <input type="number" id="s${i}_1" placeholder="0">
             <input type="number" id="s${i}_2" placeholder="0">
         </div>
@@ -198,10 +186,10 @@ function calculate() {
         });
     }
 
-    let detail = "";
+    let detail = "<b>ПОДРОБНЫЙ РАЗБОР:</b><br>";
     
     if(mode === 'solo') {
-        // Расчет "Каждый с каждым"
+        // Расчет каждый с каждым
         players.forEach((p1, i) => {
             players.forEach((p2, j) => {
                 if(i < j) {
@@ -212,12 +200,9 @@ function calculate() {
             });
         });
 
-        // Формируем детальный разбор пар
-        detail = `<b>ПОДРОБНЫЙ РАЗБОР:</b><br>`;
-        const pairs = [
-            [0, 1], [1, 2], [2, 3], [3, 0]
-        ];
-        pairs.forEach(pair => {
+        // Цепочка для разбора (как просил пользователь)
+        const chain = [[3,2], [2,1], [1,0], [0,3]]; // Дако-Даурен, Даурен-Сека и т.д.
+        chain.forEach(pair => {
             let pA = players[pair[0]];
             let pB = players[pair[1]];
             let diff = pA.score - pB.score;
@@ -230,10 +215,10 @@ function calculate() {
         let diff = t1 - t2;
         players[0].balance = players[1].balance = diff * stake;
         players[2].balance = players[3].balance = -diff * stake;
-        detail = `<b>РЕЖИМ 2 НА 2:</b><br>Команда 1 (${players[0].name}, ${players[1].name}): ${t1} ш.<br>Команда 2 (${players[2].name}, ${players[3].name}): ${t2} ш.<br>Разница: ${Math.abs(diff)} ш.`;
+        detail = `<b>РЕЖИМ 2 НА 2:</b><br>Команда 1: ${t1} ш.<br>Команда 2: ${t2} ш.<br>Разница: ${Math.abs(diff)} ш.`;
     }
 
-    // Выплаты
+    // Алгоритм выплат
     let winners = [...players].filter(p => p.balance > 0).sort((a,b) => b.balance - a.balance);
     let losers = [...players].filter(p => p.balance < 0).sort((a,b) => a.balance - b.balance);
     
@@ -248,7 +233,7 @@ function calculate() {
                         <div class="pay-names">${l.name} → ${w.name}</div>
                         <div class="pay-amount">
                             <span class="amt-cash">${transfer} тнг</span>
-                            <span class="amt-balls">${transfer/stake} ш.</span>
+                            <span class="amt-balls">(${transfer/stake} ш.)</span>
                         </div>
                     </div>`;
                 lBal -= transfer;
@@ -259,22 +244,17 @@ function calculate() {
 
     document.getElementById('pay-list').innerHTML = payHtml || "<div style='text-align:center; padding:20px; opacity:0.5;'>Ничья</div>";
     
-    // Итоговый список (пересчитываем для вывода чистых сумм)
-    calculateBalanceDisplay(players, stake);
+    // Отрисовка итогов
+    renderTotals(players, stake);
     
     document.getElementById('comment-box').innerHTML = detail;
     document.getElementById('results').style.display = 'block';
     window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
 }
 
-function calculateBalanceDisplay(players, stake) {
-    // Вспомогательная для отрисовки финальных балансов
-    let results = [];
-    for(let i=0; i<4; i++) {
-        let p = { name: players[i].name, balance: 0, score: players[i].score };
-        results.push(p);
-    }
-    
+function renderTotals(players, stake) {
+    // Пересчет чистого баланса для вывода
+    let results = players.map(p => ({...p, balance: 0}));
     if(mode === 'solo') {
         results.forEach((p1, i) => {
             results.forEach((p2, j) => {
@@ -302,9 +282,9 @@ function calculateBalanceDisplay(players, stake) {
 }
 
 function copy() {
-    let text = "РЕЗУЛЬТАТЫ SENSEI\n" + document.getElementById('pay-list').innerText;
-    navigator.clipboard.writeText(text);
-    alert("Скопировано!");
+    let t = "SENSEI BILLIARD CLUB\n" + document.getElementById('pay-list').innerText;
+    navigator.clipboard.writeText(t);
+    alert("Результаты скопированы!");
 }
 
 init();
