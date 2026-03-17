@@ -5,14 +5,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>SENSEI Калькулятор</title>
+<title>SENSEI калькулятор</title>
 
 <style>
+
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(#05261a,#0d3c2b);
+background:linear-gradient(#04261a,#0c3b2a);
 color:white;
 }
 
@@ -28,22 +32,23 @@ padding:15px;
 }
 
 .card{
-background:#113c2a;
+background:#123c2b;
 padding:20px;
 border-radius:16px;
-box-shadow:0 10px 25px rgba(0,0,0,0.5);
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
 
-.title{
-text-align:center;
-margin-bottom:10px;
+.label{
+margin-top:10px;
+margin-bottom:6px;
+opacity:0.9;
 }
 
 input{
 width:100%;
 padding:12px;
-border-radius:10px;
 border:none;
+border-radius:10px;
 background:#07271c;
 color:white;
 font-size:16px;
@@ -51,20 +56,26 @@ font-size:16px;
 
 .table{
 margin-top:15px;
-display:flex;
-flex-direction:column;
-gap:10px;
 }
 
 .row{
-display:grid;
-grid-template-columns:1.4fr 1fr 1fr;
+display:flex;
 gap:10px;
+margin-bottom:10px;
+}
+
+.col-player{
+flex:2;
+}
+
+.col-score{
+flex:1;
 }
 
 .headerRow{
+opacity:0.7;
 font-size:14px;
-opacity:.8;
+margin-bottom:6px;
 }
 
 button{
@@ -94,6 +105,7 @@ border-radius:12px;
 .mapBtn{
 margin-top:20px;
 background:#4c9b74;
+color:white;
 }
 
 </style>
@@ -109,39 +121,39 @@ background:#4c9b74;
 
 <div class="card">
 
-<div class="title">Ставка за шар</div>
+<div class="label">Ставка за шар</div>
 <input id="stake" value="400">
 
 <div class="table">
 
 <div class="row headerRow">
-<div>Игрок</div>
-<div>П1</div>
-<div>П2</div>
+<div class="col-player">Игрок</div>
+<div class="col-score">П1</div>
+<div class="col-score">П2</div>
 </div>
 
 <div class="row">
-<input id="n1" placeholder="Игрок">
-<input id="p1">
-<input>
+<div class="col-player"><input id="n1" placeholder="Игрок"></div>
+<div class="col-score"><input id="p1"></div>
+<div class="col-score"><input></div>
 </div>
 
 <div class="row">
-<input id="n2">
-<input id="p2">
-<input>
+<div class="col-player"><input id="n2"></div>
+<div class="col-score"><input id="p2"></div>
+<div class="col-score"><input></div>
 </div>
 
 <div class="row">
-<input id="n3">
-<input id="p3">
-<input>
+<div class="col-player"><input id="n3"></div>
+<div class="col-score"><input id="p3"></div>
+<div class="col-score"><input></div>
 </div>
 
 <div class="row">
-<input id="n4">
-<input id="p4">
-<input>
+<div class="col-player"><input id="n4"></div>
+<div class="col-score"><input id="p4"></div>
+<div class="col-score"><input></div>
 </div>
 
 </div>
@@ -236,14 +248,7 @@ j=(j+1)%4
 let money={}
 let html="<div class='result'>"
 
-html+="<b>Разница очков</b><br><br>"
-
-html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
-html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
-html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
-html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
-
-html+="<br><b>Кто кому платит</b><br><br>"
+html+="<b>Кто кому платит</b><br><br>"
 
 payments.forEach(p=>{
 
@@ -256,7 +261,7 @@ money[p.to]=(money[p.to]||0)+cash
 
 })
 
-html+="<br><b>Итог по деньгам</b><br><br>"
+html+="<br><b>Итог</b><br><br>"
 
 names.forEach(n=>{
 
