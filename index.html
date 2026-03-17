@@ -12,76 +12,39 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#031c13,#0e3b28);
+background:linear-gradient(180deg,#021e15,#0c3c2a);
 color:white;
 text-align:center;
 }
 
 .header img{
 width:100%;
-max-height:170px;
+max-height:180px;
 object-fit:cover;
 }
 
-.panel{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-padding:15px;
+.card{
+background:#123e2b;
+width:92%;
 max-width:700px;
 margin:auto;
-}
-
-.panel button{
-background:#0e2f21;
-border:none;
-border-radius:14px;
-padding:16px;
-color:white;
-font-size:15px;
-cursor:pointer;
-box-shadow:0 6px 16px rgba(0,0,0,0.4);
-}
-
-.card{
-background:#133d2a;
-max-width:700px;
-width:92%;
-margin:20px auto;
+margin-top:20px;
 padding:20px;
-border-radius:16px;
-box-shadow:0 10px 28px rgba(0,0,0,0.5);
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-.mode{
-margin-bottom:15px;
-}
-
-.mode select{
-padding:10px;
-border-radius:10px;
-border:none;
-font-size:16px;
-}
-
-.stakeRow{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:15px;
-align-items:center;
-}
-
-.stakeRow input{
+select,input{
 padding:12px;
 border-radius:10px;
 border:none;
-background:#0c251c;
+background:#0a251c;
 color:white;
 font-size:16px;
 }
 
 .table{
+margin-top:15px;
 display:flex;
 flex-direction:column;
 gap:10px;
@@ -89,66 +52,30 @@ gap:10px;
 
 .row{
 display:grid;
-grid-template-columns:1.5fr 1fr 1fr;
+grid-template-columns:1.6fr 1fr 1fr;
 gap:8px;
 }
 
-.row input{
-padding:12px;
-border-radius:10px;
-border:none;
-background:#0c251c;
-color:white;
-font-size:15px;
+button{
 width:100%;
-box-sizing:border-box;
-}
-
-button.calc{
-width:100%;
-padding:16px;
-margin-top:15px;
+padding:15px;
 border:none;
 border-radius:12px;
+margin-top:10px;
+font-size:18px;
+}
+
+.calc{
 background:#d4af37;
 color:black;
-font-size:18px;
 font-weight:bold;
-cursor:pointer;
 }
 
-button.copy{
-width:100%;
-padding:16px;
-margin-top:10px;
-border:none;
-border-radius:12px;
-background:#6a7d97;
-color:white;
-font-size:18px;
-}
+.copy{background:#6f7f98;color:white}
 
-button.reset{
-width:100%;
-padding:16px;
-margin-top:10px;
-border:none;
-border-radius:12px;
-background:#8d2e2e;
-color:white;
-font-size:18px;
-}
+.reset{background:#8e2f2f;color:white}
 
-button.save{
-width:100%;
-padding:16px;
-margin-top:10px;
-border:none;
-border-radius:12px;
-background:#e0e0e0;
-color:#2d5fa3;
-font-size:18px;
-}
+.save{background:#e0e0e0;color:#2d5fa3}
 
 .result{
 background:#041c14;
@@ -158,18 +85,18 @@ border-radius:12px;
 text-align:left;
 }
 
-.green{color:#55ff9b}
-.red{color:#ff7a7a}
+.green{color:#63ff9c}
+
+.red{color:#ff7b7b}
 
 .mapBtn{
 margin:20px;
-background:#3c8e67;
+padding:14px 20px;
+background:#3b8c65;
 border:none;
-padding:14px 22px;
 border-radius:12px;
 color:white;
 font-size:16px;
-cursor:pointer;
 }
 
 </style>
@@ -178,36 +105,20 @@ cursor:pointer;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
-<div class="panel">
-
-<button onclick="showHistory()">📜 История</button>
-<button onclick="showRating()">🏆 Рейтинг</button>
-<button onclick="showDay()">⭐ Игрок дня</button>
-
-<button onclick="showStats()">📊 Статистика</button>
-<button onclick="openMap()">🗺 Карта</button>
-<button onclick="scrollCalc()">🎱 Калькулятор</button>
-
-</div>
-
-<div class="card" id="calc">
-
-<div class="mode">
+<div class="card">
 
 <select id="mode">
 <option value="kolhoz">Колхоз</option>
 <option value="teams">2 на 2</option>
 </select>
 
-</div>
+<br><br>
 
-<div class="stakeRow">
 <div>Ставка за шар</div>
-<input id="stake" type="number" value="400">
-</div>
+<input id="stake" value="400">
 
 <div class="table">
 
@@ -220,7 +131,7 @@ cursor:pointer;
 <div class="row">
 <input id="n1" placeholder="Игрок">
 <input id="p1_1" placeholder="Очки">
-<input id="p2_1" placeholder="Очки">
+<input id="p2_1">
 </div>
 
 <div class="row">
@@ -264,12 +175,7 @@ function calc(){
 
 let stake=Number(document.getElementById("stake").value)
 
-let names=[
-n1.value,
-n2.value,
-n3.value,
-n4.value
-]
+let names=[n1.value,n2.value,n3.value,n4.value]
 
 let scores=[
 Number(p1_1.value),
@@ -278,89 +184,101 @@ Number(p1_3.value),
 Number(p1_4.value)
 ]
 
-let balance=[0,0,0,0]
-let diffs=[]
+let diff=[]
 
 for(let i=0;i<4;i++){
 
 let next=(i+1)%4
-
-let diff=scores[i]-scores[next]
-
-diffs.push(names[i]+" "+scores[i]+" - "+names[next]+" "+scores[next]+" = "+diff)
-
-if(diff>0){
-
-balance[i]+=diff
-balance[next]-=diff
-
-}
-
-}
-
-let payments=[]
-
-for(let i=0;i<4;i++){
-
-if(balance[i]<0){
-
-for(let j=0;j<4;j++){
-
-if(balance[j]>0){
-
-let pay=Math.min(-balance[i],balance[j])
-
-payments.push(names[i]+" → "+names[j]+" = "+pay)
-
-balance[i]+=pay
-balance[j]-=pay
-
-}
-
-}
-
-}
+diff[i]=scores[i]-scores[next]
 
 }
 
 let html="<div class='result'>"
 
-html+="<b>Разница очков</b><br>"
+html+="<b>1. Разница очков (по кругу игроков)</b><br><br>"
 
-diffs.forEach(d=>html+=d+"<br>")
+html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
+html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
+html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
+html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
 
-html+="<br><b>Кто кому платит</b><br>"
-
-payments.forEach(p=>{
-
-let pts=p.split("=")[1]
-
-let money=pts*stake
-
-html+=p+" очков ("+formatMoney(money)+" тг)<br>"
-
-})
-
-html+="<br><b>Итог по деньгам</b><br>"
+let plus=[]
+let minus=[]
 
 for(let i=0;i<4;i++){
 
-let money=balance[i]*stake
-
-if(money>0){
-html+="<div class='green'>"+names[i]+" +"+formatMoney(money)+"</div>"
-}
-
-if(money<0){
-html+="<div class='red'>"+names[i]+" "+formatMoney(money)+"</div>"
-}
+if(diff[i]>0) plus.push({i,val:diff[i]})
+if(diff[i]<0) minus.push({i,val:Math.abs(diff[i])})
 
 }
 
-html+="<br><b>Почему так получилось</b><br>"
-html+="Игроки сравниваются по кругу: 1 → 2 → 3 → 4 → 1.<br>"
-html+="Минус игрока распределяется между игроками с плюсом.<br>"
-html+="Поэтому сумма выигрыша и проигрыша всегда совпадает."
+html+="<br><b>2. Распределение долгов</b><br><br>"
+
+let payments=[]
+let result=[0,0,0,0]
+
+minus.forEach(m=>{
+
+plus.forEach(p=>{
+
+if(m.val>0 && p.val>0){
+
+let pay=Math.min(m.val,p.val)
+
+payments.push([names[m.i],names[p.i],pay])
+
+m.val-=pay
+p.val-=pay
+
+}
+
+})
+
+})
+
+html+="<b>3. Кто кому платит</b><br><br>"
+
+payments.forEach(p=>{
+
+let money=p[2]*stake
+
+html+=p[0]+" → "+p[1]+" = "+p[2]+" очков ("+formatMoney(money)+" тг)<br>"
+
+let from=names.indexOf(p[0])
+let to=names.indexOf(p[1])
+
+result[from]-=money
+result[to]+=money
+
+})
+
+html+="<br><b>4. Итог по деньгам</b><br><br>"
+
+for(let i=0;i<4;i++){
+
+if(result[i]>0){
+html+="<div class='green'>"+names[i]+" +"+formatMoney(result[i])+" тг</div>"
+}
+
+if(result[i]<0){
+html+="<div class='red'>"+names[i]+" "+formatMoney(result[i])+" тг</div>"
+}
+
+}
+
+html+="<br><b>5. Подробное объяснение</b><br><br>"
+
+html+="В игре «Колхоз» игроки сравниваются по кругу:<br>"
+html+="1 → 2 → 3 → 4 → 1.<br><br>"
+
+html+="После этого определяется разница очков между соседними игроками.<br><br>"
+
+html+="Если разница положительная — игрок выигрывает очки.<br>"
+html+="Если отрицательная — игрок проигрывает очки.<br><br>"
+
+html+="Игроки с минусом оплачивают разницу игрокам с плюсом.<br><br>"
+
+html+="Система автоматически распределяет долги так, чтобы сумма выигрыша и проигрыша совпадала."
 
 html+="</div>"
 
@@ -369,8 +287,10 @@ document.getElementById("result").innerHTML=html
 }
 
 function copyResult(){
+
 navigator.clipboard.writeText(result.innerText)
-alert("Скопировано")
+alert("Результат скопирован")
+
 }
 
 function saveGame(){
@@ -388,40 +308,10 @@ alert("Игра сохранена")
 
 }
 
-function showHistory(){
-
-let history=JSON.parse(localStorage.getItem("games")||"[]")
-
-let html="<div class='result'><b>История игр</b><br><br>"
-
-history.forEach(g=>{
-html+=g.date+"<br>"+g.text+"<br><br>"
-})
-
-html+="</div>"
-
-result.innerHTML=html
-
-}
-
-function showRating(){
-result.innerHTML="<div class='result'>Рейтинг появится после нескольких игр</div>"
-}
-
-function showDay(){
-result.innerHTML="<div class='result'>Игрок дня определяется по максимальному выигрышу</div>"
-}
-
-function showStats(){
-result.innerHTML="<div class='result'>Статистика появится после накопления игр</div>"
-}
-
 function openMap(){
-window.open("https://2gis.kz/almaty/geo/70000001101734090")
-}
 
-function scrollCalc(){
-document.getElementById("calc").scrollIntoView({behavior:"smooth"})
+window.open("https://2gis.kz/almaty/geo/70000001101734090")
+
 }
 
 </script>
