@@ -5,18 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>SENSEI калькулятор</title>
+<title>SENSEI Billiard Club</title>
 
 <style>
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(#04261a,#0c3b2a);
+background:linear-gradient(#05261a,#0e3b2a);
 color:white;
 }
 
@@ -26,71 +24,70 @@ display:block;
 }
 
 .container{
-max-width:650px;
+max-width:700px;
 margin:auto;
 padding:15px;
 }
 
+.menu{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:15px;
+}
+
+.menu button{
+padding:12px;
+border-radius:10px;
+border:none;
+background:#103c2a;
+color:white;
+font-size:14px;
+}
+
 .card{
 background:#123c2b;
-padding:20px;
-border-radius:16px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+padding:18px;
+border-radius:14px;
 }
 
 .label{
 margin-top:10px;
-margin-bottom:6px;
-opacity:0.9;
+margin-bottom:5px;
 }
 
-input{
+input,select{
 width:100%;
 padding:12px;
-border:none;
 border-radius:10px;
-background:#07271c;
+border:none;
+background:#08271c;
 color:white;
 font-size:16px;
 }
 
-.table{
-margin-top:15px;
-}
-
 .row{
 display:flex;
-gap:10px;
+gap:8px;
 margin-bottom:10px;
 }
 
-.col-player{
-flex:2;
-}
+.player{flex:2;}
+.score{flex:1;}
 
-.col-score{
-flex:1;
-}
-
-.headerRow{
-opacity:0.7;
-font-size:14px;
-margin-bottom:6px;
-}
-
-button{
+button.action{
 width:100%;
 padding:14px;
 border:none;
-border-radius:12px;
+border-radius:10px;
 font-size:18px;
 margin-top:10px;
 }
 
-.calc{background:#d4af37;color:black;font-weight:bold;}
-.copy{background:#74839d;color:white;}
-.reset{background:#8c3333;color:white;}
-.save{background:#e6e6e6;color:#2e5fa5;}
+.calc{background:#d4af37;color:black;}
+.copy{background:#75829c;}
+.reset{background:#8a3434;}
+.save{background:#e4e4e4;color:#2b5da0;}
 
 .result{
 background:#041c14;
@@ -99,13 +96,12 @@ padding:15px;
 border-radius:12px;
 }
 
-.green{color:#6aff9d;}
+.green{color:#66ffa0;}
 .red{color:#ff7777;}
 
 .mapBtn{
 margin-top:20px;
 background:#4c9b74;
-color:white;
 }
 
 </style>
@@ -114,60 +110,73 @@ color:white;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
 <div class="container">
 
-<div class="card">
+<div class="menu">
+<button onclick="showHistory()">История</button>
+<button onclick="showRating()">Рейтинг</button>
+<button onclick="showStats()">Статистика</button>
+<button onclick="scrollCalc()">Калькулятор</button>
+<button onclick="openMap()">Карта</button>
+<button onclick="location.reload()">Обновить</button>
+</div>
+
+<div class="card" id="calc">
+
+<div class="label">Режим игры</div>
+
+<select id="mode">
+<option value="kolhoz">Колхоз</option>
+<option value="reverse">Обратка</option>
+<option value="teams">2 на 2</option>
+</select>
 
 <div class="label">Ставка за шар</div>
 <input id="stake" value="400">
 
-<div class="table">
-
-<div class="row headerRow">
-<div class="col-player">Игрок</div>
-<div class="col-score">П1</div>
-<div class="col-score">П2</div>
+<div class="row">
+<div class="player">Игрок</div>
+<div class="score">П1</div>
+<div class="score">П2</div>
 </div>
 
 <div class="row">
-<div class="col-player"><input id="n1" placeholder="Игрок"></div>
-<div class="col-score"><input id="p1"></div>
-<div class="col-score"><input></div>
+<input id="n1" class="player">
+<input id="p1" class="score">
+<input class="score">
 </div>
 
 <div class="row">
-<div class="col-player"><input id="n2"></div>
-<div class="col-score"><input id="p2"></div>
-<div class="col-score"><input></div>
+<input id="n2" class="player">
+<input id="p2" class="score">
+<input class="score">
 </div>
 
 <div class="row">
-<div class="col-player"><input id="n3"></div>
-<div class="col-score"><input id="p3"></div>
-<div class="col-score"><input></div>
+<input id="n3" class="player">
+<input id="p3" class="score">
+<input class="score">
 </div>
 
 <div class="row">
-<div class="col-player"><input id="n4"></div>
-<div class="col-score"><input id="p4"></div>
-<div class="col-score"><input></div>
+<input id="n4" class="player">
+<input id="p4" class="score">
+<input class="score">
 </div>
 
-</div>
-
-<button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-<button class="reset" onclick="location.reload()">СБРОС</button>
-<button class="save">СОХРАНИТЬ В ИСТОРИЮ</button>
+<button class="action calc" onclick="calc()">ПОДСЧИТАТЬ</button>
+<button class="action copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
+<button class="action reset" onclick="location.reload()">СБРОС</button>
+<button class="action save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
 
 <div id="result"></div>
 
 </div>
 
-<button class="mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
+<button class="action mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
 
 </div>
 
@@ -178,17 +187,11 @@ function calc(){
 let stake = Number(document.getElementById("stake").value)
 
 let names=[
-document.getElementById("n1").value,
-document.getElementById("n2").value,
-document.getElementById("n3").value,
-document.getElementById("n4").value
+n1.value,n2.value,n3.value,n4.value
 ]
 
 let scores=[
-Number(document.getElementById("p1").value),
-Number(document.getElementById("p2").value),
-Number(document.getElementById("p3").value),
-Number(document.getElementById("p4").value)
+Number(p1.value),Number(p2.value),Number(p3.value),Number(p4.value)
 ]
 
 let diff=[]
@@ -279,8 +282,84 @@ html+="<div class='red'>"+n+" "+v+" тг</div>"
 
 html+="</div>"
 
-document.getElementById("result").innerHTML=html
+result.innerHTML=html
 
+}
+
+function saveGame(){
+
+let text=result.innerText
+
+let history=JSON.parse(localStorage.getItem("games")||"[]")
+
+history.unshift({
+date:new Date().toLocaleString(),
+text:text
+})
+
+localStorage.setItem("games",JSON.stringify(history))
+
+alert("Игра сохранена")
+
+}
+
+function showHistory(){
+
+let history=JSON.parse(localStorage.getItem("games")||"[]")
+
+let html="<div class='result'><b>История игр</b><br><br>"
+
+history.forEach(g=>{
+html+=g.date+"<br>"+g.text+"<br><br>"
+})
+
+html+="</div>"
+
+result.innerHTML=html
+
+}
+
+function showRating(){
+
+let history=JSON.parse(localStorage.getItem("games")||"[]")
+
+let rating={}
+
+history.forEach(g=>{
+
+let lines=g.text.split("\n")
+
+lines.forEach(l=>{
+
+if(l.includes("+")){
+
+let p=l.split(" ")
+
+let name=p[0]
+let val=parseInt(p[1])
+
+rating[name]=(rating[name]||0)+val
+
+}
+
+})
+
+})
+
+let html="<div class='result'><b>Рейтинг игроков</b><br><br>"
+
+Object.keys(rating).sort((a,b)=>rating[b]-rating[a]).forEach(n=>{
+html+=n+" : "+rating[n]+" тг<br>"
+})
+
+html+="</div>"
+
+result.innerHTML=html
+
+}
+
+function showStats(){
+result.innerHTML="<div class='result'>Статистика формируется по истории игр</div>"
 }
 
 function copyResult(){
@@ -290,6 +369,10 @@ alert("Скопировано")
 
 function openMap(){
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
+}
+
+function scrollCalc(){
+document.getElementById("calc").scrollIntoView({behavior:"smooth"})
 }
 
 </script>
