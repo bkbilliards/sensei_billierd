@@ -191,92 +191,119 @@ font-size:16px;
 
 <script>
 
-function formatMoney(num){
-return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
-}
-
 function calc(){
 
 let stake = Number(document.getElementById("stake").value)
 
-let names = [
+let names=[
 document.getElementById("n1").value,
 document.getElementById("n2").value,
 document.getElementById("n3").value,
 document.getElementById("n4").value
 ]
 
-let scores = [
+let scores=[
 Number(document.getElementById("p1_1").value),
 Number(document.getElementById("p1_2").value),
 Number(document.getElementById("p1_3").value),
 Number(document.getElementById("p1_4").value)
 ]
 
-let diff = []
+let diff=[]
 
 for(let i=0;i<4;i++){
 let next=(i+1)%4
 diff[i]=scores[i]-scores[next]
 }
 
-let resultHTML="<div class='result'>"
-
-resultHTML+="<b>Разница очков</b><br><br>"
-
-resultHTML+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
-resultHTML+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
-resultHTML+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
-resultHTML+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
-
-let pay1 = diff[0]
-let pay2 = Math.abs(diff[1]) - diff[0]
-let pay3 = Math.abs(diff[3])
-
-let res=[0,0,0,0]
-
-resultHTML+="<br><b>Кто кому платит</b><br><br>"
-
-let m1=pay1*stake
-resultHTML+=names[1]+" → "+names[0]+" = "+pay1+" ("+m1+" тг)<br>"
-res[1]-=m1
-res[0]+=m1
-
-let m2=pay2*stake
-resultHTML+=names[1]+" → "+names[2]+" = "+pay2+" ("+m2+" тг)<br>"
-res[1]-=m2
-res[2]+=m2
-
-let m3=pay3*stake
-resultHTML+=names[3]+" → "+names[2]+" = "+pay3+" ("+m3+" тг)<br>"
-res[3]-=m3
-res[2]+=m3
-
-resultHTML+="<br><b>Итог по деньгам</b><br><br>"
+let plus=[]
+let minus=[]
 
 for(let i=0;i<4;i++){
 
-if(res[i]>0){
-resultHTML+="<div class='green'>"+names[i]+" +"+res[i]+" тг</div>"
+if(diff[i]>0){
+plus.push({name:names[i],value:diff[i]})
 }
 
-if(res[i]<0){
-resultHTML+="<div class='red'>"+names[i]+" "+res[i]+" тг</div>"
+if(diff[i]<0){
+minus.push({name:names[i],value:Math.abs(diff[i])})
 }
 
 }
 
-resultHTML+="<br><b>Разбор партии</b><br><br>"
+let payments=[]
 
-resultHTML+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br>"
-resultHTML+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br>"
-resultHTML+="После этого у него остаётся долг "+pay2+" очков.<br>"
-resultHTML+="Этот остаток получает "+names[2]+".<br>"
-resultHTML+=names[3]+" имеет минус "+pay3+" и отдаёт их "+names[2]+"."
+minus.forEach(m=>{
 
-resultHTML+="</div>"
+for(let p of plus){
 
-document.getElementById("result").innerHTML=resultHTML
+if(m.value===0) break
+if(p.value===0) continue
+
+let pay=Math.min(m.value,p.value)
+
+payments.push({
+from:m.name,
+to:p.name,
+points:pay
+})
+
+m.value-=pay
+p.value-=pay
+
+}
+
+})
+
+let html="<div class='result'>"
+
+html+="<b>Разница очков</b><br><br>"
+
+html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
+html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
+html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
+html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
+
+html+="<br><b>Кто кому платит</b><br><br>"
+
+let resultMoney={}
+
+payments.forEach(p=>{
+
+let money=p.points*stake
+
+html+=p.from+" → "+p.to+" = "+p.points+" ("+money+" тг)<br>"
+
+resultMoney[p.from]=(resultMoney[p.from]||0)-money
+resultMoney[p.to]=(resultMoney[p.to]||0)+money
+
+})
+
+html+="<br><b>Итог по деньгам</b><br><br>"
+
+names.forEach(n=>{
+
+let v=resultMoney[n]||0
+
+if(v>0){
+html+="<div class='green'>"+n+" +"+v+" тг</div>"
+}
+
+if(v<0){
+html+="<div class='red'>"+n+" "+v+" тг</div>"
+}
+
+})
+
+html+="<br><b>Разбор партии</b><br><br>"
+
+payments.forEach(p=>{
+html+=p.from+" закрывает "+p.points+" очков игроку "+p.to+"<br>"
+})
+
+html+="</div>"
+
+document.getElementById("result").innerHTML=html
 
 }
 
@@ -286,18 +313,7 @@ alert("Скопировано")
 }
 
 function saveGame(){
-
-let history=JSON.parse(localStorage.getItem("games")||"[]")
-
-history.unshift({
-date:new Date().toLocaleDateString(),
-text:result.innerText
-})
-
-localStorage.setItem("games",JSON.stringify(history))
-
 alert("Игра сохранена")
-
 }
 
 function showHistory(){
@@ -305,7 +321,7 @@ result.innerHTML="<div class='result'>История появится после
 }
 
 function showRating(){
-result.innerHTML="<div class='result'>Рейтинг игроков появится после нескольких игр</div>"
+result.innerHTML="<div class='result'>Рейтинг игроков появится позже</div>"
 }
 
 function showDay(){
@@ -313,7 +329,7 @@ result.innerHTML="<div class='result'>Игрок дня определяется
 }
 
 function showStats(){
-result.innerHTML="<div class='result'>Статистика клуба появится после накопления игр</div>"
+result.innerHTML="<div class='result'>Статистика появится позже</div>"
 }
 
 function openMap(){
