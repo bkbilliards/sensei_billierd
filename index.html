@@ -1,73 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
+<title>SENSEI BILLIARD CLUB</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#031f15,#0e3c2b);
+background:linear-gradient(180deg,#041f15,#0f3d2b);
 color:white;
 text-align:center;
 }
 
 .header img{
 width:100%;
-max-height:180px;
+max-height:170px;
 object-fit:cover;
 }
 
-.panel{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-padding:15px;
+.container{
 max-width:700px;
 margin:auto;
-}
-
-.panel button{
-background:#0e2f21;
-border:none;
-border-radius:14px;
-padding:14px;
-color:white;
-font-size:15px;
-cursor:pointer;
+padding:15px;
 }
 
 .card{
 background:#123e2b;
-width:92%;
-max-width:700px;
-margin:auto;
 padding:20px;
-border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
 
-input,select{
+input{
+width:100%;
 padding:12px;
 border-radius:10px;
 border:none;
 background:#0a251c;
 color:white;
 font-size:16px;
-width:100%;
-box-sizing:border-box;
 }
 
 .table{
-margin-top:15px;
 display:flex;
 flex-direction:column;
 gap:10px;
+margin-top:15px;
 }
 
 .row{
@@ -78,37 +60,33 @@ gap:8px;
 
 button{
 width:100%;
-padding:15px;
+padding:14px;
 border:none;
-border-radius:12px;
+border-radius:10px;
 margin-top:10px;
 font-size:18px;
 }
 
 .calc{background:#d4af37;color:black;font-weight:bold}
-.copy{background:#6f7f98;color:white}
-.reset{background:#8e2f2f;color:white}
-.save{background:#e0e0e0;color:#2d5fa3}
+.copy{background:#74839d;color:white}
+.reset{background:#8b3232;color:white}
+.save{background:#e0e0e0;color:#2b5da0}
 
 .result{
-background:#041c14;
-margin-top:20px;
+background:#051b14;
 padding:18px;
 border-radius:12px;
+margin-top:20px;
 text-align:left;
 }
 
-.green{color:#63ff9c}
+.green{color:#65ff9d}
 .red{color:#ff7b7b}
 
-.mapBtn{
-margin:20px;
-padding:14px 20px;
-background:#3b8c65;
-border:none;
-border-radius:12px;
+.map{
+margin-top:20px;
+background:#4c9b74;
 color:white;
-font-size:16px;
 }
 
 </style>
@@ -120,26 +98,9 @@ font-size:16px;
 <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
 </div>
 
-<div class="panel">
+<div class="container">
 
-<button onclick="showHistory()">📜 История</button>
-<button onclick="showRating()">🏆 Рейтинг</button>
-<button onclick="showDay()">⭐ Игрок дня</button>
-
-<button onclick="showStats()">📊 Статистика</button>
-<button onclick="openMap()">🗺 Карта</button>
-<button onclick="scrollCalc()">🎱 Калькулятор</button>
-
-</div>
-
-<div class="card" id="calc">
-
-<select id="mode">
-<option value="kolhoz">Колхоз</option>
-<option value="teams">2 на 2</option>
-</select>
-
-<br><br>
+<div class="card">
 
 <div>Ставка за шар</div>
 <input id="stake" value="400">
@@ -154,40 +115,42 @@ font-size:16px;
 
 <div class="row">
 <input id="n1" placeholder="Игрок">
-<input id="p1_1" placeholder="Очки">
-<input id="p2_1">
+<input id="p1">
+<input>
 </div>
 
 <div class="row">
-<input id="n2" placeholder="Игрок">
-<input id="p1_2">
-<input id="p2_2">
+<input id="n2">
+<input id="p2">
+<input>
 </div>
 
 <div class="row">
-<input id="n3" placeholder="Игрок">
-<input id="p1_3">
-<input id="p2_3">
+<input id="n3">
+<input id="p3">
+<input>
 </div>
 
 <div class="row">
-<input id="n4" placeholder="Игрок">
-<input id="p1_4">
-<input id="p2_4">
+<input id="n4">
+<input id="p4">
+<input>
 </div>
 
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
+<button class="copy" onclick="copy()">СКОПИРОВАТЬ</button>
 <button class="reset" onclick="location.reload()">СБРОС</button>
-<button class="save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
+<button class="save">СОХРАНИТЬ В ИСТОРИЮ</button>
 
 <div id="result"></div>
 
 </div>
 
-<button class="mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
+<button class="map" onclick="map()">ОТКРЫТЬ КАРТУ SENSEI</button>
+
+</div>
 
 <script>
 
@@ -203,17 +166,19 @@ document.getElementById("n4").value
 ]
 
 let scores=[
-Number(document.getElementById("p1_1").value),
-Number(document.getElementById("p1_2").value),
-Number(document.getElementById("p1_3").value),
-Number(document.getElementById("p1_4").value)
+Number(document.getElementById("p1").value),
+Number(document.getElementById("p2").value),
+Number(document.getElementById("p3").value),
+Number(document.getElementById("p4").value)
 ]
 
 let diff=[]
 
 for(let i=0;i<4;i++){
+
 let next=(i+1)%4
 diff[i]=scores[i]-scores[next]
+
 }
 
 let plus=[]
@@ -222,11 +187,11 @@ let minus=[]
 for(let i=0;i<4;i++){
 
 if(diff[i]>0){
-plus.push({name:names[i],value:diff[i]})
+plus.push({name:names[i],value:diff[i],index:i})
 }
 
 if(diff[i]<0){
-minus.push({name:names[i],value:Math.abs(diff[i])})
+minus.push({name:names[i],value:Math.abs(diff[i]),index:i})
 }
 
 }
@@ -235,12 +200,16 @@ let payments=[]
 
 minus.forEach(m=>{
 
-for(let p of plus){
+let debt=m.value
+let j=(m.index+1)%4
 
-if(m.value===0) break
-if(p.value===0) continue
+while(debt>0){
 
-let pay=Math.min(m.value,p.value)
+let p=plus.find(x=>x.index===j)
+
+if(p && p.value>0){
+
+let pay=Math.min(debt,p.value)
 
 payments.push({
 from:m.name,
@@ -248,12 +217,18 @@ to:p.name,
 points:pay
 })
 
-m.value-=pay
 p.value-=pay
+debt-=pay
+
+}
+
+j=(j+1)%4
 
 }
 
 })
+
+let money={}
 
 let html="<div class='result'>"
 
@@ -266,16 +241,14 @@ html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
 
 html+="<br><b>Кто кому платит</b><br><br>"
 
-let resultMoney={}
-
 payments.forEach(p=>{
 
-let money=p.points*stake
+let cash=p.points*stake
 
-html+=p.from+" → "+p.to+" = "+p.points+" ("+money+" тг)<br>"
+html+=p.from+" → "+p.to+" = "+p.points+" ("+cash+" тг)<br>"
 
-resultMoney[p.from]=(resultMoney[p.from]||0)-money
-resultMoney[p.to]=(resultMoney[p.to]||0)+money
+money[p.from]=(money[p.from]||0)-cash
+money[p.to]=(money[p.to]||0)+cash
 
 })
 
@@ -283,7 +256,7 @@ html+="<br><b>Итог по деньгам</b><br><br>"
 
 names.forEach(n=>{
 
-let v=resultMoney[n]||0
+let v=money[n]||0
 
 if(v>0){
 html+="<div class='green'>"+n+" +"+v+" тг</div>"
@@ -307,37 +280,13 @@ document.getElementById("result").innerHTML=html
 
 }
 
-function copyResult(){
+function copy(){
 navigator.clipboard.writeText(result.innerText)
 alert("Скопировано")
 }
 
-function saveGame(){
-alert("Игра сохранена")
-}
-
-function showHistory(){
-result.innerHTML="<div class='result'>История появится после сохранённых игр</div>"
-}
-
-function showRating(){
-result.innerHTML="<div class='result'>Рейтинг игроков появится позже</div>"
-}
-
-function showDay(){
-result.innerHTML="<div class='result'>Игрок дня определяется по максимальному выигрышу</div>"
-}
-
-function showStats(){
-result.innerHTML="<div class='result'>Статистика появится позже</div>"
-}
-
-function openMap(){
+function map(){
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
-}
-
-function scrollCalc(){
-document.getElementById("calc").scrollIntoView({behavior:"smooth"})
 }
 
 </script>
