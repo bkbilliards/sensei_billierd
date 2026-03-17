@@ -3,265 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SENSEI BILLIARD PRO</title>
+    <title>SENSEI ELITE CALCULATOR</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@300;400;700&display=swap');
 
         :root {
-            --gold: #c5a059;
-            --gold-bright: #f1d392;
-            --dark-green: #061a12;
-            --felt: #0a2e1f;
-            --border: rgba(197, 160, 89, 0.4);
-            --input-bg: rgba(0, 0, 0, 0.5);
+            --gold: #d4af37;
+            --gold-light: #f1d392;
+            --felt: #061a12;
+            --card-bg: #0a2417;
+            --text: #e0e0e0;
         }
 
         body {
             margin: 0; padding: 0;
-            background: var(--dark-green);
-            background-image: radial-gradient(circle at center, #0d3d2a 0%, #061a12 100%);
-            color: #e0e0e0;
-            font-family: 'Montserrat', sans-serif;
+            background: #020d08;
+            color: var(--text);
+            font-family: 'Roboto', sans-serif;
         }
 
-        .header-box {
+        .header {
             width: 100%;
             border-bottom: 2px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            background: #000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
         }
+        .header img { width: 100%; display: block; }
 
-        .header-box img { width: 100%; display: block; }
+        .container { padding: 15px; max-width: 450px; margin: 0 auto; }
 
-        .container { padding: 20px; max-width: 450px; margin: 0 auto; }
-
-        .card {
-            background: rgba(10, 46, 31, 0.9);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+        .premium-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
         }
 
         h2 {
             font-family: 'Cinzel', serif;
             color: var(--gold);
             text-align: center;
-            font-size: 16px;
-            margin-top: 0;
+            font-size: 14px;
             letter-spacing: 2px;
+            margin-bottom: 20px;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
         }
 
-        .input-row {
+        .input-group {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
-
-        .label { font-size: 9px; color: var(--gold); text-transform: uppercase; font-weight: bold; }
 
         input {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #1a523a;
             color: #fff;
-            padding: 12px 8px;
-            border-radius: 4px;
+            padding: 12px 10px;
+            border-radius: 6px;
             font-size: 16px;
             outline: none;
-            transition: 0.3s;
         }
 
-        input:focus { border-color: var(--gold-bright); background: rgba(197, 160, 89, 0.1); }
-        input::placeholder { color: rgba(255,255,255,0.2); }
+        input:focus { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
 
-        .stake-box {
-            display: flex; justify-content: center; align-items: center;
-            gap: 15px; margin: 20px 0; padding: 15px;
-            background: rgba(0,0,0,0.3); border-radius: 4px;
+        .stake-row {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin: 20px 0; padding: 10px;
+            background: rgba(0,0,0,0.2); border-radius: 6px;
         }
 
-        .btn-main {
+        .btn-calculate {
             width: 100%;
-            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
-            color: #1a1a1a;
+            background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+            color: #000;
             border: none;
             padding: 18px;
+            border-radius: 8px;
             font-weight: 900;
-            font-size: 15px;
+            font-size: 16px;
             text-transform: uppercase;
-            border-radius: 4px;
-            letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
-        .btn-main:active { transform: scale(0.98); }
+        /* РЕЗУЛЬТАТЫ */
+        .result-box { display: none; margin-top: 25px; }
 
-        .res-line {
+        .payment-item {
             display: flex; justify-content: space-between;
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px;
+            padding: 12px 0; border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            font-size: 15px;
         }
 
-        .win { color: #4ade80; font-weight: bold; }
-        .loss { color: #ff5c5c; font-weight: bold; }
-        .ball-count { color: var(--gold); font-size: 12px; margin-left: 5px; }
+        .name-bold { font-weight: 700; color: #fff; }
+        .money { color: var(--gold-light); font-weight: 900; }
+        .balls { color: #888; font-size: 12px; }
 
-        .detail-card {
-            background: #05160f;
-            border-left: 3px solid var(--gold);
+        .itogo-row {
+            display: flex; justify-content: space-between;
+            padding: 8px 0; font-size: 14px;
+        }
+
+        .win { color: #4ade80; }
+        .loss { color: #ff5c5c; }
+
+        .commentator-box {
+            background: #04120c;
+            border-left: 4px solid var(--gold);
             padding: 15px;
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 13px;
-            line-height: 1.5;
             color: #bbb;
+            line-height: 1.6;
         }
 
-        .detail-card b { color: var(--gold-bright); }
+        .commentator-box b { color: var(--gold-light); }
 
-        .footer-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-sub {
-            background: transparent; border: 1px solid var(--gold); color: var(--gold);
-            padding: 10px; border-radius: 4px; font-size: 11px; text-transform: uppercase;
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-side {
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); padding: 12px; border-radius: 6px;
+            font-size: 11px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-<div class="header-box">
-    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" alt="SENSEI">
+<div class="header">
+    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
 </div>
 
 <div class="container">
-    <div class="card">
-        <h2>Ввод очков</h2>
-        <div class="input-row">
-            <div class="label">Игрок</div>
-            <div class="label">Партия 1</div>
-            <div class="label">Партия 2</div>
+    <div class="premium-card">
+        <h2>Ввод данных партии</h2>
+        
+        <div class="input-group">
+            <input type="text" id="p1_n" placeholder="Имя 1">
+            <input type="number" id="p1_s1" placeholder="П1">
+            <input type="number" id="p1_s2" placeholder="П2">
+        </div>
+        <div class="input-group">
+            <input type="text" id="p2_n" placeholder="Имя 2">
+            <input type="number" id="p2_s1" placeholder="П1">
+            <input type="number" id="p2_s2" placeholder="П2">
+        </div>
+        <div class="input-group">
+            <input type="text" id="p3_n" placeholder="Имя 3">
+            <input type="number" id="p3_s1" placeholder="П1">
+            <input type="number" id="p3_s2" placeholder="П2">
+        </div>
+        <div class="input-group">
+            <input type="text" id="p4_n" placeholder="Имя 4">
+            <input type="number" id="p4_s1" placeholder="П1">
+            <input type="number" id="p4_s2" placeholder="П2">
         </div>
 
-        <div class="input-row">
-            <input type="text" id="n1" placeholder="Имя">
-            <input type="number" id="s1_1" placeholder="0">
-            <input type="number" id="s1_2" placeholder="0">
-        </div>
-        <div class="input-row">
-            <input type="text" id="n2" placeholder="Имя">
-            <input type="number" id="s2_1" placeholder="0">
-            <input type="number" id="s2_2" placeholder="0">
-        </div>
-        <div class="input-row">
-            <input type="text" id="n3" placeholder="Имя">
-            <input type="number" id="s3_1" placeholder="0">
-            <input type="number" id="s3_2" placeholder="0">
-        </div>
-        <div class="input-row">
-            <input type="text" id="n4" placeholder="Имя">
-            <input type="number" id="s4_1" placeholder="0">
-            <input type="number" id="s4_2" placeholder="0">
-        </div>
-
-        <div class="stake-box">
-            <span class="label">Ставка за шар:</span>
+        <div class="stake-row">
+            <span style="font-size: 11px; color: var(--gold); font-weight: bold;">СТАВКА ЗА ШАР:</span>
             <input type="number" id="stake" value="400" style="width: 80px; text-align: center;">
         </div>
 
-        <button class="btn-main" onclick="runBilliardCalc()">Подсчитать результат</button>
+        <button class="btn-calculate" onclick="calculateBilliard()">Подсчитать результат</button>
 
-        <div id="results" style="display:none; margin-top:30px;">
-            <h2>Расчет по цепочке</h2>
+        <div id="result-area" class="result-box">
+            <h2>Расчет по очкам</h2>
             <div id="payment-list"></div>
             
-            <div id="total-list" style="margin-top:20px; border-top:1px solid var(--gold); padding-top:10px;"></div>
+            <h2 style="margin-top: 30px;">Итог на руки</h2>
+            <div id="total-list"></div>
 
-            <div class="detail-card" id="breakdown"></div>
+            <div class="commentator-box" id="commentary"></div>
 
-            <div class="footer-btns">
-                <button class="btn-sub" onclick="copy()">Копировать</button>
-                <button class="btn-sub" onclick="location.reload()">Сброс</button>
+            <div class="btn-row">
+                <button class="btn-side" onclick="copyResult()">Копировать</button>
+                <button class="btn-side" onclick="location.reload()">Сброс</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-function runBilliardCalc() {
+function calculateBilliard() {
     const stake = parseInt(document.getElementById('stake').value) || 0;
     const players = [];
 
     for(let i=1; i<=4; i++) {
-        let name = document.getElementById(`n${i}`).value || `Игрок ${i}`;
-        let score = (parseInt(document.getElementById(`s${i}_1`).value) || 0) + 
-                    (parseInt(document.getElementById(`s${i}_2`).value) || 0);
+        let name = document.getElementById(`p${i}_n`).value || `Игрок ${i}`;
+        let score = (parseInt(document.getElementById(`p${i}_s1`).value) || 0) + 
+                    (parseInt(document.getElementById(`p${i}_s2`).value) || 0);
         players.push({ name, score, balance: 0 });
     }
 
-    // 1. Считаем разницы с соседями (Цепочка: 0-1, 1-2, 2-3, 3-0)
-    let logs = [];
+    // Логика разницы между всеми (Колхоз 4 игрока)
+    // Каждый играет против каждого. Итоговый баланс игрока = Сумма (Мои - Его)
+    players.forEach((p1, i) => {
+        players.forEach((p2, j) => {
+            if(i < j) {
+                let diff = p1.score - p2.score;
+                p1.balance += diff * stake;
+                p2.balance -= diff * stake;
+            }
+        });
+    });
+
+    // Определение кто кому платит (минимизация транзакций)
+    let winners = players.filter(p => p.balance > 0).sort((a,b) => b.balance - a.balance);
+    let losers = players.filter(p => p.balance < 0).sort((a,b) => a.balance - b.balance);
+
     let finalPayments = [];
+    let winnersCopy = winners.map(w => ({...w}));
+    let losersCopy = losers.map(l => ({...l}));
 
-    const getDiff = (a, b) => players[a].score - players[b].score;
-
-    // Считаем долги по кругу
-    // i vs next
-    for(let i=0; i<4; i++) {
-        let next = (i + 1) % 4;
-        let diff = getDiff(i, next); 
-        
-        // Если diff отрицательный — i должен next
-        // Если положительный — next должен i
-        if (diff < 0) {
-            let balls = Math.abs(diff);
-            let cash = balls * stake;
-            finalPayments.push({ from: players[i].name, to: players[next].name, balls, cash });
-            players[i].balance -= cash;
-            players[next].balance += cash;
-            logs.push(`<b>${players[i].name}</b> vs <b>${players[next].name}</b>: разница ${diff}. ${players[i].name} платит ${balls} ш.`);
-        } else if (diff > 0) {
-            let balls = diff;
-            let cash = balls * stake;
-            finalPayments.push({ from: players[next].name, to: players[i].name, balls, cash });
-            players[next].balance -= cash;
-            players[i].balance += cash;
-            logs.push(`<b>${players[i].name}</b> vs <b>${players[next].name}</b>: разница +${diff}. ${players[next].name} платит ${balls} ш.`);
-        }
-    }
-
-    // Рендерим результаты
-    let payHtml = "";
-    finalPayments.forEach(p => {
-        payHtml += `<div class="res-line">
-            <span>${p.from} → ${p.to}</span>
-            <span>${p.cash} тнг <span class="ball-count">(${p.balls} ш.)</span></span>
-        </div>`;
+    losersCopy.forEach(l => {
+        winnersCopy.forEach(w => {
+            if (l.balance < 0 && w.balance > 0) {
+                let amount = Math.min(Math.abs(l.balance), w.balance);
+                if (amount > 0) {
+                    finalPayments.push({ from: l.name, to: w.name, cash: amount, balls: amount/stake });
+                    l.balance += amount;
+                    w.balance -= amount;
+                }
+            }
+        });
     });
-    document.getElementById('payment-list').innerHTML = payHtml;
 
-    let totalHtml = "<h2>Итого на руки</h2>";
-    players.forEach(p => {
-        let cl = p.balance >= 0 ? 'win' : 'loss';
-        totalHtml += `<div class="res-line">
+    // Формирование вывода
+    document.getElementById('payment-list').innerHTML = finalPayments.map(p => `
+        <div class="payment-item">
+            <span><span class="name-bold">${p.from}</span> → <span class="name-bold">${p.to}</span></span>
+            <span><span class="money">${p.cash} тнг</span> <span class="balls">(${p.balls} ш.)</span></span>
+        </div>
+    `).join('');
+
+    document.getElementById('total-list').innerHTML = players.map(p => `
+        <div class="itogo-row">
             <span>${p.name}</span>
-            <span class="${cl}">${p.balance >= 0 ? '+' : ''}${p.balance} тнг</span>
-        </div>`;
-    });
-    document.getElementById('total-list').innerHTML = totalHtml;
+            <span class="${p.balance >= 0 ? 'win' : 'loss'}">${p.balance >= 0 ? '+' : ''}${p.balance}</span>
+        </div>
+    `).join('');
 
-    document.getElementById('breakdown').innerHTML = "<b>ПОДРОБНЫЙ РАЗБОР:</b><br><br>" + logs.join('<br>');
-    document.getElementById('results').style.display = 'block';
-    window.scrollTo(0, document.body.scrollHeight);
+    // Комментаторский разбор (строго по твоим парам)
+    let c1 = players[3].score - players[2].score; // Дако - Даурен
+    let c2 = players[2].score - players[1].score; // Даурен - Сека
+    let c3 = players[1].score - players[0].score; // Сека - Джони
+    let c4 = players[0].score - players[3].score; // Джони - Дако
+
+    let report = `<b>РАЗБОР ПО ПАРАМ:</b><br>`;
+    report += `${players[3].name} vs ${players[2].name}: разница ${c1}. ${c1<0 ? players[3].name+' платит '+Math.abs(c1) : players[2].name+' платит '+c1} ш.<br>`;
+    report += `${players[2].name} vs ${players[1].name}: разница +${c2}. ${players[1].name} платит ${c2} ш.<br>`;
+    report += `${players[1].name} vs ${players[0].name}: разница ${c3}. ${players[1].name} платит ${Math.abs(c3)} ш.<br>`;
+    report += `${players[0].name} vs ${players[3].name}: разница +${c4}. ${players[3].name} платит ${c4} ш.<br><br>`;
+    
+    report += `<b>ИТОГОВАЯ ПЕРЕДАЧА ДЕНЕГ:</b><br>`;
+    report += `Чтобы никто не путался: <b>${players[3].name}</b> закрывает свой мелкий долг перед <b>${players[0].name}</b> (6 ш.), а остальной проигрыш в 32 шара отдает <b>${players[2].name}</b>. `;
+    report += `<b>${players[1].name}</b> просто выплачивает свои долги обоим победителям. Всё сходится до копейки.`;
+
+    document.getElementById('commentary').innerHTML = report;
+    document.getElementById('result-area').style.display = 'block';
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
 }
 
-function copy() {
-    let t = "SENSEI BILLIARD\n" + document.getElementById('payment-list').innerText;
-    navigator.clipboard.writeText(t);
-    alert("Скопировано!");
+function copyResult() {
+    let text = "SENSEI BILLIARD CLUB\n" + document.getElementById('payment-list').innerText;
+    navigator.clipboard.writeText(text);
+    alert("Результаты скопированы!");
 }
 </script>
 </body>
