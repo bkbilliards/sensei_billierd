@@ -24,13 +24,13 @@ display:block;
 .header{
 text-align:center;
 padding:20px;
-font-size:24px;
+font-size:26px;
 color:#d4af37;
 font-weight:bold;
 }
 
 .container{
-max-width:850px;
+max-width:900px;
 margin:auto;
 background:#123524;
 padding:25px;
@@ -82,6 +82,7 @@ cursor:pointer;
 .copy{background:#5c6f8c;color:white;}
 .reset{background:#8c2b2b;color:white;}
 .map{background:#1f7a5c;color:white;}
+.details{background:#2c6c8c;color:white;}
 
 .result{
 background:#05160f;
@@ -94,13 +95,17 @@ line-height:1.6;
 .green{color:#4cff9a;}
 .red{color:#ff6b6b;}
 
+.hidden{
+display:none;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<img class="banner" src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img class="banner" src="banner.jpg">
 
 <div class="header">
 КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»
@@ -148,6 +153,12 @@ line-height:1.6;
 <button class="reset" onclick="location.reload()">СБРОС</button>
 
 <div id="result"></div>
+
+<button id="detailsBtn" class="details hidden" onclick="toggleDetails()">
+ПОКАЗАТЬ ПОДРОБНЫЙ РАСЧЁТ
+</button>
+
+<div id="details" class="result hidden"></div>
 
 <button class="map"
 onclick="window.open('https://2gis.kz/almaty/geo/70000001101734090')">
@@ -227,12 +238,6 @@ let result1 = kolhoz(names,p1)
 
 let html="<div class='result'>"
 
-html+="<b>РАЗНИЦА ОЧКОВ</b><br>"
-html+=`${names[0]} - ${names[1]} = ${result1.d1}<br>`
-html+=`${names[1]} - ${names[2]} = ${result1.d2}<br>`
-html+=`${names[2]} - ${names[3]} = ${result1.d3}<br>`
-html+=`${names[3]} - ${names[0]} = ${result1.d4}<br><br>`
-
 html+="<b>КТО КОМУ ПЛАТИТ</b><br>"
 
 let balance={}
@@ -250,43 +255,46 @@ balance[p[1]]+=sum
 
 })
 
-html+="<br><b>ИТОГ ПО ДЕНЬГАМ</b><br>"
+html+="<br><b>🏆 ИТОГ ИГРЫ</b><br>"
 
 for(let name in balance){
 
 let val=balance[name]
 
 if(val>0){
-html+=`<div class="green">${name} +${money(val)} тнг</div>`
+html+=`<div class="green">${name} +${money(val)} тг</div>`
 }else if(val<0){
-html+=`<div class="red">${name} ${money(val)} тнг</div>`
+html+=`<div class="red">${name} ${money(val)} тг</div>`
 }
 
 }
-
-html+="<br><b>ПОЧЕМУ ТАК ПОЛУЧИЛОСЬ</b><br>"
-html+="Очки сравниваются по кругу игроков.<br>"
-html+="Игрок платит только следующему игроку.<br>"
-html+="Минус игрока распределяется между игроками с плюсом.<br>"
-html+="Поэтому сумма выигрыша и проигрыша всегда сходится."
 
 html+="</div>"
 
 document.getElementById("result").innerHTML=html
 
-}
+document.getElementById("detailsBtn").classList.remove("hidden")
 
-function copyResult(){
+let details="<b>ПОДРОБНЫЙ РАСЧЁТ</b><br><br>"
 
-let text=document.getElementById("result").innerText
+details+="<b>Очки игроков</b><br>"
+details+=`${names[0]} — ${p1[0]}<br>`
+details+=`${names[1]} — ${p1[1]}<br>`
+details+=`${names[2]} — ${p1[2]}<br>`
+details+=`${names[3]} — ${p1[3]}<br><br>`
 
-navigator.clipboard.writeText(text)
+details+="<b>Разница очков</b><br>"
+details+=`${names[0]} - ${names[1]} = ${result1.d1}<br>`
+details+=`${names[1]} - ${names[2]} = ${result1.d2}<br>`
+details+=`${names[2]} - ${names[3]} = ${result1.d3}<br>`
+details+=`${names[3]} - ${names[0]} = ${result1.d4}<br><br>`
 
-alert("Результат скопирован")
+details+="<b>Как считается колхоз</b><br>"
+details+="Игроки сравниваются по кругу:<br>"
+details+="1 → 2<br>"
+details+="2 → 3<br>"
+details+="3 → 4<br>"
+details+="4 → 1<br><br>"
 
-}
-
-</script>
-
-</body>
-</html>
+details+="Минус игрока распределяется между игроками с плюсом.<br>"
+details+="Поэтому сумма выигрыша
