@@ -1,109 +1,305 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SENSEI BILLIARD CLUB</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
-        :root { --gold: #c5a059; --bg: #020d08; --card: #0a2417; }
-        body { margin: 0; background: var(--bg); color: #e0e0e0; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
-        .header img { width: 100%; display: block; border-bottom: 2px solid var(--gold); }
-        .container { padding: 15px; max-width: 480px; margin: 0 auto; }
-        .main-card { background: var(--card); border: 1px solid rgba(197,160,89,0.2); border-radius: 12px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .player-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        input { background: rgba(0,0,0,0.3); border: 1px solid #1a523a; color: #fff; padding: 12px 8px; border-radius: 8px; text-align: center; width: 100%; box-sizing: border-box; font-size: 14px; }
-        input::placeholder { color: rgba(255,255,255,0.2); }
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 10px; background: linear-gradient(180deg, #f1d392 0%, #c5a059 100%); color: #000; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 10px; font-size: 14px; }
-        .res-box { margin-top: 20px; display: none; border-top: 1px solid rgba(197,160,89,0.2); padding-top: 15px; }
-        .pay-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--gold); }
-        .pay-item b { color: #f1d392; }
-        .log-box { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; color: #aaa; margin-top: 15px; }
-        .log-box b { color: var(--gold); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SENSEI BILLIARD CLUB</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+:root{
+--gold:#c5a059;
+--bg:#020d08;
+--card:#0a2417;
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:#e0e0e0;
+font-family:'Montserrat',sans-serif;
+-webkit-font-smoothing:antialiased;
+}
+
+.header img{
+width:100%;
+display:block;
+border-bottom:2px solid var(--gold);
+}
+
+.container{
+padding:15px;
+max-width:480px;
+margin:0 auto;
+}
+
+.main-card{
+background:var(--card);
+border:1px solid rgba(197,160,89,0.2);
+border-radius:12px;
+padding:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.player-row{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+gap:8px;
+margin-bottom:10px;
+}
+
+input{
+background:rgba(0,0,0,0.3);
+border:1px solid #1a523a;
+color:#fff;
+padding:12px 8px;
+border-radius:8px;
+text-align:center;
+width:100%;
+box-sizing:border-box;
+font-size:14px;
+}
+
+input::placeholder{
+color:rgba(255,255,255,0.2);
+}
+
+.btn-main{
+width:100%;
+padding:18px;
+border:none;
+border-radius:10px;
+background:linear-gradient(180deg,#f1d392 0%,#c5a059 100%);
+color:#000;
+font-weight:800;
+text-transform:uppercase;
+cursor:pointer;
+margin-top:10px;
+font-size:14px;
+}
+
+.res-box{
+margin-top:20px;
+display:none;
+border-top:1px solid rgba(197,160,89,0.2);
+padding-top:15px;
+}
+
+.pay-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+background:rgba(255,255,255,0.04);
+border-radius:8px;
+margin-bottom:8px;
+border-left:4px solid var(--gold);
+}
+
+.pay-item b{
+color:#f1d392;
+}
+
+.log-box{
+background:rgba(0,0,0,0.2);
+padding:12px;
+border-radius:8px;
+font-size:12px;
+line-height:1.6;
+color:#aaa;
+margin-top:15px;
+}
+
+.log-box b{
+color:var(--gold);
+}
+
+</style>
 </head>
+
 <body>
-    <div class="header"><img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg"></div>
-    <div class="container">
-        <div class="main-card">
-            <div id="inputs"></div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin: 15px 0;">
-                <span style="font-size:11px; font-weight:800; color:var(--gold); letter-spacing: 1px;">СТАВКА ЗА ШАР:</span>
-                <input type="number" id="stake" value="400" style="width:80px">
-            </div>
-            <button class="btn-main" onclick="calculate()">Подсчитать результат</button>
-            
-            <div id="results" class="res-box">
-                <div id="pay-list"></div>
-                <div class="log-box" id="log"></div>
-            </div>
-        </div>
-    </div>
+
+<div class="header">
+<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+</div>
+
+<div class="container">
+
+<div class="main-card">
+
+<div id="inputs"></div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:15px 0;">
+<span style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;">
+СТАВКА ЗА ШАР:
+</span>
+
+<input type="number" id="stake" value="400" style="width:80px">
+</div>
+
+<button class="btn-main" onclick="calculate()">
+Подсчитать результат
+</button>
+
+<div id="results" class="res-box">
+<div id="pay-list"></div>
+<div class="log-box" id="log"></div>
+</div>
+
+</div>
+</div>
 
 <script>
-function init() {
-    const defaultNames = ['Джони', 'Сека', 'Даурен', 'Дако'];
-    document.getElementById('inputs').innerHTML = defaultNames.map((n, i) => `
-        <div class="player-row">
-            <input type="text" id="n${i}" placeholder="Имя ${i+1}" value="${n}">
-            <input type="number" id="s${i}_1" placeholder="П1">
-            <input type="number" id="s${i}_2" placeholder="П2">
-        </div>`).join('');
+
+function init(){
+
+const defaultNames=['Джони','Сека','Даурен','Дако'];
+
+document.getElementById('inputs').innerHTML=
+defaultNames.map((n,i)=>`
+
+<div class="player-row">
+
+<input type="text" id="n${i}" value="${n}">
+
+<input type="number" id="s${i}_1" placeholder="П1">
+
+<input type="number" id="s${i}_2" placeholder="П2">
+
+</div>
+
+`).join('');
+
 }
 
-function calculate() {
-    const stake = parseInt(document.getElementById('stake').value) || 0;
-    const p = [];
-    for(let i=0; i<4; i++) {
-        p.push({
-            name: document.getElementById(`n${i}`).value || `Игрок ${i+1}`,
-            score: (parseInt(document.getElementById(`s${i}_1`).value) || 0) + (parseInt(document.getElementById(`s${i}_2`).value) || 0)
-        });
-    }
 
-    let log = "<b>ЦЕПОЧКА РАЗНИЦЫ:</b><br>";
-    let diffs = []; // Храним чистую разницу каждого игрока относительно следующего
 
-    // 1. Считаем разницу строго по кругу (0-1, 1-2, 2-3, 3-0)
-    for(let i=0; i<4; i++) {
-        let next = (i + 1) % 4;
-        let d = p[i].score - p[next].score;
-        diffs.push(d);
-        log += `${p[i].name} ${p[i].score} - ${p[next].name} ${p[next].score} = ${p[i].name} ${d > 0 ? '+'+d : d}<br>`;
-    }
+function calculate(){
 
-    // 2. Распределяем выплаты на основе этих разниц
-    // Игрок платит, если его d < 0. Кому? Тому, относительно кого у него минус.
-    let payments = [];
-    for(let i=0; i<4; i++) {
-        let currentDiff = diffs[i];
-        let nextIdx = (i + 1) % 4;
-        
-        if (currentDiff < 0) {
-            // Если у меня минус относительно следующего, я ему плачу
-            payments.push({ from: p[i].name, to: p[nextIdx].name, balls: Math.abs(currentDiff) });
-        }
-    }
+const stake=parseInt(document.getElementById('stake').value)||0;
 
-    // Вывод результатов
-    const list = document.getElementById('pay-list');
-    if (payments.length === 0) {
-        list.innerHTML = "<div style='text-align:center; opacity:0.5'>Никто никому не должен</div>";
-    } else {
-        list.innerHTML = payments.map(pay => `
-            <div class="pay-item">
-                <span>${pay.from} → ${pay.to}</span>
-                <span><b>${pay.balls * stake} тнг</b> (${pay.balls} ш.)</span>
-            </div>
-        `).join('');
-    }
+const players=[];
 
-    document.getElementById('log').innerHTML = log;
-    document.getElementById('results').style.display = 'block';
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+for(let i=0;i<4;i++){
+
+players.push({
+name:document.getElementById(`n${i}`).value||`Игрок ${i+1}`,
+score:(parseInt(document.getElementById(`s${i}_1`).value)||0)
++
+(parseInt(document.getElementById(`s${i}_2`).value)||0)
+});
+
 }
+
+let log="<b>ЦЕПОЧКА РАЗНИЦЫ:</b><br>";
+
+let diffs=[];
+
+for(let i=0;i<4;i++){
+
+let next=(i+1)%4;
+
+let d=players[i].score-players[next].score;
+
+diffs.push(d);
+
+log+=`${players[i].name} ${players[i].score} - ${players[next].name} ${players[next].score} = ${players[i].name} ${d>0?`+${d}`:d}<br>`;
+
+}
+
+
+
+let positive=[];
+let negative=[];
+
+for(let i=0;i<4;i++){
+
+if(diffs[i]>0){
+
+positive.push({
+name:players[i].name,
+balls:diffs[i]
+});
+
+}
+
+if(diffs[i]<0){
+
+negative.push({
+name:players[i].name,
+balls:Math.abs(diffs[i])
+});
+
+}
+
+}
+
+
+
+let payments=[];
+
+let pi=0;
+let ni=0;
+
+while(pi<positive.length && ni<negative.length){
+
+let pay=Math.min(positive[pi].balls,negative[ni].balls);
+
+payments.push({
+from:negative[ni].name,
+to:positive[pi].name,
+balls:pay
+});
+
+positive[pi].balls-=pay;
+negative[ni].balls-=pay;
+
+if(positive[pi].balls===0)pi++;
+if(negative[ni].balls===0)ni++;
+
+}
+
+
+
+const list=document.getElementById('pay-list');
+
+if(payments.length===0){
+
+list.innerHTML="<div style='text-align:center;opacity:0.5'>Никто никому не должен</div>";
+
+}else{
+
+list.innerHTML=payments.map(pay=>`
+
+<div class="pay-item">
+
+<span>${pay.from} → ${pay.to}</span>
+
+<span><b>${pay.balls*stake} тнг</b> (${pay.balls} ш.)</span>
+
+</div>
+
+`).join('');
+
+}
+
+
+
+document.getElementById('log').innerHTML=log;
+
+document.getElementById('results').style.display='block';
+
+window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+
+}
+
+
 
 init();
+
 </script>
+
 </body>
 </html>
