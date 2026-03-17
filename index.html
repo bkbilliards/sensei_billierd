@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз V3</title>
+<title>SENSEI BILLIARD CLUB — Калькулятор Колхоз</title>
 
 <style>
 
@@ -28,7 +28,7 @@ display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:10px;
 padding:15px;
-max-width:720px;
+max-width:700px;
 margin:auto;
 }
 
@@ -36,21 +36,21 @@ margin:auto;
 background:#0e2f21;
 border:none;
 border-radius:14px;
-padding:18px;
+padding:16px;
 color:white;
 font-size:15px;
 cursor:pointer;
-box-shadow:0 8px 20px rgba(0,0,0,0.4);
+box-shadow:0 6px 16px rgba(0,0,0,0.4);
 }
 
 .card{
 background:#133d2a;
-max-width:720px;
+max-width:700px;
 width:92%;
 margin:20px auto;
 padding:20px;
 border-radius:16px;
-box-shadow:0 12px 30px rgba(0,0,0,0.5);
+box-shadow:0 10px 28px rgba(0,0,0,0.5);
 }
 
 .mode{
@@ -58,7 +58,7 @@ margin-bottom:15px;
 }
 
 .mode select{
-padding:12px;
+padding:10px;
 border-radius:10px;
 border:none;
 font-size:16px;
@@ -178,7 +178,7 @@ cursor:pointer;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
 <div class="panel">
@@ -199,7 +199,6 @@ cursor:pointer;
 
 <select id="mode">
 <option value="kolhoz">Колхоз</option>
-<option value="reverse">Колхоз (обратка)</option>
 <option value="teams">2 на 2</option>
 </select>
 
@@ -245,11 +244,8 @@ cursor:pointer;
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-
 <button class="reset" onclick="location.reload()">СБРОС</button>
-
 <button class="save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
 
 <div id="result"></div>
@@ -266,9 +262,14 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
-let stake=Number(stake.value)
+let stake=Number(document.getElementById("stake").value)
 
-let names=[n1.value,n2.value,n3.value,n4.value]
+let names=[
+n1.value,
+n2.value,
+n3.value,
+n4.value
+]
 
 let scores=[
 Number(p1_1.value),
@@ -278,7 +279,6 @@ Number(p1_4.value)
 ]
 
 let balance=[0,0,0,0]
-
 let diffs=[]
 
 for(let i=0;i<4;i++){
@@ -300,36 +300,26 @@ balance[next]-=diff
 
 let payments=[]
 
-if(balance[1]<0 && balance[0]>0){
+for(let i=0;i<4;i++){
 
-let v=Math.min(-balance[1],balance[0])
+if(balance[i]<0){
 
-payments.push(names[1]+" → "+names[0]+" = "+v)
+for(let j=0;j<4;j++){
 
-balance[1]+=v
-balance[0]-=v
+if(balance[j]>0){
 
-}
+let pay=Math.min(-balance[i],balance[j])
 
-if(balance[1]<0 && balance[2]>0){
+payments.push(names[i]+" → "+names[j]+" = "+pay)
 
-let v=Math.min(-balance[1],balance[2])
-
-payments.push(names[1]+" → "+names[2]+" = "+v)
-
-balance[1]+=v
-balance[2]-=v
+balance[i]+=pay
+balance[j]-=pay
 
 }
 
-if(balance[3]<0 && balance[2]>0){
+}
 
-let v=Math.min(-balance[3],balance[2])
-
-payments.push(names[3]+" → "+names[2]+" = "+v)
-
-balance[3]+=v
-balance[2]-=v
+}
 
 }
 
@@ -358,31 +348,29 @@ for(let i=0;i<4;i++){
 let money=balance[i]*stake
 
 if(money>0){
-
 html+="<div class='green'>"+names[i]+" +"+formatMoney(money)+"</div>"
-
 }
 
 if(money<0){
-
 html+="<div class='red'>"+names[i]+" "+formatMoney(money)+"</div>"
-
 }
 
 }
+
+html+="<br><b>Почему так получилось</b><br>"
+html+="Игроки сравниваются по кругу: 1 → 2 → 3 → 4 → 1.<br>"
+html+="Минус игрока распределяется между игроками с плюсом.<br>"
+html+="Поэтому сумма выигрыша и проигрыша всегда совпадает."
 
 html+="</div>"
 
-result.innerHTML=html
+document.getElementById("result").innerHTML=html
 
 }
 
 function copyResult(){
-
 navigator.clipboard.writeText(result.innerText)
-
 alert("Скопировано")
-
 }
 
 function saveGame(){
@@ -390,10 +378,8 @@ function saveGame(){
 let history=JSON.parse(localStorage.getItem("games")||"[]")
 
 history.unshift({
-
 date:new Date().toLocaleDateString(),
 text:result.innerText
-
 })
 
 localStorage.setItem("games",JSON.stringify(history))
@@ -409,9 +395,7 @@ let history=JSON.parse(localStorage.getItem("games")||"[]")
 let html="<div class='result'><b>История игр</b><br><br>"
 
 history.forEach(g=>{
-
 html+=g.date+"<br>"+g.text+"<br><br>"
-
 })
 
 html+="</div>"
@@ -437,7 +421,7 @@ window.open("https://2gis.kz/almaty/geo/70000001101734090")
 }
 
 function scrollCalc(){
-document.getElementById("calc").scrollIntoView()
+document.getElementById("calc").scrollIntoView({behavior:"smooth"})
 }
 
 </script>
