@@ -19,7 +19,6 @@ margin:0;
 background:var(--bg);
 color:#e0e0e0;
 font-family:'Montserrat',sans-serif;
--webkit-font-smoothing:antialiased;
 }
 
 .header img{
@@ -39,7 +38,6 @@ background:var(--card);
 border:1px solid rgba(197,160,89,0.2);
 border-radius:12px;
 padding:15px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
 .player-row{
@@ -53,12 +51,9 @@ input{
 background:rgba(0,0,0,0.3);
 border:1px solid #1a523a;
 color:#fff;
-padding:12px 8px;
+padding:12px;
 border-radius:8px;
 text-align:center;
-width:100%;
-box-sizing:border-box;
-font-size:14px;
 }
 
 .btn-main{
@@ -69,23 +64,18 @@ border-radius:10px;
 background:linear-gradient(180deg,#f1d392 0%,#c5a059 100%);
 color:#000;
 font-weight:800;
-text-transform:uppercase;
 cursor:pointer;
 margin-top:10px;
-font-size:14px;
 }
 
 .res-box{
 margin-top:20px;
 display:none;
-border-top:1px solid rgba(197,160,89,0.2);
-padding-top:15px;
 }
 
 .pay-item{
 display:flex;
 justify-content:space-between;
-align-items:center;
 padding:12px;
 background:rgba(255,255,255,0.04);
 border-radius:8px;
@@ -102,9 +92,8 @@ background:rgba(0,0,0,0.2);
 padding:12px;
 border-radius:8px;
 font-size:12px;
-line-height:1.7;
-color:#aaa;
 margin-top:15px;
+line-height:1.6;
 }
 
 .log-box b{
@@ -126,20 +115,15 @@ color:var(--gold);
 <div id="inputs"></div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin:15px 0;">
-<span style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;">
-СТАВКА ЗА ШАР:
-</span>
-
+<span style="font-size:11px;font-weight:800;color:var(--gold);">СТАВКА ЗА ШАР</span>
 <input type="number" id="stake" value="400" style="width:80px">
 </div>
 
-<button class="btn-main" onclick="calculate()">
-Подсчитать результат
-</button>
+<button class="btn-main" onclick="calculate()">Подсчитать результат</button>
 
 <div id="results" class="res-box">
 <div id="pay-list"></div>
-<div class="log-box" id="log"></div>
+<div id="log" class="log-box"></div>
 </div>
 
 </div>
@@ -149,37 +133,29 @@ color:var(--gold);
 
 function init(){
 
-const defaultNames=['Джони','Сека','Даурен','Дако'];
+const names=['Дако','Даурен','Сека','Джони'];
 
 document.getElementById('inputs').innerHTML=
-defaultNames.map((n,i)=>`
-
+names.map((n,i)=>`
 <div class="player-row">
-
-<input type="text" id="n${i}" value="${n}">
-
-<input type="number" id="s${i}_1" placeholder="П1">
-
-<input type="number" id="s${i}_2" placeholder="П2">
-
+<input id="n${i}" value="${n}">
+<input id="s${i}_1" placeholder="П1">
+<input id="s${i}_2" placeholder="П2">
 </div>
-
 `).join('');
 
 }
-
-
 
 function calculate(){
 
 const stake=parseInt(document.getElementById('stake').value)||0;
 
-const players=[];
+let players=[];
 
 for(let i=0;i<4;i++){
 
 players.push({
-name:document.getElementById(`n${i}`).value||`Игрок ${i+1}`,
+name:document.getElementById(`n${i}`).value,
 score:(parseInt(document.getElementById(`s${i}_1`).value)||0)
 +
 (parseInt(document.getElementById(`s${i}_2`).value)||0)
@@ -187,117 +163,75 @@ score:(parseInt(document.getElementById(`s${i}_1`).value)||0)
 
 }
 
-let diffs=[];
+let diff=[];
 
 for(let i=0;i<4;i++){
 
 let next=(i+1)%4;
 
-diffs.push(players[i].score-players[next].score);
-
-}
-
-let positive=[];
-let negative=[];
-
-for(let i=0;i<4;i++){
-
-if(diffs[i]>0){
-
-positive.push({
-name:players[i].name,
-balls:diffs[i]
-});
-
-}
-
-if(diffs[i]<0){
-
-negative.push({
-name:players[i].name,
-balls:Math.abs(diffs[i])
-});
-
-}
+diff[i]=players[i].score-players[next].score;
 
 }
 
 let payments=[];
 
-let pi=0;
-let ni=0;
+for(let i=0;i<4;i++){
 
-while(pi<positive.length && ni<negative.length){
+if(diff[i]<0){
 
-let pay=Math.min(positive[pi].balls,negative[ni].balls);
+let debt=Math.abs(diff[i]);
+
+let j=(i+1)%4;
+
+while(debt>0){
+
+if(diff[j]>0){
+
+let pay=Math.min(debt,diff[j]);
 
 payments.push({
-from:negative[ni].name,
-to:positive[pi].name,
+from:players[i].name,
+to:players[j].name,
 balls:pay
 });
 
-positive[pi].balls-=pay;
-negative[ni].balls-=pay;
+diff[j]-=pay;
+debt-=pay;
 
-if(positive[pi].balls===0)pi++;
-if(negative[ni].balls===0)ni++;
+}
+
+j=(j+1)%4;
+
+}
+
+}
 
 }
 
 const list=document.getElementById('pay-list');
 
-list.innerHTML=payments.map(pay=>`
-
+list.innerHTML=payments.map(p=>`
 <div class="pay-item">
-
-<span>${pay.from} → ${pay.to}</span>
-
-<span><b>${pay.balls*stake} тнг</b> (${pay.balls} ш.)</span>
-
+<span>${p.from} → ${p.to}</span>
+<span><b>${p.balls*stake} тнг</b> (${p.balls} ш.)</span>
 </div>
-
 `).join('');
 
+let log="<b>ЦЕПОЧКА РАЗНИЦЫ</b><br><br>";
 
+for(let i=0;i<4;i++){
 
-/* ---------- РАЗБОР ПАРТИИ ---------- */
+let next=(i+1)%4;
 
-let log="<b>Разбор партии</b><br><br>";
+let d=players[i].score-players[next].score;
 
-let biggestMinus=negative.sort((a,b)=>b.balls-a.balls)[0];
+log+=`${players[i].name} ${players[i].score} - ${players[next].name} ${players[next].score} = ${players[i].name} ${d>0?`+${d}`:d}<br>`;
 
-log+=`У ${biggestMinus.name} самый большой минус: −${biggestMinus.balls} очков.<br>`;
-log+=`По правилам колхоза он первым покрывает плюсы игроков.<br><br>`;
-
-payments.forEach((p,i)=>{
-
-log+=`${i+1}️⃣ ${p.from} платит ${p.to} ${p.balls} очков.<br>`;
-
-});
-
-log+="<br><b>Итог партии</b><br><br>";
-
-players.forEach(pl=>{
-
-let plus=payments
-.filter(p=>p.to===pl.name)
-.reduce((s,p)=>s+p.balls,0);
-
-let minus=payments
-.filter(p=>p.from===pl.name)
-.reduce((s,p)=>s+p.balls,0);
-
-if(plus>0) log+=`${pl.name} получает: ${plus} очков<br>`;
-if(minus>0) log+=`${pl.name} платит: ${minus} очков<br>`;
-
-});
+}
 
 document.getElementById('log').innerHTML=log;
 
 document.getElementById('results').style.display='block';
-
-window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 
 }
 
