@@ -10,9 +10,9 @@
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:linear-gradient(180deg,#021a12,#0c3525);
+font-family:Arial;
+background:linear-gradient(180deg,#031c13,#0d3a27);
 color:white;
 text-align:center;
 }
@@ -23,58 +23,91 @@ max-height:180px;
 object-fit:cover;
 }
 
+/* панель */
+
 .panel{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:10px;
+gap:12px;
 padding:15px;
-max-width:700px;
+max-width:720px;
 margin:auto;
 }
 
 .panel button{
-background:#0f2d20;
+background:#0e2f21;
 border:none;
 border-radius:14px;
-padding:20px;
+padding:18px;
 color:white;
-font-size:16px;
+font-size:15px;
 cursor:pointer;
-box-shadow:0 6px 18px rgba(0,0,0,0.5);
+box-shadow:0 8px 20px rgba(0,0,0,0.4);
 }
+
+/* карточка */
 
 .card{
 background:#133d2a;
-max-width:700px;
+max-width:720px;
 margin:20px auto;
 padding:25px;
 border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
+box-shadow:0 12px 30px rgba(0,0,0,0.5);
 }
 
-.grid{
+/* ставка */
+
+.stakeRow{
 display:grid;
-grid-template-columns:1fr 1fr 1fr;
+grid-template-columns:1fr 1fr;
 gap:10px;
-margin-bottom:12px;
+align-items:center;
+margin-bottom:15px;
 }
 
-input{
-padding:12px;
+.stakeRow input{
+padding:14px;
 border-radius:10px;
 border:none;
-font-size:16px;
-background:#0c261c;
+background:#0b251b;
 color:white;
+font-size:16px;
 }
+
+/* таблица игроков */
+
+.table{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.row{
+display:grid;
+grid-template-columns:1.4fr 1fr 1fr;
+gap:10px;
+}
+
+.row input{
+padding:14px;
+border-radius:10px;
+border:none;
+background:#0b251b;
+color:white;
+font-size:16px;
+}
+
+/* кнопки */
 
 button.calc{
 width:100%;
 padding:16px;
-margin-top:10px;
+margin-top:15px;
 border:none;
 border-radius:12px;
 background:#d4af37;
+color:black;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
@@ -86,7 +119,7 @@ padding:16px;
 margin-top:10px;
 border:none;
 border-radius:12px;
-background:#60758f;
+background:#667a94;
 color:white;
 font-size:18px;
 }
@@ -97,7 +130,7 @@ padding:16px;
 margin-top:10px;
 border:none;
 border-radius:12px;
-background:#8a2e2e;
+background:#8d2e2e;
 color:white;
 font-size:18px;
 }
@@ -108,45 +141,42 @@ padding:16px;
 margin-top:10px;
 border:none;
 border-radius:12px;
-background:#dcdcdc;
-color:#2d5fa3;
+background:#e0e0e0;
+color:#2a4fa1;
 font-size:18px;
 }
 
+/* результат */
+
 .result{
-background:#051c14;
+background:#041c14;
 margin-top:20px;
 padding:18px;
 border-radius:12px;
 text-align:left;
 }
 
-.green{color:#59ff9b}
+.green{color:#4cff9a}
 .red{color:#ff7a7a}
 
-.footer{
-margin-top:20px;
-padding-bottom:40px;
-}
-
-.map{
-background:#2f8d62;
+.mapBtn{
+margin:20px;
+background:#3d8e67;
 border:none;
-padding:14px;
-border-radius:10px;
-font-size:16px;
+padding:14px 22px;
+border-radius:12px;
 color:white;
+font-size:16px;
 cursor:pointer;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
 <div class="panel">
@@ -163,60 +193,55 @@ cursor:pointer;
 
 <div class="card" id="calc">
 
-<div style="margin-bottom:10px">
-Ставка за шар
+<div class="stakeRow">
+<div>Ставка за шар</div>
 <input id="stake" type="number" value="400">
 </div>
 
-<div class="grid">
+<div class="table">
+
+<div class="row">
 <div>Игрок</div>
 <div>П1</div>
 <div>П2</div>
 </div>
 
-<div class="grid">
+<div class="row">
 <input id="n1" placeholder="Игрок">
 <input id="p1_1" placeholder="Очки">
 <input id="p2_1" placeholder="Очки">
 </div>
 
-<div class="grid">
+<div class="row">
 <input id="n2" placeholder="Игрок">
 <input id="p1_2">
 <input id="p2_2">
 </div>
 
-<div class="grid">
+<div class="row">
 <input id="n3" placeholder="Игрок">
 <input id="p1_3">
 <input id="p2_3">
 </div>
 
-<div class="grid">
+<div class="row">
 <input id="n4" placeholder="Игрок">
 <input id="p1_4">
 <input id="p2_4">
 </div>
 
+</div>
+
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-
 <button class="reset" onclick="location.reload()">СБРОС</button>
-
 <button class="save" onclick="saveGame()">СОХРАНИТЬ В ИСТОРИЮ</button>
 
 <div id="result"></div>
 
 </div>
 
-<div class="footer">
-
-<button class="map" onclick="openMap()">
-ОТКРЫТЬ КАРТУ SENSEI
-</button>
-
-</div>
+<button class="mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
 
 <script>
 
@@ -252,7 +277,6 @@ diffs.push(names[i]+" - "+names[next]+" = "+diff)
 if(diff>0){
 
 balance[i]+=diff
-
 balance[next]-=diff
 
 }
@@ -353,7 +377,6 @@ let history=JSON.parse(localStorage.getItem("games")||"[]")
 history.unshift({
 
 date:new Date().toLocaleDateString(),
-
 text:result.innerText
 
 })
@@ -396,7 +419,7 @@ result.innerHTML="<div class='result'>Игрок дня определяется
 
 function showStats(){
 
-result.innerHTML="<div class='result'>Статистика появится после накопления данных</div>"
+result.innerHTML="<div class='result'>Статистика появится после накопления игр</div>"
 
 }
 
