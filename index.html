@@ -6,7 +6,6 @@
 <title>SENSEI BILLIARD CLUB</title>
 
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
 :root{
@@ -62,10 +61,6 @@ box-sizing:border-box;
 font-size:14px;
 }
 
-input::placeholder{
-color:rgba(255,255,255,0.2);
-}
-
 .btn-main{
 width:100%;
 padding:18px;
@@ -107,7 +102,7 @@ background:rgba(0,0,0,0.2);
 padding:12px;
 border-radius:8px;
 font-size:12px;
-line-height:1.6;
+line-height:1.7;
 color:#aaa;
 margin-top:15px;
 }
@@ -115,7 +110,6 @@ margin-top:15px;
 .log-box b{
 color:var(--gold);
 }
-
 </style>
 </head>
 
@@ -193,23 +187,15 @@ score:(parseInt(document.getElementById(`s${i}_1`).value)||0)
 
 }
 
-let log="<b>ЦЕПОЧКА РАЗНИЦЫ:</b><br>";
-
 let diffs=[];
 
 for(let i=0;i<4;i++){
 
 let next=(i+1)%4;
 
-let d=players[i].score-players[next].score;
-
-diffs.push(d);
-
-log+=`${players[i].name} ${players[i].score} - ${players[next].name} ${players[next].score} = ${players[i].name} ${d>0?`+${d}`:d}<br>`;
+diffs.push(players[i].score-players[next].score);
 
 }
-
-
 
 let positive=[];
 let negative=[];
@@ -236,8 +222,6 @@ balls:Math.abs(diffs[i])
 
 }
 
-
-
 let payments=[];
 
 let pi=0;
@@ -261,15 +245,7 @@ if(negative[ni].balls===0)ni++;
 
 }
 
-
-
 const list=document.getElementById('pay-list');
-
-if(payments.length===0){
-
-list.innerHTML="<div style='text-align:center;opacity:0.5'>Никто никому не должен</div>";
-
-}else{
 
 list.innerHTML=payments.map(pay=>`
 
@@ -283,9 +259,39 @@ list.innerHTML=payments.map(pay=>`
 
 `).join('');
 
-}
 
 
+/* ---------- РАЗБОР ПАРТИИ ---------- */
+
+let log="<b>Разбор партии</b><br><br>";
+
+let biggestMinus=negative.sort((a,b)=>b.balls-a.balls)[0];
+
+log+=`У ${biggestMinus.name} самый большой минус: −${biggestMinus.balls} очков.<br>`;
+log+=`По правилам колхоза он первым покрывает плюсы игроков.<br><br>`;
+
+payments.forEach((p,i)=>{
+
+log+=`${i+1}️⃣ ${p.from} платит ${p.to} ${p.balls} очков.<br>`;
+
+});
+
+log+="<br><b>Итог партии</b><br><br>";
+
+players.forEach(pl=>{
+
+let plus=payments
+.filter(p=>p.to===pl.name)
+.reduce((s,p)=>s+p.balls,0);
+
+let minus=payments
+.filter(p=>p.from===pl.name)
+.reduce((s,p)=>s+p.balls,0);
+
+if(plus>0) log+=`${pl.name} получает: ${plus} очков<br>`;
+if(minus>0) log+=`${pl.name} платит: ${minus} очков<br>`;
+
+});
 
 document.getElementById('log').innerHTML=log;
 
@@ -294,8 +300,6 @@ document.getElementById('results').style.display='block';
 window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 
 }
-
-
 
 init();
 
