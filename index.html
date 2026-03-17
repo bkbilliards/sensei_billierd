@@ -13,6 +13,8 @@
             --input-bg: #03140d;
             --text: #e0e0e0;
             --accent: #155236;
+            --red: #ff5c5c;
+            --green: #4ade80;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -21,329 +23,260 @@
             margin: 0; padding: 10px;
             background: radial-gradient(circle at top, var(--dark-green), var(--deep-green));
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
+            min-height: 100vh;
         }
 
         .container { max-width: 500px; margin: 0 auto; }
 
-        /* Header */
-        .header { text-align: center; margin: 15px 0 20px; }
-        .header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin: 0; font-size: 22px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .header p { font-size: 11px; color: var(--gold); opacity: 0.8; margin: 5px 0; letter-spacing: 3px; }
+        /* Шапка с логотипом */
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo-box { margin-bottom: 10px; }
+        .logo-text { 
+            color: var(--gold); font-size: 24px; font-weight: bold; 
+            text-transform: uppercase; letter-spacing: 3px; margin: 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .sub-text { color: var(--gold); font-size: 10px; opacity: 0.8; letter-spacing: 2px; }
 
-        /* Navigation */
-        .nav-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        /* Навигация */
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .nav-btn { 
             background: var(--card-bg); border: 1px solid var(--accent); color: white; 
-            padding: 12px 5px; border-radius: 10px; font-size: 12px; cursor: pointer; transition: 0.2s;
+            padding: 12px 5px; border-radius: 10px; font-size: 11px; cursor: pointer; font-weight: bold;
         }
-        .nav-btn:active { background: var(--accent); border-color: var(--gold); }
 
-        /* Main Card */
+        /* Карточка калькулятора */
         .card { 
             background: var(--card-bg); padding: 20px; border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.1); 
         }
 
-        .player-row { display: grid; grid-template-columns: 1fr 100px; gap: 10px; margin-bottom: 12px; }
+        .player-row { display: grid; grid-template-columns: 1fr 90px; gap: 10px; margin-bottom: 10px; }
         
         input, select {
             background: var(--input-bg); border: 1px solid var(--accent); color: white;
-            padding: 15px; border-radius: 12px; font-size: 16px; width: 100%;
+            padding: 14px; border-radius: 12px; font-size: 16px; width: 100%;
         }
-        input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
-        input[type="number"] { font-family: monospace; font-weight: bold; text-align: center; }
+        input:focus { border-color: var(--gold); outline: none; }
 
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
 
-        /* Action Buttons */
         .btn-calc { 
             width: 100%; background: linear-gradient(135deg, var(--gold), #b8962e); color: black; 
             font-weight: bold; padding: 18px; border-radius: 15px; border: none; font-size: 16px; 
-            margin-bottom: 15px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 15px; text-transform: uppercase;
         }
-        .btn-calc:active { transform: scale(0.98); }
 
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-action { 
-            background: var(--accent); color: white; border: none; padding: 14px; 
-            border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px;
+            background: var(--accent); color: white; border: none; padding: 12px; 
+            border-radius: 10px; font-weight: bold; font-size: 13px;
         }
         .btn-reset { background: #632626; }
-        .btn-save { background: #266345; width: 100%; margin-top: 10px; }
 
-        /* Results Area */
+        /* Результаты */
         .result-box { 
-            margin-top: 25px; background: var(--input-bg); padding: 15px; border-radius: 15px; 
-            display: none; border: 1px solid var(--accent); border-left: 4px solid var(--gold);
+            margin-top: 20px; background: var(--input-bg); padding: 15px; border-radius: 15px; 
+            display: none; border-left: 4px solid var(--gold); animation: slideIn 0.3s ease;
         }
-        .res-section { margin-bottom: 15px; }
-        .res-title { color: var(--gold); font-weight: bold; font-size: 13px; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--accent); padding-bottom: 4px;}
-        .money-item { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 15px; }
-        .val-plus { color: #4ade80; }
-        .val-minus { color: #ff5c5c; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Modal / Overlay */
+        .res-section { margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .res-title { color: var(--gold); font-weight: bold; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; }
+        .money-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
+        .val-plus { color: var(--green); }
+        .val-minus { color: var(--red); }
+
+        /* Модалки */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; display: none; padding: 20px; overflow-y: auto;
+            background: rgba(0,0,0,0.9); z-index: 1000; display: none; padding: 20px;
         }
-        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--gold); max-width: 400px; margin: 20px auto; }
-        .close-btn { color: var(--gold); float: right; font-size: 28px; font-weight: bold; margin-top: -10px; cursor: pointer; }
-
-        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--accent); }
-        .table th { color: var(--gold); font-size: 12px; text-transform: uppercase; }
-
-        .wa-btn { background: #25D366; color: white; width: 100%; padding: 12px; border-radius: 12px; border: none; margin-top: 10px; font-weight: bold; }
+        .modal-content { 
+            background: var(--card-bg); padding: 20px; border-radius: 20px; 
+            border: 1px solid var(--gold); max-width: 450px; margin: 0 auto;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .table { width: 100%; border-collapse: collapse; }
+        .table td, .table th { padding: 10px; border-bottom: 1px solid var(--accent); text-align: left; }
+        
+        .history-item { 
+            background: var(--input-bg); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 13px;
+            position: relative;
+        }
+        .del-btn { background: var(--red); color: white; border: none; padding: 4px 8px; border-radius: 5px; font-size: 10px; float: right; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>SENSEI BILLIARD CLUB</h1>
-        <p>КАЛЬКУЛЯТОР ИГРЫ «КОЛХОЗ»</p>
+        <div class="logo-box">
+            <p class="logo-text">SENSEI</p>
+            <p class="sub-text">BILLIARD CLUB</p>
+        </div>
+        <div style="font-size: 12px; color: var(--gold); opacity: 0.6;">КАЛЬКУЛЯТОР КОЛХОЗ</div>
     </div>
 
     <div class="nav-grid">
-        <button class="nav-btn" onclick="showModal('history')">📜 ИСТОРИЯ</button>
-        <button class="nav-btn" onclick="showModal('rating')">🏆 РЕЙТИНГ</button>
-        <button class="nav-btn" onclick="showModal('stats')">📊 СТАТА</button>
+        <button class="nav-btn" onclick="showModal('history')">ИСТОРИЯ</button>
+        <button class="nav-btn" onclick="showModal('rating')">РЕЙТИНГ</button>
+        <button class="nav-btn" onclick="showModal('stats')">СТАТИСТИКА</button>
     </div>
 
     <div class="card">
-        <div id="playerInputs">
-            <div class="player-row">
-                <input type="text" id="n1" placeholder="Игрок 1" value="Дако">
-                <input type="number" id="p1" placeholder="Очки">
-            </div>
-            <div class="player-row">
-                <input type="text" id="n2" placeholder="Игрок 2" value="Даурен">
-                <input type="number" id="p2" placeholder="Очки">
-            </div>
-            <div class="player-row">
-                <input type="text" id="n3" placeholder="Игрок 3" value="Сека">
-                <input type="number" id="p3" placeholder="Очки">
-            </div>
-            <div class="player-row">
-                <input type="text" id="n4" placeholder="Игрок 4" value="Джони">
-                <input type="number" id="p4" placeholder="Очки">
-            </div>
+        <div id="players">
+            <div class="player-row"><input type="text" id="n1" value="Дако"><input type="number" id="p1" placeholder="Очки"></div>
+            <div class="player-row"><input type="text" id="n2" value="Даурен"><input type="number" id="p2" placeholder="Очки"></div>
+            <div class="player-row"><input type="text" id="n3" value="Сека"><input type="number" id="p3" placeholder="Очки"></div>
+            <div class="player-row"><input type="text" id="n4" value="Джони"><input type="number" id="p4" placeholder="Очки"></div>
         </div>
 
         <div class="settings-grid">
-            <select id="gameMode">
-                <option value="kolhoz">Колхоз</option>
-                <option value="2x2">2 на 2</option>
+            <select id="mode">
+                <option value="kolhoz">Колхоз (Круг)</option>
+                <option value="2x2">Команда 2х2</option>
             </select>
-            <input type="number" id="stake" placeholder="Ставка" value="400">
+            <input type="number" id="stake" value="400">
         </div>
 
-        <button class="btn-calc" onclick="runCalculation()">ПОДСЧИТАТЬ</button>
+        <button class="btn-calc" onclick="calculate()">ПОДСЧИТАТЬ</button>
         
         <div class="btn-row">
-            <button class="btn-action" onclick="copyToClipboard()">📋 СКОПИРОВАТЬ</button>
+            <button class="btn-action" onclick="copyResult()">📋 КОПИРОВАТЬ</button>
             <button class="btn-action btn-reset" onclick="resetForm()">🔄 СБРОС</button>
         </div>
-        <button class="btn-action btn-save" id="saveBtn" style="display:none;" onclick="saveGame()">💾 СОХРАНИТЬ В ИСТОРИЮ</button>
+        <button id="saveBtn" class="btn-action" style="width:100%; margin-top:10px; background:var(--gold); color:black; display:none;" onclick="saveGame()">💾 СОХРАНИТЬ В ИСТОРИЮ</button>
 
-        <div id="resultArea" class="result-box"></div>
+        <div id="result" class="result-box"></div>
     </div>
 </div>
 
-<div id="modalOverlay" class="overlay">
+<div id="modal" class="overlay" onclick="if(event.target==this) closeModal()">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle" style="color: var(--gold); margin-top: 0;"></h2>
+        <h3 id="modalTitle" style="color:var(--gold); margin-top:0;"></h3>
         <div id="modalBody"></div>
+        <button class="btn-action" style="width:100%; margin-top:20px;" onclick="closeModal()">ЗАКРЫТЬ</button>
     </div>
 </div>
 
 <script>
-    let currentCalculation = null;
+    let lastCalc = null;
 
-    function runCalculation() {
-        const stake = parseInt(document.getElementById('stake').value) || 400;
-        const mode = document.getElementById('gameMode').value;
-        const players = [
-            { name: document.getElementById('n1').value || "Игрок 1", score: parseInt(document.getElementById('p1').value) || 0 },
-            { name: document.getElementById('n2').value || "Игрок 2", score: parseInt(document.getElementById('p2').value) || 0 },
-            { name: document.getElementById('n3').value || "Игрок 3", score: parseInt(document.getElementById('p3').value) || 0 },
-            { name: document.getElementById('n4').value || "Игрок 4", score: parseInt(document.getElementById('p4').value) || 0 }
+    function calculate() {
+        const stake = parseInt(document.getElementById('stake').value);
+        const mode = document.getElementById('mode').value;
+        const p = [
+            { n: document.getElementById('n1').value, s: parseInt(document.getElementById('p1').value) || 0 },
+            { n: document.getElementById('n2').value, s: parseInt(document.getElementById('p2').value) || 0 },
+            { n: document.getElementById('n3').value, s: parseInt(document.getElementById('p3').value) || 0 },
+            { n: document.getElementById('n4').value, s: parseInt(document.getElementById('p4').value) || 0 }
         ];
 
-        let resultHTML = "";
-        let plainText = `🎱 SENSEI CLUB\n`;
+        let resHtml = "";
+        let balances = [0, 0, 0, 0];
 
         if (mode === 'kolhoz') {
-            // 1. Расчет разницы по кругу
-            let diffs = [];
+            resHtml += `<div class="res-section"><div class="res-title">Расчет по кругу</div>`;
             for (let i = 0; i < 4; i++) {
                 let next = (i + 1) % 4;
-                let val = players[i].score - players[next].score;
-                diffs.push({ fromIdx: i, toIdx: next, val: val });
-            }
-
-            resultHTML += `<div class="res-section"><div class="res-title">Разница очков</div>`;
-            diffs.forEach(d => {
-                let sign = d.val > 0 ? "+" : "";
-                resultHTML += `<div class="money-item"><span>${players[d.fromIdx].name} - ${players[d.toIdx].name}</span><b>${sign}${d.val}</b></div>`;
-                plainText += `${players[d.fromIdx].name} - ${players[d.toIdx].name} = ${sign}${d.val}\n`;
-            });
-            resultHTML += `</div>`;
-
-            // 2. Распределение долгов (Кто кому платит)
-            // Логика: если разница отрицательная, этот игрок платит соседу
-            let payments = [];
-            let totalBalances = [0, 0, 0, 0];
-
-            resultHTML += `<div class="res-section"><div class="res-title">Кто кому платит</div>`;
-            plainText += `\nКТО КОМУ ПЛАТИТ:\n`;
-
-            diffs.forEach(d => {
-                if (d.val < 0) { // Игрок d.fromIdx проиграл игроку d.toIdx
-                    let pts = Math.abs(d.val);
-                    let cash = pts * stake;
-                    payments.push({ from: players[d.fromIdx].name, to: players[d.toIdx].name, cash: cash });
-                    resultHTML += `<div class="money-item"><span>${players[d.fromIdx].name} → ${players[d.toIdx].name}</span><b>${cash} тг</b></div>`;
-                    plainText += `${players[d.fromIdx].name} → ${players[d.toIdx].name} = ${cash} тг\n`;
-                    totalBalances[d.fromIdx] -= cash;
-                    totalBalances[d.toIdx] += cash;
-                } else if (d.val > 0) { // Игрок d.toIdx проиграл игроку d.fromIdx
-                    let pts = d.val;
-                    let cash = pts * stake;
-                    payments.push({ from: players[d.toIdx].name, to: players[d.fromIdx].name, cash: cash });
-                    resultHTML += `<div class="money-item"><span>${players[d.toIdx].name} → ${players[d.fromIdx].name}</span><b>${cash} тг</b></div>`;
-                    plainText += `${players[d.toIdx].name} → ${players[d.fromIdx].name} = ${cash} тг\n`;
-                    totalBalances[d.toIdx] -= cash;
-                    totalBalances[d.fromIdx] += cash;
+                let diff = p[i].s - p[next].s;
+                let cash = Math.abs(diff) * stake;
+                
+                if (diff > 0) { // Игрок i выиграл у соседа
+                    resHtml += `<div class="money-item"><span>${p[next].n} → ${p[i].n}</span><b>${cash} тг</b></div>`;
+                    balances[i] += cash; balances[next] -= cash;
+                } else if (diff < 0) { // Игрок i проиграл соседу
+                    resHtml += `<div class="money-item"><span>${p[i].n} → ${p[next].n}</span><b>${cash} тг</b></div>`;
+                    balances[i] -= cash; balances[next] += cash;
                 }
-            });
-            resultHTML += `</div>`;
-
-            // 3. Итог по деньгам
-            resultHTML += `<div class="res-section"><div class="res-title">Итог по деньгам</div>`;
-            plainText += `\nИТОГ ПО ДЕНЬГАМ:\n`;
-            totalBalances.forEach((bal, i) => {
-                let cls = bal >= 0 ? "val-plus" : "val-minus";
-                let sign = bal > 0 ? "+" : "";
-                resultHTML += `<div class="money-item"><span>${players[i].name}</span><b class="${cls}">${sign}${bal} тг</b></div>`;
-                plainText += `${players[i].name}: ${sign}${bal} тг\n`;
-            });
-            resultHTML += `</div>`;
-
-            currentCalculation = { players, balances: totalBalances, mode, date: new Date().toLocaleString() };
-
+            }
+            resHtml += `</div>`;
         } else {
-            // Режим 2 на 2
-            let t1 = players[0].score + players[2].score;
-            let t2 = players[1].score + players[3].score;
+            let t1 = p[0].s + p[2].s;
+            let t2 = p[1].s + p[3].s;
             let diff = t1 - t2;
             let cash = Math.abs(diff) * stake;
-            let t1Names = `${players[0].name}+${players[2].name}`;
-            let t2Names = `${players[1].name}+${players[3].name}`;
-
-            resultHTML += `<div class="res-section"><div class="res-title">Результат Команд</div>`;
-            resultHTML += `<div class="money-item"><span>Команда 1 (${t1Names})</span><b>${t1}</b></div>`;
-            resultHTML += `<div class="money-item"><span>Команда 2 (${t2Names})</span><b>${t2}</b></div>`;
-            
-            let winText = "";
-            let bals = [0, 0, 0, 0];
+            resHtml += `<div class="res-section"><div class="res-title">Командный итог</div>`;
             if(diff > 0) {
-                winText = `${t2Names} → ${t1Names} : ${cash} тг`;
-                bals[0] = bals[2] = cash/2; bals[1] = bals[3] = -cash/2;
-            } else if (diff < 0) {
-                winText = `${t1Names} → ${t2Names} : ${cash} тг`;
-                bals[1] = bals[3] = cash/2; bals[0] = bals[2] = -cash/2;
+                resHtml += `<div class="money-item"><span>${p[1].n}+${p[3].n} → ${p[0].n}+${p[2].n}</span><b>${cash} тг</b></div>`;
+                balances[0]=balances[2]=cash/2; balances[1]=balances[3]= -cash/2;
             } else {
-                winText = "Ничья!";
+                resHtml += `<div class="money-item"><span>${p[0].n}+${p[2].n} → ${p[1].n}+${p[3].n}</span><b>${cash} тг</b></div>`;
+                balances[1]=balances[3]=cash/2; balances[0]=balances[2]= -cash/2;
             }
-            
-            resultHTML += `<div style="margin-top:10px; font-weight:bold; color:var(--gold); text-align:center;">${winText}</div></div>`;
-            plainText += `РЕЖИМ 2х2\n${winText}`;
-            currentCalculation = { players, balances: bals, mode, date: new Date().toLocaleString() };
+            resHtml += `</div>`;
         }
 
-        resultHTML += `<button class="wa-btn" onclick="shareWA()">💬 В WHATSAPP</button>`;
-        
-        document.getElementById('resultArea').innerHTML = resultHTML;
-        document.getElementById('resultArea').style.display = 'block';
+        resHtml += `<div class="res-section"><div class="res-title">Общий баланс</div>`;
+        p.forEach((player, i) => {
+            let b = balances[i];
+            resHtml += `<div class="money-item"><span>${player.n}</span><b class="${b>=0?'val-plus':'val-minus'}">${b>0?'+':''}${b} тг</b></div>`;
+        });
+        resHtml += `</div>`;
+
+        const out = document.getElementById('result');
+        out.innerHTML = resHtml;
+        out.style.display = 'block';
         document.getElementById('saveBtn').style.display = 'block';
-        window.lastPlainText = plainText;
+        lastCalc = { date: new Date().toLocaleString(), players: p.map(x=>x.n), bals: balances };
     }
 
     function saveGame() {
         let history = JSON.parse(localStorage.getItem('sensei_history') || '[]');
-        history.unshift(currentCalculation);
+        history.unshift(lastCalc);
         localStorage.setItem('sensei_history', JSON.stringify(history));
-        alert("Игра сохранена в историю!");
+        alert("Сохранено!");
     }
 
-    function resetForm() {
-        document.querySelectorAll('input').forEach(i => { if(i.id !== 'stake') i.value = ''; });
-        document.getElementById('resultArea').style.display = 'none';
+    function showModal(type) {
+        const modal = document.getElementById('modal');
+        const body = document.getElementById('modalBody');
+        const title = document.getElementById('modalTitle');
+        let history = JSON.parse(localStorage.getItem('sensei_history') || '[]');
+        
+        modal.style.display = 'block';
+        if(type === 'history') {
+            title.innerText = "История игр";
+            body.innerHTML = history.map((h, i) => `
+                <div class="history-item">
+                    <button class="del-btn" onclick="deleteGame(${i})">Удалить</button>
+                    <div style="color:var(--gold)">${h.date}</div>
+                    ${h.players.map((p,pi) => `<div>${p}: ${h.bals[pi]} тг</div>`).join('')}
+                </div>
+            `).join('') || "Нет записей";
+        } else if(type === 'rating') {
+            title.innerText = "Рейтинг клуба";
+            let rates = {};
+            history.forEach(h => h.players.forEach((p,i) => rates[p] = (rates[p]||0) + h.bals[i]));
+            let sorted = Object.entries(rates).sort((a,b) => b[1] - a[1]);
+            body.innerHTML = `<table class="table">` + sorted.map(s => `<tr><td>${s[0]}</td><td class="${s[1]>=0?'val-plus':'val-minus'}">${s[1]} тг</td></tr>`).join('') + `</table>`;
+        } else {
+            title.innerText = "Статистика";
+            body.innerHTML = `<div style="text-align:center">Всего игр: <h1>${history.length}</h1></div>`;
+        }
+    }
+
+    function deleteGame(i) {
+        let history = JSON.parse(localStorage.getItem('sensei_history') || '[]');
+        history.splice(i, 1);
+        localStorage.setItem('sensei_history', JSON.stringify(history));
+        showModal('history');
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function resetForm() { 
+        ['p1','p2','p3','p4'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('result').style.display = 'none';
         document.getElementById('saveBtn').style.display = 'none';
     }
-
-    function copyToClipboard() {
-        if(!window.lastPlainText) return;
-        navigator.clipboard.writeText(window.lastPlainText);
-        alert("Результат скопирован!");
+    function copyResult() {
+        const text = document.getElementById('result').innerText;
+        navigator.clipboard.writeText("🎱 SENSEI CLUB\n" + text);
+        alert("Скопировано!");
     }
-
-    function shareWA() {
-        const url = "https://wa.me/?text=" + encodeURIComponent(window.lastPlainText);
-        window.open(url, '_blank');
-    }
-
-    // Modal Logic
-    function showModal(type) {
-        const overlay = document.getElementById('modalOverlay');
-        const title = document.getElementById('modalTitle');
-        const body = document.getElementById('modalBody');
-        overlay.style.display = 'block';
-        
-        let history = JSON.parse(localStorage.getItem('sensei_history') || '[]');
-
-        if (type === 'history') {
-            title.innerText = "История игр";
-            let html = history.length === 0 ? "История пуста" : "";
-            history.forEach(h => {
-                html += `<div style="background:var(--input-bg); padding:10px; margin-bottom:10px; border-radius:10px; font-size:12px;">
-                    <div style="color:var(--gold)">${h.date} | ${h.mode === 'kolhoz' ? 'Колхоз' : '2х2'}</div>
-                    ${h.players.map((p, i) => `${p.name}: ${h.balances[i]} тг`).join('<br>')}
-                </div>`;
-            });
-            body.innerHTML = html;
-        } 
-        else if (type === 'rating') {
-            title.innerText = "Рейтинг клуба";
-            let scores = {};
-            history.forEach(h => {
-                h.players.forEach((p, i) => {
-                    scores[p.name] = (scores[p.name] || 0) + h.balances[i];
-                });
-            });
-            let sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
-            let html = `<table class="table"><tr><th>Игрок</th><th>Прибыль</th></tr>`;
-            sorted.forEach(s => {
-                let cls = s[1] >= 0 ? "val-plus" : "val-minus";
-                html += `<tr><td>${s[0]}</td><td class="${cls}">${s[1]} тг</td></tr>`;
-            });
-            html += `</table>`;
-            body.innerHTML = html;
-        }
-        else if (type === 'stats') {
-            title.innerText = "Статистика";
-            body.innerHTML = `<div style="text-align:center;">
-                <h3 style="margin:0;">Всего игр</h3>
-                <h1 style="color:var(--gold); margin:10px 0;">${history.length}</h1>
-            </div>`;
-        }
-    }
-
-    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
 </script>
+
 </body>
 </html>
