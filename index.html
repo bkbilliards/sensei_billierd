@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SENSEI BILLIARD CLUB</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SENSEI Калькулятор</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#041f15,#0f3d2b);
+background:linear-gradient(#05261a,#0d3c2b);
 color:white;
-text-align:center;
 }
 
 .header img{
 width:100%;
-max-height:170px;
-object-fit:cover;
+display:block;
 }
 
 .container{
-max-width:700px;
+max-width:650px;
 margin:auto;
 padding:15px;
 }
 
 .card{
-background:#123e2b;
+background:#113c2a;
 padding:20px;
 border-radius:16px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+
+.title{
+text-align:center;
+margin-bottom:10px;
 }
 
 input{
@@ -40,53 +44,56 @@ width:100%;
 padding:12px;
 border-radius:10px;
 border:none;
-background:#0a251c;
+background:#07271c;
 color:white;
 font-size:16px;
 }
 
 .table{
+margin-top:15px;
 display:flex;
 flex-direction:column;
 gap:10px;
-margin-top:15px;
 }
 
 .row{
 display:grid;
-grid-template-columns:1.6fr 1fr 1fr;
-gap:8px;
+grid-template-columns:1.4fr 1fr 1fr;
+gap:10px;
+}
+
+.headerRow{
+font-size:14px;
+opacity:.8;
 }
 
 button{
 width:100%;
 padding:14px;
 border:none;
-border-radius:10px;
-margin-top:10px;
+border-radius:12px;
 font-size:18px;
+margin-top:10px;
 }
 
-.calc{background:#d4af37;color:black;font-weight:bold}
-.copy{background:#74839d;color:white}
-.reset{background:#8b3232;color:white}
-.save{background:#e0e0e0;color:#2b5da0}
+.calc{background:#d4af37;color:black;font-weight:bold;}
+.copy{background:#74839d;color:white;}
+.reset{background:#8c3333;color:white;}
+.save{background:#e6e6e6;color:#2e5fa5;}
 
 .result{
-background:#051b14;
-padding:18px;
-border-radius:12px;
+background:#041c14;
 margin-top:20px;
-text-align:left;
+padding:15px;
+border-radius:12px;
 }
 
-.green{color:#65ff9d}
-.red{color:#ff7b7b}
+.green{color:#6aff9d;}
+.red{color:#ff7777;}
 
-.map{
+.mapBtn{
 margin-top:20px;
 background:#4c9b74;
-color:white;
 }
 
 </style>
@@ -102,12 +109,12 @@ color:white;
 
 <div class="card">
 
-<div>Ставка за шар</div>
+<div class="title">Ставка за шар</div>
 <input id="stake" value="400">
 
 <div class="table">
 
-<div class="row">
+<div class="row headerRow">
 <div>Игрок</div>
 <div>П1</div>
 <div>П2</div>
@@ -140,7 +147,7 @@ color:white;
 </div>
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
-<button class="copy" onclick="copy()">СКОПИРОВАТЬ</button>
+<button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
 <button class="reset" onclick="location.reload()">СБРОС</button>
 <button class="save">СОХРАНИТЬ В ИСТОРИЮ</button>
 
@@ -148,7 +155,7 @@ color:white;
 
 </div>
 
-<button class="map" onclick="map()">ОТКРЫТЬ КАРТУ SENSEI</button>
+<button class="mapBtn" onclick="openMap()">ОТКРЫТЬ КАРТУ SENSEI</button>
 
 </div>
 
@@ -175,10 +182,8 @@ Number(document.getElementById("p4").value)
 let diff=[]
 
 for(let i=0;i<4;i++){
-
 let next=(i+1)%4
 diff[i]=scores[i]-scores[next]
-
 }
 
 let plus=[]
@@ -229,7 +234,6 @@ j=(j+1)%4
 })
 
 let money={}
-
 let html="<div class='result'>"
 
 html+="<b>Разница очков</b><br><br>"
@@ -268,24 +272,18 @@ html+="<div class='red'>"+n+" "+v+" тг</div>"
 
 })
 
-html+="<br><b>Разбор партии</b><br><br>"
-
-payments.forEach(p=>{
-html+=p.from+" закрывает "+p.points+" очков игроку "+p.to+"<br>"
-})
-
 html+="</div>"
 
 document.getElementById("result").innerHTML=html
 
 }
 
-function copy(){
+function copyResult(){
 navigator.clipboard.writeText(result.innerText)
 alert("Скопировано")
 }
 
-function map(){
+function openMap(){
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
 }
 
