@@ -197,76 +197,86 @@ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ")
 
 function calc(){
 
-let stake=Number(stake.value)
+let stake = Number(document.getElementById("stake").value)
 
-let names=[n1.value,n2.value,n3.value,n4.value]
-
-let scores=[
-Number(p1_1.value),
-Number(p1_2.value),
-Number(p1_3.value),
-Number(p1_4.value)
+let names = [
+document.getElementById("n1").value,
+document.getElementById("n2").value,
+document.getElementById("n3").value,
+document.getElementById("n4").value
 ]
 
-let diff=[]
+let scores = [
+Number(document.getElementById("p1_1").value),
+Number(document.getElementById("p1_2").value),
+Number(document.getElementById("p1_3").value),
+Number(document.getElementById("p1_4").value)
+]
+
+let diff = []
 
 for(let i=0;i<4;i++){
 let next=(i+1)%4
 diff[i]=scores[i]-scores[next]
 }
 
-let html="<div class='result'>"
+let resultHTML="<div class='result'>"
 
-html+="<b>Разница очков</b><br><br>"
+resultHTML+="<b>Разница очков</b><br><br>"
 
-html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
-html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
-html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
-html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
+resultHTML+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
+resultHTML+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
+resultHTML+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
+resultHTML+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
 
-let pay1=diff[0]
-let pay2=Math.abs(diff[1])-diff[0]
-let pay3=Math.abs(diff[3])
+let pay1 = diff[0]
+let pay2 = Math.abs(diff[1]) - diff[0]
+let pay3 = Math.abs(diff[3])
 
 let res=[0,0,0,0]
 
-html+="<br><b>Кто кому платит</b><br><br>"
+resultHTML+="<br><b>Кто кому платит</b><br><br>"
 
 let m1=pay1*stake
-html+=names[1]+" → "+names[0]+" = "+pay1+" ("+formatMoney(m1)+" тг)<br>"
+resultHTML+=names[1]+" → "+names[0]+" = "+pay1+" ("+m1+" тг)<br>"
 res[1]-=m1
 res[0]+=m1
 
 let m2=pay2*stake
-html+=names[1]+" → "+names[2]+" = "+pay2+" ("+formatMoney(m2)+" тг)<br>"
+resultHTML+=names[1]+" → "+names[2]+" = "+pay2+" ("+m2+" тг)<br>"
 res[1]-=m2
 res[2]+=m2
 
 let m3=pay3*stake
-html+=names[3]+" → "+names[2]+" = "+pay3+" ("+formatMoney(m3)+" тг)<br>"
+resultHTML+=names[3]+" → "+names[2]+" = "+pay3+" ("+m3+" тг)<br>"
 res[3]-=m3
 res[2]+=m3
 
-html+="<br><b>Итог по деньгам</b><br><br>"
+resultHTML+="<br><b>Итог по деньгам</b><br><br>"
 
 for(let i=0;i<4;i++){
 
-if(res[i]>0) html+="<div class='green'>"+names[i]+" +"+formatMoney(res[i])+" тг</div>"
-if(res[i]<0) html+="<div class='red'>"+names[i]+" "+formatMoney(res[i])+" тг</div>"
+if(res[i]>0){
+resultHTML+="<div class='green'>"+names[i]+" +"+res[i]+" тг</div>"
+}
+
+if(res[i]<0){
+resultHTML+="<div class='red'>"+names[i]+" "+res[i]+" тг</div>"
+}
 
 }
 
-html+="<br><b>Разбор партии</b><br><br>"
+resultHTML+="<br><b>Разбор партии</b><br><br>"
 
-html+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br>"
-html+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br>"
-html+="После этого у него остаётся долг "+pay2+" очков.<br>"
-html+="Этот остаток получает "+names[2]+".<br>"
-html+=names[3]+" имеет минус "+pay3+" и отдаёт их "+names[2]+"."
+resultHTML+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br>"
+resultHTML+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br>"
+resultHTML+="После этого у него остаётся долг "+pay2+" очков.<br>"
+resultHTML+="Этот остаток получает "+names[2]+".<br>"
+resultHTML+=names[3]+" имеет минус "+pay3+" и отдаёт их "+names[2]+"."
 
-html+="</div>"
+resultHTML+="</div>"
 
-result.innerHTML=html
+document.getElementById("result").innerHTML=resultHTML
 
 }
 
