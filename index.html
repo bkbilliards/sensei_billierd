@@ -12,22 +12,25 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(#04291c,#0c3a29);
+background:linear-gradient(#062d1f,#0c3c2b);
 color:white;
 }
 
 .container{
-max-width:700px;
+max-width:720px;
 margin:auto;
 padding:15px;
 }
 
 .header{
 text-align:center;
-font-size:22px;
-font-weight:bold;
+margin-bottom:20px;
+}
+
+.header h1{
 color:#d4af37;
-margin-bottom:15px;
+font-size:24px;
+margin:0;
 }
 
 .menu{
@@ -38,18 +41,18 @@ margin-bottom:15px;
 }
 
 .menu button{
-padding:10px;
-border-radius:10px;
+padding:12px;
+border-radius:12px;
 border:none;
-font-size:15px;
-background:#1c4d3a;
+background:#1f4f3a;
 color:white;
+font-size:15px;
 }
 
 .card{
 background:#143c2c;
 padding:18px;
-border-radius:14px;
+border-radius:16px;
 }
 
 .row{
@@ -61,8 +64,8 @@ margin-bottom:10px;
 
 input,select{
 width:100%;
-padding:12px;
-border-radius:10px;
+padding:14px;
+border-radius:12px;
 border:none;
 background:#08261b;
 color:white;
@@ -71,8 +74,8 @@ font-size:16px;
 
 button{
 width:100%;
-padding:14px;
-border-radius:10px;
+padding:15px;
+border-radius:12px;
 border:none;
 font-size:18px;
 margin-top:10px;
@@ -81,23 +84,23 @@ margin-top:10px;
 .calc{
 background:#d4af37;
 color:black;
+font-weight:bold;
 }
 
 .copy{
-background:#7a859f;
+background:#7d88a2;
 }
 
 .reset{
-background:#8a3535;
+background:#8a3434;
 }
 
 .result{
 margin-top:15px;
-background:#021a12;
+background:#041c14;
 padding:15px;
 border-radius:12px;
 white-space:pre-line;
-font-size:15px;
 }
 
 </style>
@@ -109,7 +112,7 @@ font-size:15px;
 <div class="container">
 
 <div class="header">
-SENSEI BILLIARD CLUB — Калькулятор Колхоз
+<h1>SENSEI BILLIARD CLUB — Калькулятор Колхоз</h1>
 </div>
 
 <div class="menu">
@@ -142,7 +145,6 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз
 
 <select id="mode">
 <option value="kolhoz">Колхоз</option>
-<option value="reverse">Обратка</option>
 <option value="teams">2 на 2 (1+3 vs 2+4)</option>
 </select>
 
@@ -150,7 +152,7 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз
 
 <button class="calc" onclick="calc()">ПОДСЧИТАТЬ</button>
 <button class="copy" onclick="copyResult()">СКОПИРОВАТЬ</button>
-<button class="reset" onclick="reset()">СБРОС</button>
+<button class="reset" onclick="location.reload()">СБРОС</button>
 
 <div id="result" class="result"></div>
 
@@ -162,7 +164,7 @@ SENSEI BILLIARD CLUB — Калькулятор Колхоз
 
 function calc(){
 
-let stake=Number(stakeInput())
+let stake=Number(document.getElementById("stake").value)
 
 let names=[
 n1.value,
@@ -187,20 +189,21 @@ let t2=scores[1]+scores[3]
 
 let diff=t1-t2
 
-let txt="Команда 1: "+names[0]+" + "+names[2]+" = "+t1+"\n"
-txt+="Команда 2: "+names[1]+" + "+names[3]+" = "+t2+"\n\n"
+let text="Команда 1: "+names[0]+" + "+names[2]+" = "+t1+"\n"
+text+="Команда 2: "+names[1]+" + "+names[3]+" = "+t2+"\n\n"
 
 if(diff>0){
 
-txt+=names[1]+" и "+names[3]+" платят "+(diff*stake)+" тг"
+text+=names[1]+" и "+names[3]+" платят "+diff*stake+" тг"
 
 }else{
 
-txt+=names[0]+" и "+names[2]+" платят "+(Math.abs(diff)*stake)+" тг"
+text+=names[0]+" и "+names[2]+" платят "+Math.abs(diff)*stake+" тг"
 
 }
 
-show(txt)
+result.innerText=text
+save(text)
 
 return
 
@@ -211,17 +214,8 @@ let diff=[]
 for(let i=0;i<4;i++){
 
 let next=(i+1)%4
+
 diff[i]=scores[i]-scores[next]
-
-}
-
-let text="РАЗНИЦА ОЧКОВ\n\n"
-
-for(let i=0;i<4;i++){
-
-let next=(i+1)%4
-
-text+=names[i]+" "+scores[i]+" - "+names[next]+" "+scores[next]+" = "+diff[i]+"\n"
 
 }
 
@@ -230,36 +224,20 @@ let minus=[]
 
 for(let i=0;i<4;i++){
 
-if(diff[i]>0){
-
-plus.push({
-name:names[i],
-value:diff[i]
-})
-
-}
-
-if(diff[i]<0){
-
-minus.push({
-name:names[i],
-value:Math.abs(diff[i])
-})
-
-}
+if(diff[i]>0) plus.push({name:names[i],value:diff[i]})
+if(diff[i]<0) minus.push({name:names[i],value:Math.abs(diff[i])})
 
 }
 
 let payments=[]
 
-for(let m of minus){
+minus.forEach(m=>{
 
 let remain=m.value
 
 for(let p of plus){
 
 if(remain<=0) break
-
 if(p.value<=0) continue
 
 let pay=Math.min(remain,p.value)
@@ -275,9 +253,9 @@ remain-=pay
 
 }
 
-}
+})
 
-text+="\nКТО КОМУ ПЛАТИТ\n\n"
+let text="КТО КОМУ ПЛАТИТ\n\n"
 
 let money={}
 
@@ -297,59 +275,30 @@ text+="\nИТОГ\n\n"
 names.forEach(n=>{
 
 let v=money[n]||0
-
 text+=n+" "+v+" тг\n"
 
 })
 
-text+="\nРАЗБОР ПАРТИИ\n\n"
-
-payments.forEach(p=>{
-
-text+=p.from+" закрывает "+p.points+" очков игроку "+p.to+"\n"
-
-})
-
-show(text)
+result.innerText=text
 
 save(text)
 
 }
 
-function stakeInput(){
-
-return document.getElementById("stake").value
-
-}
-
-function show(txt){
-
-document.getElementById("result").innerText=txt
-
-}
-
 function copyResult(){
-
 navigator.clipboard.writeText(result.innerText)
-
-}
-
-function reset(){
-
-location.reload()
-
 }
 
 function save(text){
 
-let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
+let history=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-h.unshift({
+history.unshift({
 date:new Date().toLocaleString(),
 text:text
 })
 
-localStorage.setItem("sensei_history",JSON.stringify(h))
+localStorage.setItem("sensei_history",JSON.stringify(history))
 
 }
 
@@ -357,15 +306,13 @@ function showHistory(){
 
 let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-let t="ИСТОРИЯ\n\n"
+let t="ИСТОРИЯ ИГР\n\n"
 
 h.forEach(x=>{
-
 t+=x.date+"\n"+x.text+"\n\n"
-
 })
 
-show(t)
+result.innerText=t
 
 }
 
@@ -384,7 +331,6 @@ if(l.includes("тг")){
 let p=l.split(" ")
 
 let name=p[0]
-
 let val=parseInt(p[1])
 
 r[name]=(r[name]||0)+val
@@ -398,12 +344,10 @@ r[name]=(r[name]||0)+val
 let t="РЕЙТИНГ\n\n"
 
 Object.keys(r).sort((a,b)=>r[b]-r[a]).forEach(n=>{
-
 t+=n+" "+r[n]+" тг\n"
-
 })
 
-show(t)
+result.innerText=t
 
 }
 
@@ -411,7 +355,7 @@ function showStats(){
 
 let h=JSON.parse(localStorage.getItem("sensei_history")||"[]")
 
-show("Всего игр: "+h.length)
+result.innerText="Всего игр: "+h.length
 
 }
 
