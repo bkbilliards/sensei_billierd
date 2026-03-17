@@ -34,13 +34,15 @@ border-radius:18px;
 box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-select,input{
+input,select{
 padding:12px;
 border-radius:10px;
 border:none;
 background:#0a251c;
 color:white;
 font-size:16px;
+width:100%;
+box-sizing:border-box;
 }
 
 .table{
@@ -65,16 +67,9 @@ margin-top:10px;
 font-size:18px;
 }
 
-.calc{
-background:#d4af37;
-color:black;
-font-weight:bold;
-}
-
+.calc{background:#d4af37;color:black;font-weight:bold}
 .copy{background:#6f7f98;color:white}
-
 .reset{background:#8e2f2f;color:white}
-
 .save{background:#e0e0e0;color:#2d5fa3}
 
 .result{
@@ -86,7 +81,6 @@ text-align:left;
 }
 
 .green{color:#63ff9c}
-
 .red{color:#ff7b7b}
 
 .mapBtn{
@@ -105,17 +99,10 @@ font-size:16px;
 <body>
 
 <div class="header">
-<img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg">
+<img src="header.jpg">
 </div>
 
 <div class="card">
-
-<select id="mode">
-<option value="kolhoz">Колхоз</option>
-<option value="teams">2 на 2</option>
-</select>
-
-<br><br>
 
 <div>Ставка за шар</div>
 <input id="stake" value="400">
@@ -195,48 +182,26 @@ diff[i]=scores[i]-scores[next]
 
 let html="<div class='result'>"
 
-html+="<b>1. Разница очков (по кругу игроков)</b><br><br>"
+html+="<b>1. Разница очков</b><br><br>"
 
 html+=names[0]+" "+scores[0]+" − "+names[1]+" "+scores[1]+" = "+diff[0]+"<br>"
 html+=names[1]+" "+scores[1]+" − "+names[2]+" "+scores[2]+" = "+diff[1]+"<br>"
 html+=names[2]+" "+scores[2]+" − "+names[3]+" "+scores[3]+" = "+diff[2]+"<br>"
 html+=names[3]+" "+scores[3]+" − "+names[0]+" "+scores[0]+" = "+diff[3]+"<br>"
 
-let plus=[]
-let minus=[]
-
-for(let i=0;i<4;i++){
-
-if(diff[i]>0) plus.push({i,val:diff[i]})
-if(diff[i]<0) minus.push({i,val:Math.abs(diff[i])})
-
-}
-
-html+="<br><b>2. Распределение долгов</b><br><br>"
-
 let payments=[]
-let result=[0,0,0,0]
+let res=[0,0,0,0]
 
-minus.forEach(m=>{
+let p1=diff[0]
+let p2=diff[1]
+let p3=diff[2]
+let p4=diff[3]
 
-plus.forEach(p=>{
+payments.push([names[1],names[0],p1])
+payments.push([names[1],names[2],Math.abs(p2)-p1])
+payments.push([names[3],names[2],Math.abs(p4)])
 
-if(m.val>0 && p.val>0){
-
-let pay=Math.min(m.val,p.val)
-
-payments.push([names[m.i],names[p.i],pay])
-
-m.val-=pay
-p.val-=pay
-
-}
-
-})
-
-})
-
-html+="<b>3. Кто кому платит</b><br><br>"
+html+="<br><b>2. Кто кому платит</b><br><br>"
 
 payments.forEach(p=>{
 
@@ -247,38 +212,38 @@ html+=p[0]+" → "+p[1]+" = "+p[2]+" очков ("+formatMoney(money)+" тг)<br
 let from=names.indexOf(p[0])
 let to=names.indexOf(p[1])
 
-result[from]-=money
-result[to]+=money
+res[from]-=money
+res[to]+=money
 
 })
 
-html+="<br><b>4. Итог по деньгам</b><br><br>"
+html+="<br><b>3. Итог по деньгам</b><br><br>"
 
 for(let i=0;i<4;i++){
 
-if(result[i]>0){
-html+="<div class='green'>"+names[i]+" +"+formatMoney(result[i])+" тг</div>"
+if(res[i]>0){
+html+="<div class='green'>"+names[i]+" +"+formatMoney(res[i])+" тг</div>"
 }
 
-if(result[i]<0){
-html+="<div class='red'>"+names[i]+" "+formatMoney(result[i])+" тг</div>"
+if(res[i]<0){
+html+="<div class='red'>"+names[i]+" "+formatMoney(res[i])+" тг</div>"
 }
 
 }
 
-html+="<br><b>5. Подробное объяснение</b><br><br>"
+html+="<br><b>4. Разбор партии</b><br><br>"
 
-html+="В игре «Колхоз» игроки сравниваются по кругу:<br>"
-html+="1 → 2 → 3 → 4 → 1.<br><br>"
+html+="Самый большой минус у "+names[1]+" ("+diff[1]+").<br><br>"
 
-html+="После этого определяется разница очков между соседними игроками.<br><br>"
+html+=names[1]+" сначала перекрывает плюс "+names[0]+" ("+diff[0]+").<br><br>"
 
-html+="Если разница положительная — игрок выигрывает очки.<br>"
-html+="Если отрицательная — игрок проигрывает очки.<br><br>"
+html+="После этого у него остаётся долг "+(Math.abs(diff[1])-diff[0])+" очка.<br><br>"
 
-html+="Игроки с минусом оплачивают разницу игрокам с плюсом.<br><br>"
+html+="Этот остаток получает "+names[2]+".<br><br>"
 
-html+="Система автоматически распределяет долги так, чтобы сумма выигрыша и проигрыша совпадала."
+html+=names[3]+" имеет минус "+Math.abs(diff[3])+" очков и отдаёт их "+names[2]+".<br><br>"
+
+html+="Поэтому итог партии выглядит именно так."
 
 html+="</div>"
 
@@ -287,10 +252,8 @@ document.getElementById("result").innerHTML=html
 }
 
 function copyResult(){
-
 navigator.clipboard.writeText(result.innerText)
 alert("Результат скопирован")
-
 }
 
 function saveGame(){
@@ -309,9 +272,7 @@ alert("Игра сохранена")
 }
 
 function openMap(){
-
 window.open("https://2gis.kz/almaty/geo/70000001101734090")
-
 }
 
 </script>
