@@ -18,6 +18,8 @@
             --text-main: #e8e8e8;
             --win: #4ade80;
             --loss: #ff5c5c;
+            --team1: rgba(64, 150, 255, 0.15);
+            --team2: rgba(255, 100, 100, 0.15);
         }
 
         body {
@@ -26,8 +28,8 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .header { width: 100%; border-bottom: 2px solid var(--gold); background: #000; }
-        .header img { width: 100%; display: block; }
+        .header { width: 100%; border-bottom: 2px solid var(--gold); background: #000; overflow: hidden; }
+        .header img { width: 100%; display: block; filter: brightness(0.8); }
 
         .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
 
@@ -50,86 +52,80 @@
         }
         .grid-header span { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; text-align: center; }
 
-        .player-row { display: grid; grid-template-columns: 2.5fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .player-row { 
+            display: grid; grid-template-columns: 2.5fr 1fr 1fr; gap: 8px; 
+            margin-bottom: 8px; padding: 5px; border-radius: 10px; transition: 0.3s;
+        }
+        
+        /* Цвета команд в режиме 2х2 */
+        .mode-team .team-a { background: var(--team1); border: 1px solid rgba(64, 150, 255, 0.3); }
+        .mode-team .team-b { background: var(--team2); border: 1px solid rgba(255, 100, 100, 0.3); }
 
         input {
             background: var(--input-bg); border: 1px solid rgba(26, 82, 58, 0.8);
-            color: #fff; padding: 14px 8px; border-radius: 8px; font-size: 14px;
+            color: #fff; padding: 12px 8px; border-radius: 8px; font-size: 14px;
             outline: none; text-align: center; width: 100%; box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif; transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
         }
         input[type="text"] { text-align: left; padding-left: 12px; }
-        input::placeholder { color: rgba(255,255,255,0.25); font-size: 13px; font-weight: 500; }
-        input:focus { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        input::placeholder { color: rgba(255,255,255,0.2); font-size: 12px; }
+        input:focus { border-color: var(--gold); }
 
         .stake-box {
             display: flex; justify-content: space-between; align-items: center;
             margin: 20px 0 10px; padding: 12px 15px; background: rgba(0,0,0,0.3);
             border-radius: 10px; border: 1px solid var(--border-color);
         }
-        .stake-label { font-size: 11px; color: var(--gold); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .stake-label { font-size: 11px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
 
         .btn-calc {
             width: 100%; padding: 18px; border: none; border-radius: 10px;
             background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
             color: #000; font-weight: 900; font-size: 14px; text-transform: uppercase;
-            letter-spacing: 1px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            margin-top: 10px;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.4); margin-top: 10px;
         }
-        .btn-calc:active { transform: scale(0.98); }
 
         #results { display: none; margin-top: 25px; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .section-title {
             font-family: 'Cinzel', serif; color: var(--gold); text-align: center;
             font-size: 14px; letter-spacing: 2px; margin: 25px 0 15px; display: flex;
             align-items: center; justify-content: center; gap: 10px; text-transform: uppercase;
         }
-        .section-title::before, .section-title::after { content: ""; height: 1px; width: 40px; background: var(--gold); opacity: 0.3; }
+        .section-title::before, .section-title::after { content: ""; height: 1px; width: 30px; background: var(--gold); opacity: 0.3; }
 
         .pay-card {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px;
-            margin-bottom: 8px; border-left: 3px solid var(--gold);
+            margin-bottom: 8px; border-left: 4px solid var(--gold);
         }
-        .pay-names { font-size: 14px; font-weight: 600; }
-        .pay-amount { text-align: right; }
-        .amt-cash { color: var(--gold-bright); font-weight: 800; font-size: 15px; display: block; }
-        .amt-balls { color: #888; font-size: 11px; margin-top: 3px; display: block; }
+        .amt-cash { color: var(--gold-bright); font-weight: 800; font-size: 16px; }
 
         .comment-box {
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
-            padding: 20px 15px; border-radius: 10px; margin-top: 25px; font-size: 13px;
-            line-height: 1.6; color: #ddd;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-color);
+            padding: 20px 15px; border-radius: 12px; margin-top: 25px; font-size: 13px;
+            line-height: 1.7; color: #ddd;
         }
-        .comment-box b { color: var(--gold-bright); font-weight: 700; }
-        
-        .step-block { margin-bottom: 15px; }
-        .debt-calc { margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--gold-dark); color: #aaa; font-size: 12px; }
-        .debt-closed { color: var(--win); font-weight: 600; margin-top: 8px; display: block; }
-        .divider { border: none; border-top: 1px dashed rgba(255,255,255,0.1); margin: 20px 0; }
-
         .summary-box {
-            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;
-            border: 1px solid var(--border-color); line-height: 1.8; margin-top: 10px;
+            background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05); margin-top: 15px;
         }
-        .win-line { color: var(--win); font-weight: bold; }
-        .loss-line { color: var(--loss); font-weight: bold; }
+        .win-line { color: var(--win); font-weight: 700; }
+        .loss-line { color: var(--loss); font-weight: 700; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 25px; margin-bottom: 50px; }
         .btn-side {
             flex: 1; background: transparent; border: 1px solid var(--border-color);
             color: var(--gold); padding: 14px; border-radius: 8px; font-size: 11px;
-            text-transform: uppercase; font-weight: 700; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; font-weight: 700; cursor: pointer;
         }
-        .btn-side:active { background: rgba(212, 175, 55, 0.1); }
     </style>
 </head>
-<body>
+<body class="mode-solo">
 
 <div class="header">
-    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" alt="SENSEI CLUB">
+    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" alt="SENSEI">
 </div>
 
 <div class="container">
@@ -138,32 +134,32 @@
         <div class="tab" id="tab-team" onclick="setMode('team')">2 на 2</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="main-card">
         <div class="grid-header">
-            <span>Игрок</span>
-            <span>Партия 1</span>
-            <span>Партия 2</span>
+            <span>Имя игрока</span>
+            <span>П1</span>
+            <span>П2</span>
         </div>
         
         <div id="inputs-area"></div>
 
         <div class="stake-box">
             <span class="stake-label">Ставка за шар:</span>
-            <input type="number" id="stake" value="400" style="width: 90px; padding: 10px;">
+            <input type="number" id="stake" value="400" style="width: 80px; padding: 8px;">
         </div>
 
-        <button class="btn-calc" onclick="calculate()">Подсчитать результат</button>
+        <button class="btn-calc" onclick="calculate()">Подсчитать итог</button>
     </div>
 
     <div id="results">
-        <div class="section-title">Расчет выплат</div>
+        <div class="section-title">Выплаты</div>
         <div id="payments-list"></div>
         
         <div id="explanation-container"></div>
 
         <div class="btn-group">
-            <button class="btn-side" onclick="copyResults()">Скопировать</button>
-            <button class="btn-side" style="color:var(--loss); border-color:rgba(255,92,92,0.3);" onclick="location.reload()">Сбросить</button>
+            <button class="btn-side" onclick="copyResults()">Копировать</button>
+            <button class="btn-side" style="color:var(--loss);" onclick="location.reload()">Сбросить</button>
         </div>
     </div>
 </div>
@@ -173,8 +169,20 @@ let currentMode = 'solo';
 
 function setMode(mode) {
     currentMode = mode;
+    document.body.className = mode === 'solo' ? 'mode-solo' : 'mode-team';
     document.getElementById('tab-solo').classList.toggle('active', mode === 'solo');
     document.getElementById('tab-team').classList.toggle('active', mode === 'team');
+    
+    // Обновляем подсказки команд в 2х2
+    const rows = document.querySelectorAll('.player-row');
+    rows.forEach((row, index) => {
+        if (mode === 'team') {
+            if (index === 0 || index === 2) row.classList.add('team-a');
+            else row.classList.add('team-b');
+        } else {
+            row.classList.remove('team-a', 'team-b');
+        }
+    });
 }
 
 function initInputs() {
@@ -209,155 +217,85 @@ function calculate() {
     }
 
     let paymentsHtml = "";
-    let explanationHtml = "";
+    let explanationHtml = `<div class="comment-box"><div class="section-title" style="margin-top:0;">Разбор партии</div>`;
 
     if (currentMode === 'solo') {
-        // Шаг 1: Считаем разницу по кругу
+        // --- ЛОГИКА КОЛХОЗ ---
         for(let i=0; i<4; i++) {
             let next = (i + 1) % 4;
             players[i].diff = players[i].score - players[next].score;
-            players[i].origDiff = players[i].diff; // Сохраняем оригинал для текста
+            players[i].origDiff = players[i].diff;
         }
 
         let winners = [...players].filter(p => p.diff > 0).sort((a,b) => b.diff - a.diff);
         let losers = [...players].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff);
 
-        let hasPayments = false;
-        
-        explanationHtml += `<div class="comment-box"><div class="section-title" style="margin-top:0;">Разбор партии</div>`;
-
         if (losers.length > 0) {
-            explanationHtml += `У <b>${losers[0].name}</b> самый большой минус: −${Math.abs(losers[0].diff)} очков.<br>По правилам колхоза он первым покрывает плюсы игроков.<br><br>`;
+            explanationHtml += `У <b>${losers[0].name}</b> самый большой минус: −${Math.abs(losers[0].diff)} очков.<br>Он первым покрывает плюсы игроков.<br><br>`;
         }
 
         let stepNum = 1;
-        const emojis = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
-
-        // Генерация текста и карточек оплат
-        losers.forEach((loser) => {
+        losers.forEach(loser => {
             let debt = Math.abs(loser.diff);
-            
-            winners.forEach((winner) => {
+            winners.forEach(winner => {
                 if (debt > 0 && winner.diff > 0) {
                     let transfer = Math.min(debt, winner.diff);
-                    let e = emojis[stepNum] || `${stepNum}️⃣`;
-                    
-                    // Рисуем карточку оплаты
                     paymentsHtml += `
                         <div class="pay-card">
-                            <div class="pay-names">${loser.name} &rarr; ${winner.name}</div>
-                            <div class="pay-amount">
-                                <span class="amt-cash">${formatMoney(transfer * stake)} тнг</span>
-                                <span class="amt-balls">(${transfer} ш.)</span>
-                            </div>
-                        </div>
-                    `;
-                    hasPayments = true;
-
-                    // Формируем текст-разбор
-                    explanationHtml += `<div class="step-block">`;
+                            <div style="font-weight:600;">${loser.name} &rarr; ${winner.name}</div>
+                            <div class="amt-cash">${formatMoney(transfer * stake)} тнг</div>
+                        </div>`;
                     
-                    if (winner.origDiff !== winner.diff) {
-                        // Если победителю уже частично заплатили
-                        let paidAlready = winner.origDiff - winner.diff;
-                        explanationHtml += `${e} <b>${loser.name}</b> имеет −${debt}, а у <b>${winner.name}</b> ещё остался плюс:<br>`;
-                        explanationHtml += `${winner.origDiff} − ${paidAlready} = ${winner.diff} очков.<br><br>`;
-                        explanationHtml += `Поэтому <b>${loser.name}</b> платит <b>${winner.name}</b> ${transfer} очков.`;
-                    } else {
-                        // Если победителю платят первый раз
-                        explanationHtml += `${e} <b>${winner.name}</b> имеет +${winner.diff}, поэтому <b>${loser.name}</b> `;
-                        if (transfer === winner.diff) {
-                            explanationHtml += `сначала покрывает его плюс полностью.<br><br>`;
-                        } else {
-                            explanationHtml += `отдаёт ему оставшиеся ${transfer} очков.<br><br>`;
-                        }
-                        explanationHtml += `<b>${loser.name} платит ${winner.name} ${transfer} очков.</b>`;
-                    }
-                    
-                    let prevDebt = debt;
+                    explanationHtml += `${stepNum}️⃣ <b>${loser.name}</b> платит <b>${winner.name}</b> ${transfer} очков.<br>`;
                     debt -= transfer;
                     winner.diff -= transfer;
                     stepNum++;
-
-                    if (debt > 0) {
-                        explanationHtml += `<div class="debt-calc">После этого у <b>${loser.name}</b> остаётся долг:<br>${prevDebt} − ${transfer} = ${debt} очка(ов).</div>`;
-                    } else {
-                        explanationHtml += `<span class="debt-closed">Теперь долг <b>${loser.name}</b> закрыт.</span>`;
-                        explanationHtml += `<hr class="divider">`;
-                    }
-                    explanationHtml += `</div>`;
                 }
             });
         });
 
-        if (!hasPayments) paymentsHtml = `<div style="text-align:center; padding: 20px; color: #888;">Никто никому не должен</div>`;
-
-        // Блок ИТОГ ПАРТИИ
-        explanationHtml += `<div class="section-title">Итог партии</div><div class="summary-box">`;
-        
-        // Плюсовые
+        explanationHtml += `<div class="section-title">Итог</div><div class="summary-box">`;
         players.forEach(p => {
-            if (p.origDiff > 0) {
-                explanationHtml += `<span class="win-line">${p.name} получает:</span> ${p.origDiff} очков<br>`;
-            }
+            let label = p.origDiff >= 0 ? `<span class="win-line">${p.name} получает:</span>` : `<span class="loss-line">${p.name} платит:</span>`;
+            explanationHtml += `${label} ${Math.abs(p.origDiff)} очков (${formatMoney(Math.abs(p.origDiff)*stake)} тнг)<br>`;
         });
-        explanationHtml += `<br>`;
-        // Минусовые
-        players.forEach(p => {
-            if (p.origDiff < 0) {
-                explanationHtml += `<span class="loss-line">${p.name} платит:</span> ${Math.abs(p.origDiff)} очков<br>`;
-            }
-        });
-        
-        explanationHtml += `</div></div>`; // закрываем summary-box и comment-box
+        explanationHtml += `</div>`;
 
     } else {
-        // --- ЛОГИКА 2 НА 2 ---
-        let team1Score = players[0].score + players[1].score;
-        let team2Score = players[2].score + players[3].score;
-        let diff = Math.abs(team1Score - team2Score);
-        
-        let winnerText = team1Score > team2Score ? `${players[0].name} и ${players[1].name}` : `${players[2].name} и ${players[3].name}`;
-        let loserText = team1Score < team2Score ? `${players[0].name} и ${players[1].name}` : `${players[2].name} и ${players[3].name}`;
+        // --- ЛОГИКА 2 НА 2 (1+3 против 2+4) ---
+        let teamAScore = players[0].score + players[2].score;
+        let teamBScore = players[1].score + players[3].score;
+        let diff = Math.abs(teamAScore - teamBScore);
+        let totalMoney = diff * stake;
+
+        let winners = teamAScore > teamBScore ? [players[0], players[2]] : [players[1], players[3]];
+        let losers = teamAScore < teamBScore ? [players[0], players[2]] : [players[1], players[3]];
+
+        explanationHtml += `<b>Команда A</b> (${players[0].name} + ${players[2].name}): <b>${teamAScore}</b> очков<br>`;
+        explanationHtml += `<b>Команда B</b> (${players[1].name} + ${players[3].name}): <b>${teamBScore}</b> очков<br><br>`;
 
         if (diff === 0) {
-            paymentsHtml = `<div style="text-align:center; padding: 20px; color: #888;">Ничья</div>`;
-            explanationHtml = `<div class="comment-box" style="text-align:center;">Очки равны.</div>`;
+            paymentsHtml = `<div style="text-align:center; padding: 20px;">Ничья</div>`;
         } else {
+            explanationHtml += `Разница: <b>${diff} очков</b>. Проигравшие платят <b>${formatMoney(totalMoney)} тнг</b>.<br>`;
             paymentsHtml = `
-                <div class="pay-card" style="flex-direction: column; align-items: flex-start;">
-                    <div style="font-size: 11px; color:#888; margin-bottom:5px;">ПРОИГРАВШАЯ КОМАНДА ПЛАТИТ:</div>
-                    <div class="pay-names" style="color:var(--loss);">${loserText}</div>
-                    <div style="margin: 8px 0; width:100%; height:1px; background: rgba(255,255,255,0.05);"></div>
-                    <div style="font-size: 11px; color:#888; margin-bottom:5px;">ВЫИГРАВШЕЙ КОМАНДЕ:</div>
-                    <div class="pay-names" style="color:var(--win);">${winnerText}</div>
-                    <div style="margin-top: 10px; width: 100%; text-align: right;">
-                        <span class="amt-cash">${formatMoney(diff * stake)} тнг</span>
-                        <span class="amt-balls">Разница: ${diff} ш.</span>
-                    </div>
-                </div>
-            `;
-            explanationHtml = `<div class="comment-box"><b>РЕЖИМ 2 НА 2:</b><br><br>Очки первой команды: ${team1Score}<br>Очки второй команды: ${team2Score}<br>Разница: ${diff} шаров.</div>`;
+                <div class="pay-card" style="border-left-color: var(--loss);">
+                    <div>${losers[0].name} и ${losers[1].name} <br>&rarr; ${winners[0].name} и ${winners[1].name}</div>
+                    <div class="amt-cash">${formatMoney(totalMoney)} тнг</div>
+                </div>`;
         }
     }
 
+    explanationHtml += `</div>`;
     document.getElementById('payments-list').innerHTML = paymentsHtml;
     document.getElementById('explanation-container').innerHTML = explanationHtml;
-    
     document.getElementById('results').style.display = 'block';
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function copyResults() {
-    let textToCopy = "SENSEI BILLIARD CLUB\n\n";
-    // Собираем текст из карточек выплат
-    const payCards = document.querySelectorAll('.pay-card');
-    payCards.forEach(card => {
-        let names = card.querySelector('.pay-names').innerText;
-        let cash = card.querySelector('.amt-cash').innerText;
-        textToCopy += `${names} -> ${cash}\n`;
-    });
-    navigator.clipboard.writeText(textToCopy);
+    let text = "SENSEI BILLIARD CLUB\n" + document.getElementById('explanation-container').innerText;
+    navigator.clipboard.writeText(text);
     alert("Результаты скопированы!");
 }
 
