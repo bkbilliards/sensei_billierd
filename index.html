@@ -3,194 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SENSEI KOLHOZ ARBITRAGE PRO</title>
+    <title>SENSEI BILLIARD PRO</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;500;700;800&display=swap');
+
         :root {
-            --bg: #050f0a; --card: #102b1e; --gold: #d4af37; --win: #2ecc71; --loss: #e74c3c; --input: #1a422e;
+            --gold: #d4af37;
+            --gold-bright: #f9df9f;
+            --bg-color: #030f09;
+            --card-bg: #071c11;
+            --border-color: rgba(212, 175, 55, 0.25);
+            --input-bg: rgba(0, 0, 0, 0.4);
+            --text-main: #e8e8e8;
+            --win: #4ade80;
+            --loss: #ff5c5c;
+            --team1: rgba(64, 150, 255, 0.1);
+            --team2: rgba(255, 100, 100, 0.1);
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; }
-        .container { max-width: 500px; margin: auto; }
-        .card { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid #1e4d35; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-        h1 { color: var(--gold); text-align: center; font-size: 20px; text-transform: uppercase; margin: 10px 0; letter-spacing: 2px; }
-        
-        .setup-row { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid var(--gold); }
-        input { background: var(--input); border: 1px solid #2a5a41; color: white; padding: 8px; border-radius: 6px; font-size: 16px; outline: none; }
-        
-        .table-header { display: flex; gap: 5px; margin-bottom: 5px; font-size: 11px; color: var(--gold); font-weight: bold; text-align: center; }
-        .player-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 8px; }
-        
-        .name-cell { flex: 2; }
-        .score-cell { flex: 1; text-align: center; }
-        .name-input { width: 90%; font-weight: bold; font-size: 14px; }
-        .score-input { width: 85%; border-color: #3e8e63; font-weight: bold; }
 
-        .btn-group { display: flex; gap: 8px; margin: 15px 0; }
-        .btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; }
-        .btn-reset { background: #351212; color: #ff4d4d; border: 1px solid #ff4d4d; }
-        
-        .results-box { margin-top: 20px; border-top: 2px solid var(--gold); padding-top: 15px; }
-        .total-item { display: flex; justify-content: space-between; padding: 12px; border-radius: 10px; margin-bottom: 8px; font-weight: bold; font-size: 18px; }
-        .is-win { background: rgba(46, 204, 113, 0.2); color: var(--win); border: 1px solid var(--win); }
-        .is-loss { background: rgba(231, 76, 60, 0.2); color: var(--loss); border: 1px solid var(--loss); }
+        body {
+            margin: 0; padding: 0; background: var(--bg-color);
+            color: var(--text-main); font-family: 'Montserrat', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        .arbitrage-box { background: #000; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #2a5a41; }
-        .arbitrage-box h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-align: center; border-bottom: 1px solid #2a5a41; padding-bottom: 5px; }
-        .explain-line { font-size: 13px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; line-height: 1.4; }
-        .explain-line b { color: var(--gold); }
-        .explain-line i { color: #fff; font-style: normal; font-weight: bold; }
-        
-        .footer-note { font-size: 10px; color: #555; text-align: center; margin-top: 10px; }
+        .header { width: 100%; border-bottom: 2px solid var(--gold); background: #000; }
+        .header img { width: 100%; display: block; filter: brightness(0.8); }
+
+        .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
+
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .btn-action {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--gold);
+            color: var(--gold); text-decoration: none; padding: 12px;
+            border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            transition: 0.3s; letter-spacing: 1px;
+        }
+        .btn-wa { border-color: var(--win); color: var(--win); }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab {
+            flex: 1; text-align: center; padding: 14px 5px; border: 1px solid var(--gold);
+            border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase;
+            color: var(--gold); cursor: pointer; transition: 0.3s;
+        }
+        .tab.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 15px; }
+        .grid-header { display: grid; grid-template-columns: 2.5fr 1fr 1fr; gap: 8px; margin-bottom: 10px; padding: 0 5px; }
+        .grid-header span { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; text-align: center; }
+
+        .player-row { display: grid; grid-template-columns: 2.5fr 1fr 1fr; gap: 8px; margin-bottom: 8px; padding: 5px; border-radius: 10px; }
+        .mode-team .team-a { background: var(--team1); border: 1px solid rgba(64, 150, 255, 0.2); }
+        .mode-team .team-b { background: var(--team2); border: 1px solid rgba(255, 100, 100, 0.2); }
+
+        input {
+            background: var(--input-bg); border: 1px solid rgba(26, 82, 58, 0.8);
+            color: #fff; padding: 12px 8px; border-radius: 8px; font-size: 14px;
+            outline: none; text-align: center; width: 100%; box-sizing: border-box;
+        }
+        input[type="text"] { text-align: left; }
+        input:focus { border-color: var(--gold); }
+
+        .stake-box {
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 20px 0 10px; padding: 12px 15px; background: rgba(0,0,0,0.3);
+            border-radius: 10px; border: 1px solid var(--border-color);
+        }
+        .stake-label { font-size: 11px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
+
+        .btn-calc {
+            width: 100%; padding: 18px; border: none; border-radius: 10px;
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+            color: #000; font-weight: 900; font-size: 14px; text-transform: uppercase; cursor: pointer;
+        }
+
+        #results { display: none; margin-top: 25px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title {
+            font-family: 'Cinzel', serif; color: var(--gold); text-align: center;
+            font-size: 14px; margin: 25px 0 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .pay-card {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px;
+            margin-bottom: 8px; border-left: 4px solid var(--gold);
+        }
+        .amt-cash { color: var(--gold-bright); font-weight: 800; font-size: 16px; }
+
+        .comment-box {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-color);
+            padding: 20px 15px; border-radius: 12px; margin-top: 25px; font-size: 13px; line-height: 1.7;
+        }
+        .win-line { color: var(--win); font-weight: 700; }
+        .loss-line { color: var(--loss); font-weight: 700; }
+
+        .btn-group { display: flex; gap: 10px; margin: 25px 0 50px; }
+        .btn-side {
+            flex: 1; background: transparent; border: 1px solid var(--border-color);
+            color: var(--gold); padding: 14px; border-radius: 8px; font-size: 11px; text-transform: uppercase; font-weight: 700;
+        }
     </style>
 </head>
-<body>
+<body class="mode-solo">
+
+<div class="header">
+    <img src="83ACCD74-935E-4FF9-B89E-77E959838536.jpeg" alt="SENSEI">
+</div>
 
 <div class="container">
+    <div class="action-buttons">
+        <a href="https://chat.whatsapp.com/BTxdaHoTfWnFmXJRlsDFK6" target="_blank" class="btn-action btn-wa">
+            💬 Чат игроков (WhatsApp)
+        </a>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" id="tab-solo" onclick="setMode('solo')">Колхоз</div>
+        <div class="tab" id="tab-team" onclick="setMode('team')">2 на 2</div>
+    </div>
+
     <div class="card">
-        <h1>SENSEI KOLHOZ</h1>
+        <div class="grid-header">
+            <span>Игрок</span>
+            <span>П1</span>
+            <span>П2</span>
+        </div>
         
-        <div class="setup-row">
-            <span>СТАВКА ЗА ОЧКО:</span>
-            <input type="number" id="stake" value="100" style="width: 70px;" oninput="calc()">
+        <div id="inputs-area"></div>
+
+        <div class="stake-box">
+            <span class="stake-label">Ставка (шар):</span>
+            <input type="number" id="stake" value="400" style="width: 80px;">
         </div>
 
-        <div class="table-header">
-            <div style="flex:2">ИМЯ ИГРОКА</div>
-            <div style="flex:1">ПАРТИЯ 1</div>
-            <div style="flex:1">ПАРТИЯ 2</div>
-        </div>
+        <button class="btn-calc" onclick="calculate()">Подсчитать итог</button>
+    </div>
 
-        <div id="players-container">
-            </div>
+    <div id="results">
+        <div class="section-title">ВЗАИМОРАСЧЕТ</div>
+        <div id="payments-list"></div>
+        <div id="explanation-container"></div>
 
         <div class="btn-group">
-            <button class="btn btn-reset" onclick="resetAll()">Сбросить всё</button>
+            <button class="btn-side" onclick="copyResults()">Копировать</button>
+            <button class="btn-side" style="color:var(--loss);" onclick="location.reload()">Сбросить</button>
         </div>
-
-        <div class="results-box">
-            <div id="totals"></div>
-            
-            <div class="arbitrage-box" id="arbitrage-box" style="display:none;">
-                <h3>РАЗБОР И ОБЪЯСНЕНИЕ:</h3>
-                <div id="explanation"></div>
-            </div>
-        </div>
-        <div class="footer-note">Чтобы исключить игрока (если играют 2-3 чел.), просто оставьте его поля очков пустыми.</div>
     </div>
 </div>
 
 <script>
-    // Состояние имен
-    let playerNames = ["Игрок 1", "Игрок 2", "Игрок 3", "Игрок 4"];
+let currentMode = 'solo';
 
-    function init() {
-        renderInputs();
-        calc();
-    }
+function setMode(mode) {
+    currentMode = mode;
+    document.body.className = mode === 'solo' ? 'mode-solo' : 'mode-team';
+    document.getElementById('tab-solo').classList.toggle('active', mode === 'solo');
+    document.getElementById('tab-team').classList.toggle('active', mode === 'team');
+    
+    const rows = document.querySelectorAll('.player-row');
+    rows.forEach((row, index) => {
+        if (mode === 'team') {
+            if (index === 0 || index === 2) row.classList.add('team-a');
+            else row.classList.add('team-b');
+        } else {
+            row.classList.remove('team-a', 'team-b');
+        }
+    });
+}
 
-    function renderInputs() {
-        const container = document.getElementById('players-container');
-        let html = "";
-        for(let i=0; i<4; i++) {
-            html += `
+function initInputs() {
+    let html = '';
+    for(let i=0; i<4; i++) {
+        html += `
             <div class="player-row">
-                <div class="name-cell">
-                    <input type="text" class="name-input" id="n${i}" value="${playerNames[i]}" oninput="updateName(${i}, this.value)">
-                </div>
-                <div class="score-cell">
-                    <input type="number" class="score-input" id="s${i}_1" placeholder="-" oninput="calc()">
-                </div>
-                <div class="score-cell">
-                    <input type="number" class="score-input" id="s${i}_2" placeholder="-" oninput="calc()">
-                </div>
+                <input type="text" id="name${i}" placeholder="Имя">
+                <input type="number" id="p${i}_1" placeholder="0">
+                <input type="number" id="p${i}_2" placeholder="0">
             </div>`;
-        }
-        container.innerHTML = html;
     }
+    document.getElementById('inputs-area').innerHTML = html;
+}
 
-    function updateName(index, val) {
-        playerNames[index] = val;
-        calc();
-    }
+function formatMoney(n) { return new Intl.NumberFormat('ru-RU').format(n); }
 
-    function resetAll() {
-        if(confirm("Очистить все очки и имена?")) {
-            location.reload();
-        }
-    }
-
-    function calc() {
-        const stake = Number(document.getElementById('stake').value) || 0;
-        let players = [];
-
-        // Собираем данные (ТОЛЬКО АКТИВНЫЕ ИГРОКИ)
-        for(let i=0; i<4; i++) {
-            let str1 = document.getElementById(`s${i}_1`).value;
-            let str2 = document.getElementById(`s${i}_2`).value;
-
-            // Если оба поля очков абсолютно пустые - игрок не участвует, пропускаем его!
-            if (str1 === "" && str2 === "") {
-                continue; 
-            }
-
-            let s1 = Number(str1) || 0;
-            let s2 = Number(str2) || 0;
-            
-            players.push({
-                name: playerNames[i],
-                totalScore: s1 + s2,
-                money: 0
+function calculate() {
+    const stake = parseInt(document.getElementById('stake').value) || 0;
+    const allPlayers = [];
+    
+    // Собираем всех игроков и фильтруем только тех, у кого есть имя или очки
+    for(let i=0; i<4; i++) {
+        let nameVal = document.getElementById(`name${i}`).value.trim();
+        let p1 = parseInt(document.getElementById(`p${i}_1`).value) || 0;
+        let p2 = parseInt(document.getElementById(`p${i}_2`).value) || 0;
+        
+        if (nameVal !== "" || p1 > 0 || p2 > 0) {
+            allPlayers.push({
+                name: nameVal || `Игрок ${i+1}`,
+                score: p1 + p2,
+                diff: 0, 
+                origDiff: 0
             });
         }
-
-        let explainHTML = "";
-
-        // Математика "каждый с каждым" ТОЛЬКО для участвующих
-        for(let i=0; i<players.length; i++) {
-            for(let j=i+1; j<players.length; j++) {
-                let pA = players[i];
-                let pB = players[j];
-                let diff = pA.totalScore - pB.totalScore;
-                let cash = Math.abs(diff) * stake;
-
-                if(diff > 0) { 
-                    pA.money += cash;
-                    pB.money -= cash;
-                    explainHTML += `<div class="explain-line"><i>${pA.name}</i> выиграл у <i>${pB.name}</i>: <b>${cash}</b> <small>(разница ${diff} очк.)</small></div>`;
-                } else if(diff < 0) { 
-                    pA.money -= cash;
-                    pB.money += cash;
-                    explainHTML += `<div class="explain-line"><i>${pB.name}</i> выиграл у <i>${pA.name}</i>: <b>${cash}</b> <small>(разница ${Math.abs(diff)} очк.)</small></div>`;
-                }
-            }
-        }
-
-        // Рендер итогов
-        let totalsHTML = "";
-        let sorted = [...players].sort((a,b) => b.money - a.money);
-
-        sorted.forEach(p => {
-            // Если баланс 0 и очков 0 (например, сыграли вничью), все равно показываем, т.к. игрок активен
-            let cls = p.money >= 0 ? 'is-win' : 'is-loss';
-            totalsHTML += `
-                <div class="total-item ${cls}">
-                    <span>${p.name}</span>
-                    <span>${p.money > 0 ? '+' : ''}${p.money}</span>
-                </div>`;
-        });
-
-        document.getElementById('totals').innerHTML = totalsHTML;
-        
-        const arbBox = document.getElementById('arbitrage-box');
-        // Показываем блок объяснений, только если играют хотя бы 2 человека и есть разница в счете
-        if(explainHTML !== "") {
-            arbBox.style.display = "block";
-            document.getElementById('explanation').innerHTML = explainHTML;
-        } else {
-            arbBox.style.display = "none";
-        }
     }
 
-    init();
+    if (allPlayers.length < 2) {
+        alert("Введите данные минимум для 2-х игроков");
+        return;
+    }
+
+    let pList = "", exp = `<div class="comment-box">`;
+
+    if (currentMode === 'solo') {
+        // Логика цепочки по кругу для любого количества игроков
+        for(let i=0; i<allPlayers.length; i++) {
+            let next = (i + 1) % allPlayers.length;
+            allPlayers[i].diff = allPlayers[i].score - allPlayers[next].score;
+            allPlayers[i].origDiff = allPlayers[i].diff;
+        }
+        
+        let winrs = [...allPlayers].filter(p => p.diff > 0).sort((a,b) => b.diff - a.diff);
+        let losrs = [...allPlayers].filter(p => p.diff < 0).sort((a,b) => a.diff - b.diff);
+
+        losrs.forEach(l => {
+            let debt = Math.abs(l.diff);
+            winrs.forEach(w => {
+                if (debt > 0 && w.diff > 0) {
+                    let move = Math.min(debt, w.diff);
+                    pList += `<div class="pay-card"><div>${l.name} &rarr; ${w.name}</div><div class="amt-cash">${formatMoney(move*stake)}</div></div>`;
+                    debt -= move; w.diff -= move;
+                }
+            });
+        });
+        exp += allPlayers.map(p => {
+            let style = p.origDiff >= 0 ? 'win-line' : 'loss-line';
+            return `<div class="${style}">${p.name}: ${p.origDiff >=0 ? '+':''}${p.origDiff} (${formatMoney(Math.abs(p.origDiff)*stake)} тнг)</div>`;
+        }).join('');
+    } else {
+        // Логика 2 на 2 работает только если 4 игрока
+        if (allPlayers.length < 4) {
+            alert("Режим 2 на 2 требует заполнения всех 4-х игроков");
+            return;
+        }
+        let tA = allPlayers[0].score + allPlayers[2].score;
+        let tB = allPlayers[1].score + allPlayers[3].score;
+        let diff = Math.abs(tA - tB);
+        exp += `Команда A: ${tA} очков<br>Команда B: ${tB} очков<br>Разница: ${diff} шаров.`;
+        if(tA != tB) {
+            let winT = tA > tB ? [allPlayers[0], allPlayers[2]] : [allPlayers[1], allPlayers[3]];
+            let losT = tA < tB ? [allPlayers[0], allPlayers[2]] : [allPlayers[1], allPlayers[3]];
+            pList = `<div class="pay-card"><div>${losT[0].name} и ${losT[1].name} <br>&rarr; ${winT[0].name} и ${winT[1].name}</div><div class="amt-cash">${formatMoney(diff*stake)}</div></div>`;
+        } else { pList = "Ничья"; }
+    }
+
+    document.getElementById('payments-list').innerHTML = pList;
+    document.getElementById('explanation-container').innerHTML = exp + `</div>`;
+    document.getElementById('results').style.display = 'block';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+function copyResults() {
+    navigator.clipboard.writeText("SENSEI CLUB\n" + document.getElementById('explanation-container').innerText.replace(/<[^>]*>/g, ''));
+    alert("Итог скопирован!");
+}
+
+initInputs();
 </script>
 </body>
 </html>
